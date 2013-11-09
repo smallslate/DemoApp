@@ -1,0 +1,46 @@
+extends /common/layout
+block head
+	title My Profile
+block content
+	div.marginTop10
+		ul.nav.nav-tabs
+			li.active
+				a(href='#exam', data-toggle='tab') 
+					b Exam
+			li
+				a(href='#profile', data-toggle='tab') 
+					b Profiles
+			if isAdmin
+				li
+					a(href='#admin', data-toggle='tab')
+						b Admin
+		div.tab-content
+			div#exam.tab-pane.fade.in.active
+				div.panel.panel-primary.marginTop10
+					div.panel-heading 
+						b Exam Tools
+					div.panel-body
+						p Hello
+
+			div#profile.tab-pane.fade profile tab
+			
+			if isAdmin
+				div#admin.tab-pane.fade 
+					if isAdmin														
+						div.panel.panel-primary.marginTop10
+							div.panel-heading 
+								b Admin
+							div.panel-body
+								div.row
+									div.col-sm-6.col-md-4.paddingUpDown
+										a(href="/user/admin/category") Create Category
+									div.col-sm-6.col-md-4.paddingUpDown
+										a(href="/admin/createSubCategory") Create Sub Category	
+									div.col-sm-6.col-md-4.paddingUpDown
+										a(href="/admin/viewAllCategories") View Categories
+										
+										
+										
+										
+										
+										

@@ -1,0 +1,30 @@
+extends /common/layout
+block head
+	script(src="/javascript/frameworks/angular/angular.min.js")
+	script(src="/javascript/frameworks/angular/angular-resource.min.js")
+	script(src="/javascript/angular/app/category.js")
+	script(src="/javascript/frameworks/jquery/jquery.validate.min.js")
+	title Create or Edit Category
+block content
+	div(ng-app="category",ng-controller="categoryCtrl")
+		form.form-horizontal.marginTop10#createCategory(role="form")
+			div.form-group
+				label.col-lg-2.control-label(for="categoryName") Category Name
+				div.col-lg-10
+					input.form-control(name="categoryName" placeholder="Enter Category Name" data-ng-model="categoryObj.categoryName")
+			div.form-group
+					label.col-lg-2.control-label(for="categoryDescr") Category Description
+					div.col-lg-10
+						textarea.form-control(name="categoryDescr",placeholder="Enter Category Description",data-ng-model="categoryObj.categoryDescr")
+			div.form-group
+					label.col-lg-2.control-label(for="categoryImg") Category Image URL
+					div.col-lg-10
+						input.form-control(name="categoryImg",placeholder="850*275 Image URL",data-ng-model="categoryObj.categoryImg")
+			div.form-group
+				div.col-lg-offset-2.col-lg-10
+					button.btn.btn-primary.margin5(ng-click="crudCategory('create')",ng-if="!categoryObj.categoryId") Add	
+					button.btn.btn-primary.margin5(ng-click="crudCategory('update')",ng-if="categoryObj.categoryId") Update
+					button.btn.btn-danger.margin5(ng-click="crudCategory('delete')",ng-if="categoryObj.categoryId") Delete
+					
+		div.alert.alert-danger(ng-if="categoryObj.error") {{categoryObj.error}}
+		div.alert.alert-success(ng-if="categoryObj.success") {{categoryObj.success}}					

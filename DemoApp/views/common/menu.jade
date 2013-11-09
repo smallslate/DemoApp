@@ -1,0 +1,23 @@
+div.navbar.navbar-fixed-top.navbar-inverse(role="navigation")
+	div.container
+		div.navbar-header
+			button.navbar-toggle(type="button" data-toggle="collapse" data-target=".navbar-collapse")
+				span.icon-bar
+				span.icon-bar
+				span.icon-bar
+			a.navbar-brand.active(href="/") Home
+		div.collapse.navbar-collapse	
+			ul.nav.navbar-nav
+				li
+					a(href="/user/profile") My Profile
+			ul.nav.navbar-nav.navbar-right
+				if isAuthenticated
+					li
+						a.dropdown-toggle(href="#",data-toggle="dropdown") #{displayName}
+							b.caret
+						ul.dropdown-menu
+							li
+								a(href="/logout") Log Out	
+				else 
+					li
+						a(href="/login") Log In

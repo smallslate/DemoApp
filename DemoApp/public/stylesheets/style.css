@@ -1,0 +1,17 @@
+body {
+  padding-top: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.marginTop10 {
+	margin-top: 10px;
+}
+
+.margin5 {
+	margin: 5px;
+}
+
+label.error {
+	color: red;
+	margin-top: 2px;
+}

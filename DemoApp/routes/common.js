@@ -1,4 +1,4 @@
-db = require("../models/Database");
+db = require("../models/factory/Database");
 module.exports = Common;
 
 function Common() {

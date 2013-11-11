@@ -9,6 +9,6 @@ module.exports = function(sequelize, DataTypes) {
 	updatedBy: DataTypes.BIGINT,
 	isActive : {type:DataTypes.BOOLEAN,defaultValue: true},
 	numberOfQuizzes: {type:DataTypes.BIGINT,defaultValue: 0},
-	numberOfExams: {type:DataTypes.BIGINT,defaultValue: 0},
+	numberOfExams: {type:DataTypes.BIGINT,defaultValue: 0}
   });
 };

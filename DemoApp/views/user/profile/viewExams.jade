@@ -1,0 +1,28 @@
+extends /common/layout
+block head
+	title Edit exams
+	script(src="/javascript/frameworks/angular/angular.min.js")
+	script(src="/javascript/frameworks/angular/angular-resource.min.js")
+	script.
+		var myExamsApp = angular.module('myExamsApp', ['ngResource']);
+		
+		myExamsApp.controller('myExamsAppCtrl', ['$scope','getMyExamsService',function($scope,getMyExamsService) {
+			$scope.myExamsList = getMyExamsService.query();		
+		}]);
+		
+		myExamsApp.factory('getMyExamsService',['$resource', function($resource) {
+			return $resource('/user/getMyExams', {}, {
+				query : {method : 'POST',isArray : true}
+			});
+		}]);
+		
+block content
+	div.row(ng-app="myExamsApp",ng-controller="myExamsAppCtrl")
+		div.col-sm-6.col-md-4.marginTop10(ng-repeat="examObj in myExamsList")
+			div.panel.panel-primary
+				div.panel-heading 
+					a(href="/user/createExam?examCode={{examObj.examCode}}&catCode={{examObj.categoryCode}}")
+						b(style="color:white;") {{examObj.examName}}
+				div.panel-body
+					p {{examObj.examDescr}}
+					

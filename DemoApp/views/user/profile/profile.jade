@@ -6,21 +6,42 @@ block content
 		ul.nav.nav-tabs
 			li.active
 				a(href='#exam', data-toggle='tab') 
-					b Exam
+					b(style="color:#428BCA") Exam
 			li
 				a(href='#profile', data-toggle='tab') 
-					b Profiles
+					b(style="color:green") Profiles
 			if isAdmin
 				li
 					a(href='#admin', data-toggle='tab')
-						b Admin
+						b(style="color:#A52A2A") Admin
 		div.tab-content
 			div#exam.tab-pane.fade.in.active
 				div.panel.panel-primary.marginTop10
 					div.panel-heading 
 						b Exam Tools
 					div.panel-body
-						p Hello
+						div.row
+							div.col-sm-6.col-md-4
+								a(href="/user/createExam",data-toggle="tooltip",data-title="Create Exam")
+									table
+										tr
+											td
+												img.img-rounded(src="/img/createExam.png",alt="Create Exam")
+											td 
+												div 
+													b Create Exam
+													div.textDescription Create and Share Exams
+							div.col-sm-6.col-md-4
+								a(href="/user/viewExams",data-toggle="tooltip",data-title="View Exams")
+									table
+										tr
+											td
+												img.img-rounded(src="/img/editExam.png",alt="View Exams")
+											td 
+												div 
+													b View Exams
+													div.textDescription View and edit exams you created					
+								
 
 			div#profile.tab-pane.fade profile tab
 			
@@ -32,12 +53,12 @@ block content
 								b Admin
 							div.panel-body
 								div.row
-									div.col-sm-6.col-md-4.paddingUpDown
+									div.col-sm-6.col-md-4
 										a(href="/user/admin/category") Create Category
-									div.col-sm-6.col-md-4.paddingUpDown
-										a(href="/admin/createSubCategory") Create Sub Category	
-									div.col-sm-6.col-md-4.paddingUpDown
-										a(href="/admin/viewAllCategories") View Categories
+									div.col-sm-6.col-md-4
+										a(href="/user/admin/subCategory") Create Sub Category	
+									div.col-sm-6.col-md-4
+										a(href="/user/admin/editCatSubCat") View Categories
 										
 										
 										

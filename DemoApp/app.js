@@ -1,8 +1,3 @@
-
-/**
- * Module dependencies.
- */
-
 var express = require('express')
   , http = require('http')
   , path = require('path')
@@ -10,7 +5,7 @@ var express = require('express')
   , GoogleStrategy = require('passport-google').Strategy
   , common = require('./routes/common')
   , quiz = require('./routes/quiz')
-  , db = require("./models/Database");
+  , db = require("./models/factory/Database");
 
 var app = express();
 
@@ -69,18 +64,37 @@ app.all('*', common.commonFilter);
 app.all('/user/*',common.authenticateUser);
 app.all('/user/admin/*',common.authenticateAdmin);
 
+//---------------Common-------------------------------
 app.get('/', common.index);
 app.get('/login', common.login);
 app.get('/logout', common.logout);
 app.get('/user/profile', common.profile);
-app.get('/user/admin/category', quiz.category);
-app.post('/user/admin/crudCategory', quiz.crudCategory);
 
-
-
+//---------------Auth-------------------------------
 app.get('/auth/google', passport.authenticate('google'));
 app.get('/auth/google/return',passport.authenticate('google', { failureRedirect: '/login' }), common.afterLogin);
 
+//---------------Category-------------------------------
+app.get('/user/admin/category', quiz.category);
+app.post('/user/admin/crudCategory', quiz.crudCategory);
+app.get('/getAllCategories', quiz.getAllCategories);
+app.get('/getCategoryById', quiz.getCategoryById);
+
+//---------------Sub Category-------------------------------
+app.get('/user/admin/subCategory', quiz.subCategory);
+app.post('/user/admin/crudSubCategory', quiz.crudSubCategory);
+app.get('/user/admin/editCatSubCat', quiz.editCatSubCat);
+app.get('/getAllCatAndSubCat', quiz.getAllCatAndSubCat);
+app.get('/getSubCategoryById', quiz.getSubCategoryById);
+app.get('/getSubCategoriesByCategoryCode', quiz.getSubCategoriesByCategoryCode);
+
+//---------------Exam-------------------------------
+app.get('/user/createExam', quiz.createExam);
+app.get('/user/viewExams', quiz.viewExams);
+app.post('/user/getMyExams', quiz.getMyExams);
+app.post('/user/crudExamDetails', quiz.crudExamDetails);
+
+
 http.createServer(app).listen(app.get('port'), function(){
-  console.log("Express server listening on port " + app.get('port'));
+	console.log("Express server listening on port " + app.get('port'));
 });

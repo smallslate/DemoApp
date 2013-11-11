@@ -1,6 +1,8 @@
-var userModels = [{name:'User',path:'common/User'},
-                  {name:'Category',path:'common/Category'},
-                  {name:'SubCategory',path:'common/SubCategory'}];
+var userModels = [{name:'User',path:'../common/User'},
+                  {name:'Category',path:'../common/Category'},
+                  {name:'SubCategory',path:'../common/SubCategory'},
+                  {name:'Exam',path:'../quiz/Exam'}
+                 ];
 var models = {};
 
 var Database = function Database() {
@@ -12,7 +14,8 @@ var Database = function Database() {
     		  host: host,
     		  port: 3306,
     		  dialect: 'mysql',
-    		  pool: { maxConnections: 10, maxIdleTime: 30}
+    		  pool: { maxConnections: 10, maxIdleTime: 30},
+    		  omitNull: true
     	});       
         init();
     };
@@ -27,9 +30,10 @@ var Database = function Database() {
 
     function init() {
     	userModels.forEach(function(modelObj) {
-    		models[modelObj.name] = sequelize.import(__dirname + '/' + modelObj.path);
+    		models[modelObj.name] = sequelize.import(__dirname + '/' +modelObj.path);
     	});
     	models["Category"].hasMany(models["SubCategory"],{as: 'subCategories',foreignKey: 'categoryId'});
+    	
     	
     	sequelize.sync().success(function() {
     		 console.log('All tables are created');

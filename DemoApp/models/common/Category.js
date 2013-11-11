@@ -1,7 +1,7 @@
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define("Category", {
-	categoryId: { type: DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
-	categoryName: DataTypes.TEXT,
+	categoryId : { type : DataTypes.BIGINT,autoIncrement : true,primaryKey : true},
+	categoryName : DataTypes.TEXT,
 	categoryDescr: DataTypes.TEXT,
 	categoryImg: DataTypes.STRING(2000),
 	categoryCode :DataTypes.STRING(10),

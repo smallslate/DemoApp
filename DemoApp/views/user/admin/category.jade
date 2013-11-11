@@ -2,7 +2,8 @@ extends /common/layout
 block head
 	script(src="/javascript/frameworks/angular/angular.min.js")
 	script(src="/javascript/frameworks/angular/angular-resource.min.js")
-	script(src="/javascript/angular/app/category.js")
+	script(src="/javascript/angular/apps/category.js")
+	script(src="/javascript/angular/services/commonService.js")
 	script(src="/javascript/frameworks/jquery/jquery.validate.min.js")
 	title Create or Edit Category
 block content
@@ -26,5 +27,32 @@ block content
 					button.btn.btn-primary.margin5(ng-click="crudCategory('update')",ng-if="categoryObj.categoryId") Update
 					button.btn.btn-danger.margin5(ng-click="crudCategory('delete')",ng-if="categoryObj.categoryId") Delete
 					
-		div.alert.alert-danger(ng-if="categoryObj.error") {{categoryObj.error}}
-		div.alert.alert-success(ng-if="categoryObj.success") {{categoryObj.success}}					
+		div.alert.alert-danger(ng-if="categoryObj.error") 
+			b {{categoryObj.error}}
+		div.alert.alert-success(ng-if="categoryObj.success") 
+			b {{categoryObj.success}}
+		
+		div.row
+			div.col-sm-6.col-md-2
+				a(href="/user/admin/category") Create Category
+			div.col-sm-6.col-md-2
+				a(href="/user/admin/subCategory") Create Sub Category	
+			div.col-sm-6.col-md-2
+				a(href="/user/admin/editCatSubCat") View Categories
+			div.col-sm-6.col-md-2
+				a(href="/user/profile") My Profile
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		
+		
+		
+							

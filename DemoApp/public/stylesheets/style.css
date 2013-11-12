@@ -15,3 +15,15 @@ label.error {
 	color: red;
 	margin-top: 2px;
 }
+
+.showHideEditor {
+	font-size: xx-small;
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+.marginRight10 {
+	margin-right: 10px;
+}

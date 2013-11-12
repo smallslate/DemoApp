@@ -33,6 +33,7 @@ app.configure('development', function() {
 
 app.configure('production', function() {
 	    app.set('serverURL', 'http://quizzes.elasticbeanstalk.com/');
+	    db.setup('aa1whtjkwjb5isz.cndorxuubkhh.us-east-1.rds.amazonaws.com', "root", "lionking");
 });
 
 passport.serializeUser(function(user, done) {

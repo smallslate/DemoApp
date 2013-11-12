@@ -6,7 +6,7 @@ angular.module('ckEditorDirective', []).directive('ckEditor', [ function() {
 		link : function($scope, elm, attr, ngModel) {
 			 var ck = CKEDITOR.replace(elm[0],{height:attr.ckEditor,enterMode:CKEDITOR.ENTER_DIV});
 			 if(!ck || ck == undefined) {
-				 alert("Rich editor may not be supported in your browser");
+				 alert("Rich editor is not supported in this browser");
 			 } else {
 				 ck.on('instanceReady', function() {
                      ck.setData(ngModel.$viewValue);

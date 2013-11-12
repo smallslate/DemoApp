@@ -1,8 +1,8 @@
 ﻿// Declare app level module which depends on filters, and services
-var createExamApp = angular.module('createExam', ['ngResource','commonService']);
+var createExamApp = angular.module('createExam', ['ngResource','commonService','ckEditorDirective']);
 
-createExamApp.controller('createExamCtrl', ['$scope','getAllCategoriesService','getSubCategoriesByCategoryCodeService', 'crudExamDetailsService',
-                                          function($scope,getAllCategoriesService,getSubCategoriesByCategoryCodeService,crudExamDetailsService) {
+createExamApp.controller('createExamCtrl', ['$scope','getAllCategoriesService','getSubCategoriesByCategoryCodeService', 'crudExamDetailsService','crudQuestionService',
+                                          function($scope,getAllCategoriesService,getSubCategoriesByCategoryCodeService,crudExamDetailsService,crudQuestionService) {
 	
 	$scope.categories = getAllCategoriesService.query({},function() {
 		if($scope.categories && $scope.categories.length>0) {
@@ -39,12 +39,54 @@ createExamApp.controller('createExamCtrl', ['$scope','getAllCategoriesService','
 	$scope.addNewQuestion = function() {
 		if($scope.examObj && $scope.examObj.examCode.length>0) {
 			$scope.isAddingNewQuestion =true;
+			if(!$scope.examObj.questionObj) {
+				$scope.examObj.questionObj = new Object();
+			}
+			$scope.examObj.questionObj.questionType = 'MOSA';
+			$scope.examObj.questionObj.questionOptions = [{option:"",isOptionRich:false},{option:"",isOptionRich:false}];
+			$scope.examObj.questionObj.difficultyLevel = 0;
 		} else {
 			alert('Please add exam details before adding questions');
 			$('#createExamTab a[href="#examDetails"]').tab('show');
 		}
 	};
 	
+	$scope.saveQuestion = function(action) {
+		  for(var instance in CKEDITOR.instances) { 
+			  CKEDITOR.instances[instance].updateElement();
+		  }
+		  if($('#examQuestionForm').valid()) {
+			  if(action=="create") {
+				  if($scope.examObj.questionList) {
+					  $scope.examObj.questionObj.questionNumber = $scope.examObj.questionList.length+1;
+				  } else {
+					  $scope.examObj.questionObj.questionNumber = 1;
+				  }
+			  }
+			  
+			  var editExamObj = $scope.examObj;
+			  delete editExamObj.questionList;
+			  $scope.examObj = crudQuestionService.crudQuestionDetails(editExamObj);
+		  }
+	};
+	  
+	$scope.closeQuestionForm = function() {
+		if(confirm("Are you sure you want to close this form? All data you haven't saved will be lost !")) {
+			$scope.isAddingNewQuestion =false;  
+			$scope.examObj.questionObj =null;
+		}
+	};
+	  
+	$scope.addAdditionalOption = function() {
+		 $scope.examObj.questionObj.questionOptions.push({option:"",isOptionRich:false});
+	};
+	  
+	$scope.deleteAdditionalOption = function(index) {
+		if(confirm("Do you want to remove this option? Data you have entered in this Option will be lost")) {
+			$scope.examObj.questionObj.questionOptions.splice(index,1);
+		}
+	};
+	  
 	$scope.$watch('$scope.examObj.examCode', function() {
 		if($scope.examObj && $scope.examObj.examCode && $scope.examObj.examCode.length > 0) {
 			$scope.$evalAsync(function () {
@@ -52,11 +94,18 @@ createExamApp.controller('createExamCtrl', ['$scope','getAllCategoriesService','
 	        });
 		}
 	});
+	
 }]);
 
 createExamApp.factory('crudExamDetailsService',['$resource', function($resource) {
 	return $resource('/user/crudExamDetails', {}, {
 		crudExamDetails : {method : 'POST'}
+	});
+}]);
+
+createExamApp.factory('crudQuestionService',['$resource', function($resource) {
+	return $resource('/user/crudQuestionDetails', {}, {
+		crudQuestionDetails : {method : 'POST'}
 	});
 }]);
 
@@ -76,6 +125,38 @@ $(document).ready(function() {
 				minlength : 1
 			},
 			subCategoryCode : {
+				required : true,
+				minlength : 1
+			}
+		},
+		highlight : function(element) {
+			onValidationHighlight(element);
+		},
+		success : function(element) {
+			onValidationSuccess(element);
+		}
+	});
+	
+	$('#examQuestionForm').validate({
+		ignore: 'input:hidden:not(input:hidden.required)',
+		rules : {
+			questionType : {
+				required : true,
+				minlength : 1
+			},
+			examDescr : {
+				question : true,
+				minlength : 2
+			},
+			option1 : {
+				required : true,
+				minlength : 1
+			},
+			option2 : {
+				required : true,
+				minlength : 1
+			},
+			answer : {
 				required : true,
 				minlength : 1
 			}

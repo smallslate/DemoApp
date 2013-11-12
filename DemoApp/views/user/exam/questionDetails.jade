@@ -1,39 +1,39 @@
-div
-	button.btn.btn-primary(ng-click="addNewQuestion()",ng-if="!isAddingNewQuestion") Add New Question 
 div.alert.alert-danger.marginTop10(ng-if="!examObj.questionList && !isAddingNewQuestion") 
 	b There are no questions added
+
+div.table-responsive(ng-if="examObj.questionList")
+	table.table
+		tr
+			td 1
+div
+	button.btn.btn-primary(ng-click="addNewQuestion()",ng-if="!isAddingNewQuestion") Add New Question 	
 div.panel.panel-primary.marginTop10(ng-if="isAddingNewQuestion")
 	div.panel-heading
 		b Add new question
 	div.panel-body
 		form.form-horizontal#examQuestionForm(role="form")
 			div.form-group
-				label.col-lg-2.control-label Question
+				label.col-lg-2.control-label Question Type
 				div.col-lg-10
-					input.form-control(name="examName",placeholder="Enter Exam Name",ng-model="examObj.examName")
+					select.form-control(name="questionType",ng-model="examObj.questionObj.questionType")
+						option(value="MOSA") Multi Options - Single Answer
+						option(value="MOMA") Multi Options - Multiple Answers
+						option(value="TORF") True / False
+						option(value="ET") Essay Type 
+			div(ng-if="examObj.questionObj.questionType=='MOSA'")
+				include /user/exam/mosaForm
+			div(ng-if="examObj.questionObj.questionType=='MOMA'")
+				p moma
+			div(ng-if="examObj.questionObj.questionType=='TORF'")
+				p t or f
+			div(ng-if="examObj.questionObj.questionType=='ET'")
+				p essay type
 			div.form-group
-				label.col-lg-2.control-label Description
-				div.col-lg-10
-					textarea.form-control(name="examDescr",placeholder="Enter Exam Description",ng-model="examObj.examDescr")		
-			div.form-group
-				label.col-lg-2.control-label Category
-				div.col-lg-10
-					select.form-control(name="categoryCode",ng-model="examObj.categoryCode",ng-change="onCategoryChange()")		
-						option(value="") ---- Select Category ---- 
-						option(value="{{category.categoryCode}}",ng-repeat="category in categories") {{category.categoryName}}
-			div.form-group
-				label.col-lg-2.control-label Sub Category
-				div.col-lg-10
-					select.form-control(name="subCategoryCode",ng-model="examObj.subCategoryCode",ng-disabled="!examObj.categoryCode.length>0")		
-						option(value="") ---- Select Sub Category ---- 
-						option(value="{{subCategory.subCategoryCode}}",ng-repeat="subCategory in subCategories") {{subCategory.subCategoryName}}	
-			div.form-group
-				label.col-lg-2.control-label Exam Logo (Image URL)
-				div.col-lg-10
-					input.form-control(name="examImg",placeholder="Image URL",ng-model="examObj.examImg")	
-					div.form-group	
-			div.form-group		
-				div.col-lg-offset-2.col-lg-10
-					button.btn.btn-primary.margin5(ng-click="crudExamDetails('create')",ng-if="!examObj.examCode.length>0") Save	
-					button.btn.btn-primary.margin5(ng-click="crudExamDetails('update')",ng-if="examObj.examCode.length>0") Update
-					button.btn.btn-primary.margin5(ng-click="crudExamDetails('addQuestions')",ng-if="examObj.examCode.length>0") Add Questions
+				div.col-sm-offset-2.col-sm-10
+					button.btn.btn-default.marginRight10(type="submit",ng-click = "closeQuestionForm();") Close
+					button.btn.btn-primary.marginRight10(type="submit",ng-click="saveQuestionForm('create');",ng-if="!examObj.questionObj.questionId") Save
+					button.btn.btn-primary.marginRight10(ng-click="saveQuestionForm('update')",ng-if="examObj.questionObj.questionId>0") Update
+					button.btn.btn-danger.marginRight10(ng-click="saveQuestionForm('update')",ng-if="examObj.questionObj.questionId>0") Delete
+					
+		div.alert.alert-danger(ng-if="quizObj.questionObj.error") {{examObj.questionObj.error}}
+		div.alert.alert-success(ng-if="quizObj.questionObj.success") {{examObj.questionObj.success}}		

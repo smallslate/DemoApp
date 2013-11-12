@@ -1,7 +1,9 @@
 var userModels = [{name:'User',path:'../common/User'},
                   {name:'Category',path:'../common/Category'},
                   {name:'SubCategory',path:'../common/SubCategory'},
-                  {name:'Exam',path:'../quiz/Exam'}
+                  {name:'Exam',path:'../quiz/Exam'},
+                  {name:'Question',path:'../quiz/Question'},
+                  {name:'QuestionOptions',path:'../quiz/QuestionOptions'}
                  ];
 var models = {};
 
@@ -32,9 +34,7 @@ var Database = function Database() {
     	userModels.forEach(function(modelObj) {
     		models[modelObj.name] = sequelize.import(__dirname + '/' +modelObj.path);
     	});
-    	models["Category"].hasMany(models["SubCategory"],{as: 'subCategories',foreignKey: 'categoryId'});
-    	
-    	
+    	initRelations();
     	sequelize.sync().success(function() {
     		 console.log('All tables are created');
     	}).error(function(error) {
@@ -42,6 +42,12 @@ var Database = function Database() {
     	});
     }
 
+    function initRelations() {
+    	models["Category"].hasMany(models["SubCategory"],{as: 'subCategories',foreignKey: 'categoryId'});
+    	models["Exam"].hasMany(models["Question"],{as: 'questions',foreignKey: 'examId'});
+    	models["Question"].hasMany(models["QuestionOptions"],{as: 'questionOptions',foreignKey: 'questionId'});
+    }
+    
     if(Database.caller != Database.getInstance){
         throw new Error("This object cannot be instanciated");
     }

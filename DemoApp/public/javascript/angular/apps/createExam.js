@@ -39,12 +39,16 @@ createExamApp.controller('createExamCtrl', ['$scope','getAllCategoriesService','
 	$scope.addNewQuestion = function() {
 		if($scope.examObj && $scope.examObj.examCode.length>0) {
 			$scope.isAddingNewQuestion =true;
-			if(!$scope.examObj.questionObj) {
-				$scope.examObj.questionObj = new Object();
-			}
+			$scope.examObj.questionObj = new Object();
 			$scope.examObj.questionObj.questionType = 'MOSA';
 			$scope.examObj.questionObj.questionOptions = [{option:"",isOptionRich:false},{option:"",isOptionRich:false}];
 			$scope.examObj.questionObj.difficultyLevel = 0;
+			if($scope.examObj.questionList) {
+			  $scope.examObj.questionObj.questionNumber = $scope.examObj.questionList.length+1;
+			} else {
+			  $scope.examObj.questionObj.questionNumber = 1;
+			}
+			
 		} else {
 			alert('Please add exam details before adding questions');
 			$('#createExamTab a[href="#examDetails"]').tab('show');
@@ -56,20 +60,29 @@ createExamApp.controller('createExamCtrl', ['$scope','getAllCategoriesService','
 			  CKEDITOR.instances[instance].updateElement();
 		  }
 		  if($('#examQuestionForm').valid()) {
-			  if(action=="create") {
-				  if($scope.examObj.questionList) {
-					  $scope.examObj.questionObj.questionNumber = $scope.examObj.questionList.length+1;
-				  } else {
-					  $scope.examObj.questionObj.questionNumber = 1;
-				  }
-			  }
-			  
 			  var editExamObj = $scope.examObj;
 			  delete editExamObj.questionList;
-			  $scope.examObj = crudQuestionService.crudQuestionDetails(editExamObj);
+			  $scope.examObj = crudQuestionService.crudQuestionDetails({examObj:editExamObj,action:action});
 		  }
 	};
-	  
+	
+	$scope.editQuestion = function(questionNumber) {
+		crudQuestionService.crudQuestionDetails({examCode:$scope.examObj.examCode,questionNumber:questionNumber,action:"getQuestionDetailsForEdit"},function(editQuestionObj) {
+			$scope.examObj.questionObj = editQuestionObj;
+			$scope.isAddingNewQuestion =true;
+		});
+	};
+	
+	$scope.deleteQuestion = function(questionNumber) {
+		if(confirm("Do you want to delete this question permanently ?")) {
+			crudQuestionService.crudQuestionDetails({examCode:$scope.examObj.examCode,questionNumber:questionNumber,action:"delete"},function(responseObj) {
+				$scope.examObj = responseObj;
+				$scope.addNewQuestion();
+				alert('Question deleted successfully');
+			});
+		}
+	};
+	
 	$scope.closeQuestionForm = function() {
 		if(confirm("Are you sure you want to close this form? All data you haven't saved will be lost !")) {
 			$scope.isAddingNewQuestion =false;  

@@ -240,9 +240,12 @@ Quiz.crudExamDetails = function(req,res) {
 				res.send(examObj);
 			});
 		} else if(requestObj.action =='getExamAndQueDetails') {
-			db.model("Exam").find({ where: {examCode: req.body.examCode} }).success(function(examObj) {
-				if(res.locals.isAdmin || examObj.createdBy == req.user.loggedInUserId) {
-					res.send(examObj);
+			db.model("Exam").find({ where: {examCode: req.body.examCode} }).success(function(dbExamObj) {
+				if(res.locals.isAdmin || dbExamObj.createdBy == req.user.loggedInUserId) {
+					dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}]}).success(function(questionList) {
+						dbExamObj.dataValues.questionList =questionList;
+						res.send(dbExamObj.dataValues);
+					});
 				} else {
 					res.send(null);
 				}
@@ -255,5 +258,116 @@ Quiz.crudExamDetails = function(req,res) {
 	}
 };
 
-
-
+//---------------Question-------------------------------
+Quiz.crudQuestionDetails = function(req,res) {
+	if(req.isAuthenticated()) {
+		var requestExamObj = req.body.examObj;
+		var reqExamCode = '';
+		if(requestExamObj && requestExamObj.examCode!=null) {
+			reqExamCode = requestExamObj.examCode; 
+		} else if(req.body.examCode) {
+			reqExamCode =  req.body.examCode;
+		}
+		
+		db.model("Exam").find({ where: {examCode: reqExamCode} }).success(function(dbExamObj) {
+			if(res.locals.isAdmin || dbExamObj.createdBy == req.user.loggedInUserId) {
+				if(req.body.action=='create') {
+					requestExamObj.questionObj.createdBy = requestExamObj.questionObj.updatedBy = req.user.loggedInUserId;
+					db.model("Question").create(requestExamObj.questionObj,[ 'questionNumber','questionType','question','questionIsRich','answer','answerDescr','answerDescrIsRich','createdBy','updatedBy','difficultyLevel']).success(function(insertedQuestionObj) {
+							dbExamObj.addQuestion(insertedQuestionObj).success(function() {
+								for(var k=0;k<requestExamObj.questionObj.questionOptions.length;k++) {
+									requestExamObj.questionObj.questionOptions[k].questionId = insertedQuestionObj.questionId;
+								}
+								db.model("QuestionOption").bulkCreate(requestExamObj.questionObj.questionOptions, ['option','isOptionRich','questionId']).success(function() {
+									dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}]}).success(function(questionList) {
+										insertedQuestionObj.getQuestionOptions().success(function(opts) {
+											dbExamObj.dataValues.questionList =questionList;
+											dbExamObj.dataValues.questionObj = insertedQuestionObj.dataValues;
+											dbExamObj.dataValues.questionObj.questionOptions = opts;
+											dbExamObj.dataValues.questionObj.success ='Question details saved successfully';
+											res.send(dbExamObj.dataValues);
+										});
+									});
+                                  });
+							}).error(function(err) {
+								console.log('Quiz.crudExam cannot add question to exam = '+err);
+								requestExamObj.questionObj.error = "Cannot save question details.Please try again";
+								res.send(requestExamObj);
+							});
+						}).error(function(err) {
+							console.log('Quiz.crudExam action = create = '+err);
+							newExamObj.error = "Cannot save quiz details.Please try again";
+							res.send(newExamObj);
+						});
+				} else if(req.body.action=='update') {
+					db.model("Question").find({where:{questionId:requestExamObj.questionObj.questionId}}).success(function(dbQuestionObj) {
+						dbQuestionObj.questionNumber = requestExamObj.questionObj.questionNumber;
+						dbQuestionObj.questionType = requestExamObj.questionObj.questionType;
+						dbQuestionObj.question = requestExamObj.questionObj.question;
+						dbQuestionObj.questionIsRich = requestExamObj.questionObj.questionIsRich;
+						dbQuestionObj.answer = requestExamObj.questionObj.answer;
+						dbQuestionObj.answerDescr = requestExamObj.questionObj.answerDescr;
+						dbQuestionObj.answerDescrIsRich = requestExamObj.questionObj.answerDescrIsRich;
+						dbQuestionObj.updatedBy = req.user.loggedInUserId;
+						dbQuestionObj.difficultyLevel = requestExamObj.questionObj.difficultyLevel;
+						dbQuestionObj.save().success(function() {
+						db.model("QuestionOption").destroy({questionId:dbQuestionObj.questionId}).success(function() {
+							for(var k=0;k<requestExamObj.questionObj.questionOptions.length;k++) {
+								requestExamObj.questionObj.questionOptions[k].questionId = dbQuestionObj.questionId;
+							}
+							db.model("QuestionOption").bulkCreate(requestExamObj.questionObj.questionOptions, ['option','isOptionRich','questionId']).success(function() {
+									dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}]}).success(function(questionList) {
+										dbQuestionObj.getQuestionOptions().success(function(opts) {
+											dbExamObj.dataValues.questionList =questionList;
+											dbExamObj.dataValues.questionObj = dbQuestionObj.dataValues;
+											dbExamObj.dataValues.questionObj.questionOptions = opts;
+											dbExamObj.dataValues.questionObj.success ='Question details updated successfully';
+											res.send(dbExamObj.dataValues);
+										});
+									});
+	                            });
+							});
+						});
+					});
+				} else if(req.body.action=='getQuestionDetailsForEdit') {
+					dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}],where:{questionNumber:req.body.questionNumber}}).success(function(questionList) {
+						if(questionList.length>0) {
+							res.send(questionList[0]);
+						} else {
+							res.send(null);
+						}
+					});
+				} else if(req.body.action=='delete') {
+					dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}],where:{questionNumber:req.body.questionNumber}}).success(function(questionList) {
+						if(questionList.length>0) {
+							var toDeleteObj = questionList[0];
+							for(var k=0;k<toDeleteObj.questionOptions.length;k++) {
+								toDeleteObj.questionOptions[k].destroy();
+							}
+							
+							toDeleteObj.destroy().success(function() {
+								dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}]}).success(function(questionList) {
+									dbExamObj.dataValues.questionList = questionList;
+									dbExamObj.dataValues.questionObj =null;
+									res.send(dbExamObj.dataValues);
+								}); 
+							});
+						} else {
+							res.send(null);
+						}
+						
+					});
+				}
+			} else {
+				examObj.questionObj.error = "You do not have access to add/edit questions for this exam.";
+				res.send(null);
+			}
+		}).error(function(err) {
+			console.log('Quiz.crudQuestionDetails = '+err);
+			examObj.questionObj.error = "Cannot update question details.Quiz you have selected is invalid.Please try again";
+			res.send(null);
+		});
+	} else {
+		res.send(null);
+	}
+};

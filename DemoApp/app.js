@@ -95,6 +95,9 @@ app.get('/user/viewExams', quiz.viewExams);
 app.post('/user/getMyExams', quiz.getMyExams);
 app.post('/user/crudExamDetails', quiz.crudExamDetails);
 
+//---------------Question-------------------------------
+app.post('/user/crudQuestionDetails', quiz.crudQuestionDetails);
+
 
 http.createServer(app).listen(app.get('port'), function(){
 	console.log("Express server listening on port " + app.get('port'));

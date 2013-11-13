@@ -1,15 +1,20 @@
-div.alert.alert-danger.marginTop10(ng-if="!examObj.questionList && !isAddingNewQuestion") 
-	b There are no questions added
+div.alert.alert-success.marginTop10(ng-if="(!examObj.questionList && !isAddingNewQuestion) || (examObj.questionList.length<1 && !isAddingNewQuestion)") 
+	b.marginRight10 There are no questions added
+	button.btn.btn-success(ng-click="addNewQuestion()") Add New Question
 
-div.table-responsive(ng-if="examObj.questionList")
-	table.table
+div.table-responsive(ng-show="examObj.questionList && examObj.questionList.length>0")
+	table.table(style="padding:0px!important")
 		tr
-			td 1
-div
-	button.btn.btn-primary(ng-click="addNewQuestion()",ng-if="!isAddingNewQuestion") Add New Question 	
+			td
+				span.marginRight10 
+					button.btn.btn-success(ng-click="addNewQuestion()") New
+				span(ng-repeat="questionObj in examObj.questionList")
+					button.btn.btn-primary(ng-click="editQuestion(questionObj.questionNumber)",ng-if="examObj.questionObj.questionNumber==$index+1") {{questionObj.questionNumber}}
+					button.btn.btn-default(ng-click="editQuestion(questionObj.questionNumber)",ng-if="examObj.questionObj.questionNumber!=$index+1") {{questionObj.questionNumber}}
+					
 div.panel.panel-primary.marginTop10(ng-if="isAddingNewQuestion")
 	div.panel-heading
-		b Add new question
+		b Question# {{examObj.questionObj.questionNumber}}
 	div.panel-body
 		form.form-horizontal#examQuestionForm(role="form")
 			div.form-group
@@ -31,9 +36,12 @@ div.panel.panel-primary.marginTop10(ng-if="isAddingNewQuestion")
 			div.form-group
 				div.col-sm-offset-2.col-sm-10
 					button.btn.btn-default.marginRight10(type="submit",ng-click = "closeQuestionForm();") Close
-					button.btn.btn-primary.marginRight10(type="submit",ng-click="saveQuestionForm('create');",ng-if="!examObj.questionObj.questionId") Save
-					button.btn.btn-primary.marginRight10(ng-click="saveQuestionForm('update')",ng-if="examObj.questionObj.questionId>0") Update
-					button.btn.btn-danger.marginRight10(ng-click="saveQuestionForm('update')",ng-if="examObj.questionObj.questionId>0") Delete
-					
-		div.alert.alert-danger(ng-if="quizObj.questionObj.error") {{examObj.questionObj.error}}
-		div.alert.alert-success(ng-if="quizObj.questionObj.success") {{examObj.questionObj.success}}		
+					button.btn.btn-primary.marginRight10(type="submit",ng-click="saveQuestion('create');",ng-if="!examObj.questionObj.questionId") Save
+					button.btn.btn-primary.marginRight10(ng-click="saveQuestion('update')",ng-if="examObj.questionObj.questionId>0") Update
+					button.btn.btn-danger.marginRight10(ng-click="deleteQuestion(examObj.questionObj.questionNumber)",ng-if="examObj.questionObj.questionId>0") Delete
+
+		div.alert.alert-danger(ng-if="examObj.questionObj.error") {{examObj.questionObj.error}}
+		div.alert.alert-success(ng-if="examObj.questionObj.success") {{examObj.questionObj.success}}	
+		
+		
+			

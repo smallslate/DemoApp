@@ -3,7 +3,7 @@ var userModels = [{name:'User',path:'../common/User'},
                   {name:'SubCategory',path:'../common/SubCategory'},
                   {name:'Exam',path:'../quiz/Exam'},
                   {name:'Question',path:'../quiz/Question'},
-                  {name:'QuestionOptions',path:'../quiz/QuestionOptions'}
+                  {name:'QuestionOption',path:'../quiz/QuestionOption'}
                  ];
 var models = {};
 
@@ -45,7 +45,7 @@ var Database = function Database() {
     function initRelations() {
     	models["Category"].hasMany(models["SubCategory"],{as: 'subCategories',foreignKey: 'categoryId'});
     	models["Exam"].hasMany(models["Question"],{as: 'questions',foreignKey: 'examId'});
-    	models["Question"].hasMany(models["QuestionOptions"],{as: 'questionOptions',foreignKey: 'questionId'});
+    	models["Question"].hasMany(models["QuestionOption"],{as: 'questionOptions',foreignKey: 'questionId'});
     }
     
     if(Database.caller != Database.getInstance){

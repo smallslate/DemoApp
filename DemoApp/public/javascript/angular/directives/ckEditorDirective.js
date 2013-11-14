@@ -1,5 +1,3 @@
-/* Controllers */
-
 angular.module('ckEditorDirective', []).directive('ckEditor', [ function() {
 	return {
 		require : '?ngModel',

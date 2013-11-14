@@ -1,4 +1,5 @@
 var db = require("../models/factory/Database"),
+	Sequelize = require('sequelize'),
 	hashids = require("../models/factory/Hashids");
 module.exports = Quiz;
 
@@ -102,7 +103,6 @@ Quiz.getSubCategoriesByCategoryCode = function(req,res) {
 
 Quiz.getAllCatAndSubCat = function(req,res) {
 	db.model("Category").findAll({where:{isActive: true}}).success(function(categoryList) {
-		var Sequelize = require('sequelize');
 		var chainer = new Sequelize.Utils.QueryChainer;
 		categoryList.forEach(function(categoryObj) {
 			chainer.add(categoryObj.getSubCategories());
@@ -242,7 +242,7 @@ Quiz.crudExamDetails = function(req,res) {
 		} else if(requestObj.action =='getExamAndQueDetails') {
 			db.model("Exam").find({ where: {examCode: req.body.examCode} }).success(function(dbExamObj) {
 				if(res.locals.isAdmin || dbExamObj.createdBy == req.user.loggedInUserId) {
-					dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}]}).success(function(questionList) {
+					dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}],order: 'questionNumber ASC'}).success(function(questionList) {
 						dbExamObj.dataValues.questionList =questionList;
 						res.send(dbExamObj.dataValues);
 					});
@@ -261,25 +261,20 @@ Quiz.crudExamDetails = function(req,res) {
 //---------------Question-------------------------------
 Quiz.crudQuestionDetails = function(req,res) {
 	if(req.isAuthenticated()) {
-		var requestExamObj = req.body.examObj;
-		var reqExamCode = '';
-		if(requestExamObj && requestExamObj.examCode!=null) {
-			reqExamCode = requestExamObj.examCode; 
-		} else if(req.body.examCode) {
-			reqExamCode =  req.body.examCode;
-		}
+		var reqExamCode =  req.body.examCode;
+		var reqQuestionObj = req.body.questionObj;
 		
 		db.model("Exam").find({ where: {examCode: reqExamCode} }).success(function(dbExamObj) {
 			if(res.locals.isAdmin || dbExamObj.createdBy == req.user.loggedInUserId) {
 				if(req.body.action=='create') {
-					requestExamObj.questionObj.createdBy = requestExamObj.questionObj.updatedBy = req.user.loggedInUserId;
-					db.model("Question").create(requestExamObj.questionObj,[ 'questionNumber','questionType','question','questionIsRich','answer','answerDescr','answerDescrIsRich','createdBy','updatedBy','difficultyLevel']).success(function(insertedQuestionObj) {
+					reqQuestionObj.createdBy = reqQuestionObj.updatedBy = req.user.loggedInUserId;
+					db.model("Question").create(reqQuestionObj,[ 'questionNumber','questionType','question','questionIsRich','answer','answerDescr','answerDescrIsRich','createdBy','updatedBy','difficultyLevel']).success(function(insertedQuestionObj) {
 							dbExamObj.addQuestion(insertedQuestionObj).success(function() {
-								for(var k=0;k<requestExamObj.questionObj.questionOptions.length;k++) {
-									requestExamObj.questionObj.questionOptions[k].questionId = insertedQuestionObj.questionId;
+								for(var k=0;k<reqQuestionObj.questionOptions.length;k++) {
+									reqQuestionObj.questionOptions[k].questionId = insertedQuestionObj.questionId;
 								}
-								db.model("QuestionOption").bulkCreate(requestExamObj.questionObj.questionOptions, ['option','isOptionRich','questionId']).success(function() {
-									dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}]}).success(function(questionList) {
+								db.model("QuestionOption").bulkCreate(reqQuestionObj.questionOptions, ['optionDesc','isOptionRich','questionId','isAnswer']).success(function() {
+									dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}],order: 'questionNumber ASC'}).success(function(questionList) {
 										insertedQuestionObj.getQuestionOptions().success(function(opts) {
 											dbExamObj.dataValues.questionList =questionList;
 											dbExamObj.dataValues.questionObj = insertedQuestionObj.dataValues;
@@ -291,8 +286,9 @@ Quiz.crudQuestionDetails = function(req,res) {
                                   });
 							}).error(function(err) {
 								console.log('Quiz.crudExam cannot add question to exam = '+err);
-								requestExamObj.questionObj.error = "Cannot save question details.Please try again";
-								res.send(requestExamObj);
+								reqQuestionObj.error = "Cannot save question details.Please try again";
+								dbExamObj.questionObj = reqQuestionObj;
+								res.send(dbExamObj);
 							});
 						}).error(function(err) {
 							console.log('Quiz.crudExam action = create = '+err);
@@ -300,23 +296,22 @@ Quiz.crudQuestionDetails = function(req,res) {
 							res.send(newExamObj);
 						});
 				} else if(req.body.action=='update') {
-					db.model("Question").find({where:{questionId:requestExamObj.questionObj.questionId}}).success(function(dbQuestionObj) {
-						dbQuestionObj.questionNumber = requestExamObj.questionObj.questionNumber;
-						dbQuestionObj.questionType = requestExamObj.questionObj.questionType;
-						dbQuestionObj.question = requestExamObj.questionObj.question;
-						dbQuestionObj.questionIsRich = requestExamObj.questionObj.questionIsRich;
-						dbQuestionObj.answer = requestExamObj.questionObj.answer;
-						dbQuestionObj.answerDescr = requestExamObj.questionObj.answerDescr;
-						dbQuestionObj.answerDescrIsRich = requestExamObj.questionObj.answerDescrIsRich;
+					db.model("Question").find({where:{questionId:reqQuestionObj.questionId}}).success(function(dbQuestionObj) {
+						dbQuestionObj.questionType = reqQuestionObj.questionType;
+						dbQuestionObj.question = reqQuestionObj.question;
+						dbQuestionObj.questionIsRich = reqQuestionObj.questionIsRich;
+						dbQuestionObj.answer = reqQuestionObj.answer;
+						dbQuestionObj.answerDescr = reqQuestionObj.answerDescr;
+						dbQuestionObj.answerDescrIsRich = reqQuestionObj.answerDescrIsRich;
 						dbQuestionObj.updatedBy = req.user.loggedInUserId;
-						dbQuestionObj.difficultyLevel = requestExamObj.questionObj.difficultyLevel;
+						dbQuestionObj.difficultyLevel = reqQuestionObj.difficultyLevel;
 						dbQuestionObj.save().success(function() {
 						db.model("QuestionOption").destroy({questionId:dbQuestionObj.questionId}).success(function() {
-							for(var k=0;k<requestExamObj.questionObj.questionOptions.length;k++) {
-								requestExamObj.questionObj.questionOptions[k].questionId = dbQuestionObj.questionId;
+							for(var k=0;k<reqQuestionObj.questionOptions.length;k++) {
+								reqQuestionObj.questionOptions[k].questionId = dbQuestionObj.questionId;
 							}
-							db.model("QuestionOption").bulkCreate(requestExamObj.questionObj.questionOptions, ['option','isOptionRich','questionId']).success(function() {
-									dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}]}).success(function(questionList) {
+							db.model("QuestionOption").bulkCreate(reqQuestionObj.questionOptions, ['optionDesc','isOptionRich','questionId','isAnswer']).success(function() {
+									dbExamObj.getQuestions({order: 'questionNumber ASC',include:[{model: db.model("QuestionOption"),as:'questionOptions'}]}).success(function(questionList) {
 										dbQuestionObj.getQuestionOptions().success(function(opts) {
 											dbExamObj.dataValues.questionList =questionList;
 											dbExamObj.dataValues.questionObj = dbQuestionObj.dataValues;
@@ -330,7 +325,7 @@ Quiz.crudQuestionDetails = function(req,res) {
 						});
 					});
 				} else if(req.body.action=='getQuestionDetailsForEdit') {
-					dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}],where:{questionNumber:req.body.questionNumber}}).success(function(questionList) {
+					dbExamObj.getQuestions({order: 'questionNumber ASC',include:[{model: db.model("QuestionOption"),as:'questionOptions'}],where:{questionNumber:req.body.questionNumber}}).success(function(questionList) {
 						if(questionList.length>0) {
 							res.send(questionList[0]);
 						} else {
@@ -338,7 +333,7 @@ Quiz.crudQuestionDetails = function(req,res) {
 						}
 					});
 				} else if(req.body.action=='delete') {
-					dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}],where:{questionNumber:req.body.questionNumber}}).success(function(questionList) {
+					dbExamObj.getQuestions({order: 'questionNumber ASC',include:[{model: db.model("QuestionOption"),as:'questionOptions'}],where:{questionNumber:req.body.questionNumber}}).success(function(questionList) {
 						if(questionList.length>0) {
 							var toDeleteObj = questionList[0];
 							for(var k=0;k<toDeleteObj.questionOptions.length;k++) {
@@ -346,10 +341,20 @@ Quiz.crudQuestionDetails = function(req,res) {
 							}
 							
 							toDeleteObj.destroy().success(function() {
-								dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}]}).success(function(questionList) {
-									dbExamObj.dataValues.questionList = questionList;
-									dbExamObj.dataValues.questionObj =null;
-									res.send(dbExamObj.dataValues);
+								dbExamObj.getQuestions({order: 'questionNumber ASC',include:[{model: db.model("QuestionOption"),as:'questionOptions'}]}).success(function(questionList) {
+									var chainer = new Sequelize.Utils.QueryChainer;
+									for(var kk=0;kk<questionList.length;kk++) {
+										questionList[kk].questionNumber = kk+1;
+										chainer.add(questionList[kk].save());
+									}
+									
+									chainer.runSerially().success(function(results) {
+										dbExamObj.dataValues.questionList = questionList;
+										dbExamObj.dataValues.questionObj =null;
+										res.send(dbExamObj.dataValues);
+									}).error(function(errors) {
+										res.send(null);
+									});
 								}); 
 							});
 						} else {

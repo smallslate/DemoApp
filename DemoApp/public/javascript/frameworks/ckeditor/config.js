@@ -5,5 +5,5 @@
 
 CKEDITOR.editorConfig = function( config ) {
 	config.toolbar = [
-	                  { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'TextColor', 'BGColor','NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-','Link', 'Image','FontSize','Font','Styles', 'Format','Maximize','Preview']}];
+	                  { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'TextColor', 'BGColor','NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-','Link', 'Image','FontSize','Font','Maximize','Preview']}];
 };

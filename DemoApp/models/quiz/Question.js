@@ -2,10 +2,9 @@ module.exports = function(sequelize, DataTypes) {
   return sequelize.define("Question", {
 	questionId : {type:DataTypes.BIGINT,autoIncrement : true,primaryKey : true},
 	questionNumber : {type:DataTypes.INTEGER,defaultValue: 0},
-	questionType : {type:DataTypes.STRING(10),defaultValue: 'MOSA'},
+	questionType : {type:DataTypes.STRING(10),defaultValue: 'MC'},
 	question : DataTypes.TEXT,
 	questionIsRich : {type:DataTypes.BOOLEAN,defaultValue: false},
-	answer:DataTypes.STRING(2000),
 	answerDescr: DataTypes.TEXT,
 	answerDescrIsRich : {type:DataTypes.BOOLEAN,defaultValue: false},
 	createdBy : DataTypes.BIGINT,
@@ -14,3 +13,6 @@ module.exports = function(sequelize, DataTypes) {
 	difficultyLevel : {type:DataTypes.INTEGER,defaultValue: 0}
   });
 };
+
+//ALTER TABLE questions MODIFY COLUMN question LONGTEXT
+//ALTER TABLE questions MODIFY COLUMN answerDescr LONGTEXT

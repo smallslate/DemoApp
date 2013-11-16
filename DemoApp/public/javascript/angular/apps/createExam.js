@@ -28,7 +28,22 @@ createExamApp.controller('createExamCtrl', ['$scope','getAllCategoriesService','
 	};
 	
 	$scope.crudExamDetails = function(action) {
-		if($('#examDetailsForm').valid()) {
+		var isValid = true;
+		
+		if(!$("#examName").val() || $("#examName").val().length<2) {
+			isValid = false;
+			alert("Please enter exam name with more then 1 character");
+		} else if(!$("#examDescr").val() || $("#examDescr").val().length<2) {
+			isValid = false;
+			alert("Please enter exam description with more then 1 character");
+		} else if(!$("#categoryCode").val() || $("#categoryCode").val().length<1) {
+			isValid = false;
+			alert("Please select valid Category");
+		} else if(!$("#subCategoryCode").val() || $("#subCategoryCode").val().length<1) {
+			isValid = false;
+			alert("Please select valid Sub Category");
+		}
+		if(isValid) {
 			$scope.examObj = crudExamDetailsService.crudExamDetails({examObj:$scope.examObj,action:action});
 			if(action =='addQuestions') {
 				$('#createExamTab a[href="#examQuestions"]').tab('show');
@@ -90,6 +105,34 @@ createExamApp.controller('createExamCtrl', ['$scope','getAllCategoriesService','
 				  alert("Please select valid answer."); 
 			  }
 		  }
+	  } else if($scope.examObj.questionObj.questionType == 'TF') {
+		  $scope.examObj.questionObj.questionOptions = new Array();
+		  $scope.examObj.questionObj.questionOptions[0] = new Object();
+		  $scope.examObj.questionObj.questionOptions[1] = new Object();
+		  
+		  $scope.examObj.questionObj.questionOptions[0].optionDesc ="True";
+		  $scope.examObj.questionObj.questionOptions[1].optionDesc ="False";
+
+		  if(!$('[name=answer]:checked').val() ||  $('[name=answer]:checked').val().length<1) {
+			  isValid = false;
+			  alert("Please select valid answer");
+		  } else {
+			  if( $('[name=answer]:checked').val() == "option1") {
+				  $scope.examObj.questionObj.questionOptions[0].isAnswer = true;
+				  $scope.examObj.questionObj.questionOptions[1].isAnswer = false; 
+			  } else {
+				  $scope.examObj.questionObj.questionOptions[0].isAnswer = false;  
+				  $scope.examObj.questionObj.questionOptions[1].isAnswer = true;
+			  }
+		  }
+	  } else if($scope.examObj.questionObj.questionType == 'TF') {
+		  $scope.examObj.questionObj.questionOptions = null;
+		  $scope.examObj.questionObj.questionOptions[0] = new Object();
+		  $scope.examObj.questionObj.questionOptions[1] = new Object();
+		  $scope.examObj.questionObj.questionOptions[0].optionDesc ="";
+		  $scope.examObj.questionObj.questionOptions[1].optionDesc ="";
+		  $scope.examObj.questionObj.questionOptions[0].isAnswer = false;  
+		  $scope.examObj.questionObj.questionOptions[1].isAnswer = false;
 	  }
 	  
 	  if(isValid) {
@@ -155,37 +198,34 @@ createExamApp.factory('crudQuestionService',['$resource', function($resource) {
 }]);
 
 $(document).ready(function() {
-	$('#examDetailsForm').validate({
-		rules : {
-			examName : {
-				required : true,
-				minlength : 2
-			},
-			examDescr : {
-				required : true,
-				minlength : 2
-			},
-			categoryCode : {
-				required : true,
-				minlength : 1
-			},
-			subCategoryCode : {
-				required : true,
-				minlength : 1
-			}
-		},
-		highlight : function(element) {
-			onValidationHighlight(element);
-		},
-		success : function(element) {
-			onValidationSuccess(element);
-		}
-	});
+	$('#fileupload').fileupload({
+        dataType: 'json',
+        start: function (e, data) {
+            $('#fileUploadMessage').html("<span style='color:green'>uploading...please wait</span>");
+        },
+        progress: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#fileUploadMessage').html("<span style='color:green'>uploading..."+progress+"%</span>");
+        },
+        done: function (e, data) {
+        	if(data.result.success) {
+        		$('#fileUploadMessage').html("<span style='color:green'>"+data.result.success+"</span>");
+        		var scope = angular.element($("#examLogo")).scope();
+        	    scope.$apply(function() {
+        	        scope.examObj.examImg = data.result.examImg+"?"+Math.random();
+        	    });
+        	} else if(data.result.error) {
+        		$('#fileUploadMessage').html("<span style='color:red'>"+data.result.error+"</span>");
+        	}
+        },
+        fail: function (e, data) {
+        	if(e) {
+        		$('#fileUploadMessage').html("<span style='color:red'>Failed to upload image.Please try again</span>");
+        	}
+        }
+    });
 });
 
-function validateQuestionForm() {
-	
-}
 
 
 

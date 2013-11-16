@@ -1,6 +1,9 @@
 var db = require("../models/factory/Database"),
+	aws = require("../models/factory/AWS"),
 	Sequelize = require('sequelize'),
+	fs = require('fs'),
 	hashids = require("../models/factory/Hashids");
+
 module.exports = Quiz;
 
 function Quiz() {}
@@ -258,6 +261,82 @@ Quiz.crudExamDetails = function(req,res) {
 	}
 };
 
+Quiz.uploadExamLogo = function(req,res) {
+	var mimeType = req.files.image.type;
+	var size = req.files.image.size;
+	var path = req.files.image.path;
+	
+	if(!req.isAuthenticated()) {
+		fs.unlink(path);
+		res.send({error:"You do not have access to upload this image"});
+	} else if(size>500200) {
+		fs.unlink(path);
+		res.send({error:"File size should not be greater then 500KB"});
+	} else if(mimeType!="image/jpeg" && mimeType!="image/png" && mimeType!="image/gif"){
+		fs.unlink(path);
+		res.send({error:"Invalid image file format. You can upload only jpeg and png file formats"});
+	} else {
+		db.model("Exam").find({ where: {examCode: req.body.examCode} }).success(function(dbExamObj) {
+			if(res.locals.isAdmin || dbExamObj.createdBy == req.user.loggedInUserId) {
+				if(dbExamObj.examImg !="logo.png") {
+					console.log(dbExamObj.examImg);
+					aws.getAWSQuizBucket().deleteObject({Key:dbExamObj.examImg}, function(err, data) {
+					      if (err && err.code!="MissingRequiredParameter") {
+					    	  console.log(err);
+					    	  fs.unlink(path);
+					    	  res.send(null);
+					      } else {
+					    	  insertExamLogo(req,res,dbExamObj);
+					      }
+					});
+				} else {
+					insertExamLogo(req,res,dbExamObj);
+				}
+			} else {
+				fs.unlink(path);
+				res.send({error:"You do not have access to upload image for this Exam"});
+			}
+		}).error(function(err) {
+			fs.unlink(path);
+			res.send({error:"Exam data cannot be found.Please update exam details and then upload image"});
+		});
+	}
+};
+
+function insertExamLogo(req,res,dbExamObj) {
+	var path = req.files.image.path;
+	var mimeType = req.files.image.type;
+	var fileName = "exam"+dbExamObj.examCode+".png";
+	if(mimeType =="image/jpeg") {
+		fileName = "exam"+dbExamObj.examCode+".jpeg";
+	} else if(mimeType=="image/gif") {
+		fileName = "exam"+dbExamObj.examCode+".gif";
+	}
+	
+	fs.readFile(path, function(err, file_buffer) {
+		if(err) {
+			res.send({error:"Cannot upload image. Please try again."});
+		} else {
+			var params = {
+		      Key: fileName,
+		      Body: file_buffer,
+		      ACL: 'public-read',
+		      ContentType: mimeType
+		    };
+			
+			aws.getAWSQuizBucket().putObject(params, function(err, data) {
+				fs.unlink(path);
+			      if (err) {
+			    	  res.send({error:"Cannot upload image. Please try again."});
+			      } else {
+			    	  dbExamObj.examImg = fileName; 
+			    	  dbExamObj.save(['examImg']);
+			    	  res.send({success:"Image uploaded successfully.",examImg:fileName});
+			      }
+			});
+		}
+	});
+}
 //---------------Question-------------------------------
 Quiz.crudQuestionDetails = function(req,res) {
 	if(req.isAuthenticated()) {

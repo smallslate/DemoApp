@@ -1,34 +1,38 @@
+form.form-horizontal(ng-show="examObj.examCode",id="fileupload",action="/user/uploadExamLogo" method="post" enctype="multipart/form-data")
+	div.form-group
+			label.col-lg-2.control-label Exam Logo
+			div.col-lg-10
+				img.img-rounded#examLogo(ng-src="https://s3.amazonaws.com/uqi/{{examObj.examImg}}",alt="Exam Logo",height="100",width="100")
+				input(type="file",name="image", multiple)
+				input(type="hidden",name="examCode",value="{{examObj.examCode}}")		
+				div#fileUploadMessage
+					
 form.form-horizontal#examDetailsForm(role="form")
 	div.form-group
 		label.col-lg-2.control-label Exam Name
 		div.col-lg-10
-			input.form-control(name="examName",placeholder="Enter Exam Name",ng-model="examObj.examName")
+			input.form-control(name="examName",id="examName",placeholder="Enter Exam Name",ng-model="examObj.examName")
 	div.form-group
 		label.col-lg-2.control-label Description
 		div.col-lg-10
-			textarea.form-control(name="examDescr",placeholder="Enter Exam Description",ng-model="examObj.examDescr")		
+			textarea.form-control(name="examDescr",id="examDescr",placeholder="Enter Exam Description",ng-model="examObj.examDescr")		
 	div.form-group
 		label.col-lg-2.control-label Category
 		div.col-lg-10
-			select.form-control(name="categoryCode",ng-model="examObj.categoryCode",ng-change="onCategoryChange()")		
+			select.form-control(name="categoryCode",id="categoryCode",ng-model="examObj.categoryCode",ng-change="onCategoryChange()")		
 				option(value="") ---- Select Category ---- 
 				option(value="{{category.categoryCode}}",ng-repeat="category in categories") {{category.categoryName}}
 	div.form-group
 		label.col-lg-2.control-label Sub Category
 		div.col-lg-10
-			select.form-control(name="subCategoryCode",ng-model="examObj.subCategoryCode",ng-disabled="!examObj.categoryCode.length>0")		
+			select.form-control(name="subCategoryCode",id="subCategoryCode",ng-model="examObj.subCategoryCode",ng-disabled="!examObj.categoryCode.length>0")		
 				option(value="") ---- Select Sub Category ---- 
 				option(value="{{subCategory.subCategoryCode}}",ng-repeat="subCategory in subCategories") {{subCategory.subCategoryName}}	
-	div.form-group
-		label.col-lg-2.control-label Exam Logo (Image URL)
-		div.col-lg-10
-			input.form-control(name="examImg",placeholder="Image URL",ng-model="examObj.examImg")	
-			div.form-group	
 	div.form-group		
 		div.col-lg-offset-2.col-lg-10
 			button.btn.btn-primary.margin5(ng-click="crudExamDetails('create')",ng-if="!examObj.examCode.length>0") Save	
 			button.btn.btn-primary.margin5(ng-click="crudExamDetails('update')",ng-if="examObj.examCode.length>0") Update
 			button.btn.btn-primary.margin5(ng-click="crudExamDetails('addQuestions')",ng-if="examObj.examCode.length>0") Add Questions
-				
+			
 div.alert.alert-danger(ng-if="examObj.error") {{examObj.error}}
 div.alert.alert-success(ng-if="examObj.success") {{examObj.success}}									

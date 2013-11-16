@@ -1,0 +1,34 @@
+div.form-group 
+	label.col-lg-2.control-label Question
+		p.showHideEditor Show Rich Editor
+			input(type="checkbox",data-ng-model="examObj.questionObj.questionIsRich") 
+	div.col-lg-10(ng-if="!examObj.questionObj.questionIsRich")
+		textarea.form-control(name="question",id="question",data-ng-model="examObj.questionObj.question",rows="4")
+	div.col-lg-10(ng-if="examObj.questionObj.questionIsRich")
+		textarea.form-control(ck-editor=400,name="question",id="question",data-ng-model="examObj.questionObj.question")
+		
+div.form-group
+	label.col-lg-2.control-label Answer Description
+		p.showHideEditor Show Rich Editor 
+			input(type="checkbox",data-ng-model="examObj.questionObj.answerDescrIsRich") 
+	div.col-lg-10(ng-show="!examObj.questionObj.answerDescrIsRich")
+		textarea.form-control(name="answerDescr",data-ng-model="examObj.questionObj.answerDescr",rows="4")
+	div.col-lg-10(ng-show="examObj.questionObj.answerDescrIsRich")
+		textarea.form-control(ck-editor=400,name="answerDescr",data-ng-model="examObj.questionObj.answerDescr")			
+		
+div.form-group
+	label.col-lg-2.control-label Difficulty Level 
+	div.col-lg-10
+		select.form-control(name="difficultyLevel",data-ng-model="examObj.questionObj.difficultyLevel")
+			option(value="0") Easy
+			option(value="1") Medium
+			option(value="2") Hard			
+		
+		
+		
+		
+		
+		
+		
+		
+		

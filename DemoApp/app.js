@@ -28,7 +28,6 @@ app.configure(function(){
 app.configure('development', function() {
 	  app.set('serverURL', 'http://localhost:3000/');
 	  db.setup('localhost', "root", "lionking");
-	  
 });
 
 app.configure('production', function() {
@@ -94,10 +93,10 @@ app.get('/user/createExam', quiz.createExam);
 app.get('/user/viewExams', quiz.viewExams);
 app.post('/user/getMyExams', quiz.getMyExams);
 app.post('/user/crudExamDetails', quiz.crudExamDetails);
+app.post('/user/uploadExamLogo', quiz.uploadExamLogo);
 
 //---------------Question-------------------------------
 app.post('/user/crudQuestionDetails', quiz.crudQuestionDetails);
-
 
 http.createServer(app).listen(app.get('port'), function(){
 	console.log("Express server listening on port " + app.get('port'));

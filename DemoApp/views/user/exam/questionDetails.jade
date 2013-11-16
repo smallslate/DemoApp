@@ -1,7 +1,7 @@
 div.alert.alert-success.marginTop10(ng-if="(!examObj.questionList && !isAddingNewQuestion) || (examObj.questionList.length<1 && !isAddingNewQuestion)") 
 	b.marginRight10 There are no questions added
 	button.btn.btn-success(ng-click="addNewQuestion()") Add New Question
-
+p#noRichEditorMessage(style="color:red;display:none;") Rich editor is not supported on this device.
 div.table-responsive(ng-show="examObj.questionList && examObj.questionList.length>0")
 	table.table(style="padding:0px!important")
 		tr
@@ -17,7 +17,7 @@ div.panel.panel-primary.marginTop10(ng-if="isAddingNewQuestion")
 		b Question# {{examObj.questionObj.questionNumber}}
 	div.panel-body
 		form.form-horizontal#examQuestionForm(role="form")
-			div.form-group
+			div.form-group(ng-if="!examObj.questionObj.questionId")
 				label.col-lg-2.control-label Question Type
 				div.col-lg-10
 					select.form-control(name="questionType",ng-model="examObj.questionObj.questionType")
@@ -27,9 +27,9 @@ div.panel.panel-primary.marginTop10(ng-if="isAddingNewQuestion")
 			div(ng-if="examObj.questionObj.questionType=='MC'")
 				include /user/exam/mcForm
 			div(ng-if="examObj.questionObj.questionType=='TF'")
-				p t or f
+				include /user/exam/tfForm
 			div(ng-if="examObj.questionObj.questionType=='ET'")
-				p essay type
+				include /user/exam/etForm
 			div.form-group
 				div.col-sm-offset-2.col-sm-10
 					button.btn.btn-default.marginRight10(type="submit",ng-click = "closeQuestionForm();") Close
@@ -55,7 +55,7 @@ div.panel.panel-primary.marginTop10(ng-repeat="questionObjfromList in examObj.qu
 			span(ng-if="questionObjfromList.questionType=='MC'") Multiple Choice
 			span(ng-if="questionObjfromList.questionType=='TF'") True / False
 			span(ng-if="questionObjfromList.questionType=='ET'") Essay Type 
-		div(ng-repeat="questionOptionsfromList in questionObjfromList.questionOptions")
+		div(ng-repeat="questionOptionsfromList in questionObjfromList.questionOptions",ng-if="questionObjfromList.questionType!='ET'")
 			span 
 				b(ng-if="!questionOptionsfromList.isAnswer") Option {{$index+1}} :   
 				b(ng-if="questionOptionsfromList.isAnswer",style="color:green;") Option {{$index+1}} (Answer) :    

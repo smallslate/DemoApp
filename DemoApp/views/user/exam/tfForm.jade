@@ -1,0 +1,41 @@
+div.form-group 
+	label.col-lg-2.control-label Question
+		p.showHideEditor Show Rich Editor
+			input(type="checkbox",data-ng-model="examObj.questionObj.questionIsRich") 
+	div.col-lg-10(ng-if="!examObj.questionObj.questionIsRich")
+		textarea.form-control(name="question",id="question",data-ng-model="examObj.questionObj.question")
+	div.col-lg-10(ng-if="examObj.questionObj.questionIsRich")
+		textarea.form-control(ck-editor=100,name="question",id="question",data-ng-model="examObj.questionObj.question")
+div.form-group 		
+	label.col-lg-2.control-label Option 1
+	div.col-lg-1
+		b True
+	div.col-lg-2
+		label Answer
+			input(ng-if="examObj.questionObj.questionOptions[0].isAnswer",checked,type="radio",name="answer",value="option1")
+			input(ng-if="!examObj.questionObj.questionOptions[0].isAnswer",type="radio",name="answer",value="option1")
+div.form-group 
+	label.col-lg-2.control-label Option 2
+	div.col-lg-1
+		b False
+	div.col-lg-2
+		label Answer
+			input(ng-if="examObj.questionObj.questionOptions[1].isAnswer",checked,type="radio",name="answer",value="option2")
+			input(ng-if="!examObj.questionObj.questionOptions[1].isAnswer",type="radio",name="answer",value="option2")
+		
+div.form-group
+	label.col-lg-2.control-label Answer Description
+		p.showHideEditor Show Rich Editor 
+			input(type="checkbox",data-ng-model="examObj.questionObj.answerDescrIsRich") 
+	div.col-lg-10(ng-show="!examObj.questionObj.answerDescrIsRich")
+		textarea.form-control(name="answerDescr",data-ng-model="examObj.questionObj.answerDescr",rows="2")
+	div.col-lg-10(ng-show="examObj.questionObj.answerDescrIsRich")
+		textarea.form-control(ck-editor=200,name="answerDescr",data-ng-model="examObj.questionObj.answerDescr")			
+		
+div.form-group
+	label.col-lg-2.control-label Difficulty Level 
+	div.col-lg-10
+		select.form-control(name="difficultyLevel",data-ng-model="examObj.questionObj.difficultyLevel")
+			option(value="0") Easy
+			option(value="1") Medium
+			option(value="2") Hard

@@ -4,7 +4,7 @@ module.exports = function(sequelize, DataTypes) {
 	examCode : DataTypes.STRING(100),
 	examName : DataTypes.STRING(2000),
 	examDescr: DataTypes.TEXT,
-	examImg: DataTypes.STRING(2000),
+	examImg: {type:DataTypes.STRING(2000),defaultValue:'logo.png'},
 	categoryCode : DataTypes.STRING(100),
 	subCategoryCode : DataTypes.STRING(100),
 	createdBy : DataTypes.BIGINT,

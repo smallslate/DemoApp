@@ -4,8 +4,9 @@ angular.module('ckEditorDirective', []).directive('ckEditor', [ function() {
 		link : function($scope, elm, attr, ngModel) {
 			 var ck = CKEDITOR.replace(elm[0],{height:attr.ckEditor,enterMode:CKEDITOR.ENTER_DIV});
 			 if(!ck || ck == undefined) {
-				 alert("Rich editor is not supported in this browser");
+				 $('#noRichEditorMessage').css("display", "block");
 			 } else {
+				 $('#noRichEditorMessage').css("display", "none");
 				 ck.on('instanceReady', function() {
                      ck.setData(ngModel.$viewValue);
                  });

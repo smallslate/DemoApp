@@ -7,9 +7,6 @@ block content
 			li.active
 				a(href='#exam', data-toggle='tab') 
 					b(style="color:#428BCA") Exam
-			li
-				a(href='#profile', data-toggle='tab') 
-					b(style="color:green") My Pages
 			if isAdmin
 				li
 					a(href='#admin', data-toggle='tab')
@@ -41,9 +38,6 @@ block content
 												div 
 													b View Exams
 													div.textDescription View and edit exams you created					
-								
-
-			div#profile.tab-pane.fade profile tab
 			
 			if isAdmin
 				div#admin.tab-pane.fade 

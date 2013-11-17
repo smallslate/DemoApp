@@ -1,15 +1,17 @@
-div.navbar.navbar-fixed-top.navbar-inverse(role="navigation")
+div.navbar.navbar-fixed-top.navbar-inverse(role="navigation",style="position:fixed!important")
 	div.container
 		div.navbar-header
 			button.navbar-toggle(type="button" data-toggle="collapse" data-target=".navbar-collapse")
 				span.icon-bar
 				span.icon-bar
 				span.icon-bar
-			a.navbar-brand.active(href="/") Home
+			a.navbar-brand(href="/") Home
 		div.collapse.navbar-collapse	
 			ul.nav.navbar-nav
 				li
 					a(href="/user/profile") My Profile
+				li
+					a(href="/user/exam") Exam	
 			ul.nav.navbar-nav.navbar-right
 				if isAuthenticated
 					li

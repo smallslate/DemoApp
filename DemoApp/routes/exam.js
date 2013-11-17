@@ -4,15 +4,15 @@ var db = require("../models/factory/Database"),
 	fs = require('fs'),
 	hashids = require("../models/factory/Hashids");
 
-module.exports = Quiz;
+module.exports = Exam;
 
-function Quiz() {}
+function Exam() {}
 //---------------Category-------------------------------
-Quiz.category = function(req,res) {
+Exam.category = function(req,res) {
 	res.render('user/admin/category');	
 };
 
-Quiz.crudCategory = function(req,res) {
+Exam.crudCategory = function(req,res) {
 	if(res.locals.isAdmin) {
 		var requestObj = req.body;
 		if(requestObj.action =='create') {
@@ -22,7 +22,7 @@ Quiz.crudCategory = function(req,res) {
 				newCategoryObj.dataValues.success = "Category saved successfully";
 				res.send(newCategoryObj.dataValues);
 			}).error(function(err) {
-				console.log('Quiz.crudCategory action = create = '+err);
+				console.log('Exam.crudCategory action = create = '+err);
 				categoryObj.error = "Cannot save category data.Please Try Again";
 				res.send(categoryObj);
 			});
@@ -34,7 +34,7 @@ Quiz.crudCategory = function(req,res) {
 				categoryObj.success = "Category updated successfully";
 				res.send(categoryObj);
 			}).error(function(err) {
-				console.log('Quiz.crudCategory action = update = '+err);
+				console.log('Exam.crudCategory action = update = '+err);
 				categoryObj.error = "Cannot update category data.Please Try Again";
 				res.send(categoryObj);
 			});
@@ -47,7 +47,7 @@ Quiz.crudCategory = function(req,res) {
 					categoryObj.success = "Category deleted successfully";
 					res.send(categoryObj);
 				}).error(function(err) {
-					console.log('Quiz.crudCategory action = update = '+err);
+					console.log('Exam.crudCategory action = update = '+err);
 					categoryObj.error = "Cannot delete category.Please Try Again";
 					res.send(categoryObj);
 				});
@@ -56,7 +56,7 @@ Quiz.crudCategory = function(req,res) {
 	}
 };
 
-Quiz.getAllCategories = function(req,res) {
+Exam.getAllCategories = function(req,res) {
 	db.model("Category").findAll({where:{isActive: true}}).success(function(categoryList) {
 		res.send(categoryList);
 	}).error(function(err) {
@@ -64,7 +64,7 @@ Quiz.getAllCategories = function(req,res) {
 	});
 };
 
-Quiz.getCategoryById = function(req,res) {
+Exam.getCategoryById = function(req,res) {
 	db.model("Category").find({where:{categoryId:req.query.categoryId,isActive: true}}).success(function(categoryObj) {
 		res.send(categoryObj);
 	}).error(function(err) {
@@ -74,15 +74,15 @@ Quiz.getCategoryById = function(req,res) {
 
 //---------------Sub Categories-------------------------------
 
-Quiz.subCategory = function(req,res) {
+Exam.subCategory = function(req,res) {
 	res.render('user/admin/subCategory');	
 };
 
-Quiz.editCatSubCat = function(req,res) {
+Exam.editCatSubCat = function(req,res) {
 	res.render('user/admin/editCatSubCat');	
 };
 
-Quiz.getSubCategoryById = function(req,res) {
+Exam.getSubCategoryById = function(req,res) {
 	db.model("SubCategory").find({where:{subCategoryId:req.query.subCategoryId,isActive: true}}).success(function(subCategoryObj) {
 		res.send(subCategoryObj);
 	}).error(function(err) {
@@ -90,7 +90,7 @@ Quiz.getSubCategoryById = function(req,res) {
 	});
 };
 
-Quiz.getSubCategoriesByCategoryCode = function(req,res) {
+Exam.getSubCategoriesByCategoryCode = function(req,res) {
 	db.model("Category").find({where:{categoryCode:req.query.categoryCode,isActive: true}}).success(function(categoryObj) {
 		if(categoryObj) {
 			categoryObj.getSubCategories().success(function(subCategoryList) {
@@ -104,7 +104,30 @@ Quiz.getSubCategoriesByCategoryCode = function(req,res) {
 	});
 };
 
-Quiz.getAllCatAndSubCat = function(req,res) {
+Exam.getSubCategoriesByExamCode = function(req,res) {
+	var examCode = req.query.examCode;
+	if(examCode && examCode.length>=8) {
+		db.model("Exam").find({ where: {examCode: examCode} }).success(function(dbExamObj) {
+			db.model("Category").find({where:{categoryCode:dbExamObj.categoryCode,isActive: true}}).success(function(categoryObj) {
+				if(categoryObj) {
+					categoryObj.getSubCategories().success(function(subCategoryList) {
+						res.send(subCategoryList);
+					});
+				} else {
+					res.send(null);
+				}
+			}).error(function(err) {
+				res.send(null);
+			});
+		}).error(function(err) {
+			res.send(null);
+		});
+	} else {
+		res.send(null);
+	}
+};
+
+Exam.getAllCatAndSubCat = function(req,res) {
 	db.model("Category").findAll({where:{isActive: true}}).success(function(categoryList) {
 		var chainer = new Sequelize.Utils.QueryChainer;
 		categoryList.forEach(function(categoryObj) {
@@ -126,7 +149,7 @@ Quiz.getAllCatAndSubCat = function(req,res) {
 	});
 };
 
-Quiz.crudSubCategory = function(req,res) {
+Exam.crudSubCategory = function(req,res) {
 	if(res.locals.isAdmin) {
 		var requestObj = req.body;
 		if(requestObj.action =='create') {
@@ -140,17 +163,17 @@ Quiz.crudSubCategory = function(req,res) {
 							res.send(insertedSubCategoryObj.dataValues);
 						});
 					}).error(function(err) {
-						console.log('Quiz.crudSubCategory action = create = '+err);
+						console.log('Exam.crudSubCategory action = create = '+err);
 						newSubCategoryObj.error ="Cannot save sub category. Please try again";
 						res.send(newSubCategoryObj);
 					});
 				}).error(function(err) {
-					console.log('Quiz.crudSubCategory action = create = '+err);
+					console.log('Exam.crudSubCategory action = create = '+err);
 					subCategoryObj.error = "Cannot save sub category data.Please Try Again";
 					res.send(subCategoryObj);
 				});
 			}).error(function(err) {
-				console.log('Quiz.crudSubCategory Category you have selected cannot be found/disabled action = create = '+err);
+				console.log('Exam.crudSubCategory Category you have selected cannot be found/disabled action = create = '+err);
 				subCategoryObj.error ="Category you have selected cannot be found/disabled. Please select different category";
 				res.send(null);
 			});
@@ -162,7 +185,7 @@ Quiz.crudSubCategory = function(req,res) {
 				subCategoryObj.success = "Sub Category updated successfully";
 				res.send(subCategoryObj);
 			}).error(function(err) {
-				console.log('Quiz.crudCategory action = update = '+err);
+				console.log('Exam.crudCategory action = update = '+err);
 				subCategoryObj.error = "Cannot update sub category data.Please Try Again";
 				res.send(subCategoryObj);
 			});
@@ -174,7 +197,7 @@ Quiz.crudSubCategory = function(req,res) {
 				subCategoryObj.success = "Category deleted successfully";
 				res.send(subCategoryObj);
 			}).error(function(err) {
-				console.log('Quiz.crudCategory action = update = '+err);
+				console.log('Exam.crudCategory action = update = '+err);
 				subCategoryObj.error = "Cannot delete category.Please Try Again";
 				res.send(subCategoryObj);
 			});
@@ -183,20 +206,24 @@ Quiz.crudSubCategory = function(req,res) {
 };
 
 //---------------Exams-------------------------------
-Quiz.createExam = function(req,res) {
+Exam.createExam = function(req,res) {
 	res.render('user/exam/createExam');	
 };
 
-Quiz.viewExams = function(req,res) {
+Exam.viewExams = function(req,res) {
 	res.render('user/profile/viewExams');	
 };
 
-Quiz.getMyExams = function(req,res) {
+Exam.exam = function(req,res) {
+	res.render('exam/exam');	
+};
+
+Exam.getMyExams = function(req,res) {
 	if(req.isAuthenticated()) {
 		db.model("Exam").findAll({ where: {createdBy:req.user.loggedInUserId} }).success(function(examList) {
 			res.send(examList);
 		}).error(function(err) {
-			console.log('Quiz.getMyExams '+err);
+			console.log('Exam.getMyExams '+err);
 			res.send(null);
 		});
 	} else {
@@ -204,7 +231,7 @@ Quiz.getMyExams = function(req,res) {
 	}
 };
 
-Quiz.crudExamDetails = function(req,res) {
+Exam.crudExamDetails = function(req,res) {
 	if(req.isAuthenticated()) {
 		var requestObj = req.body;
 		if(requestObj.action =='create') {
@@ -216,8 +243,8 @@ Quiz.crudExamDetails = function(req,res) {
 				newExamObj.dataValues.success ='Exam details saved successfully';
 				res.send(newExamObj.dataValues);
 			}).error(function(err) {
-				console.log('Quiz.crudExam action = create = '+err);
-				newExamObj.error = "Cannot save quiz details.Please try again";
+				console.log('Exam.crudExam action = create = '+err);
+				newExamObj.error = "Cannot save Exam details.Please try again";
 				res.send(newExamObj);
 			});
 		} else if(requestObj.action =='update' || requestObj.action =='addQuestions') {
@@ -238,8 +265,8 @@ Quiz.crudExamDetails = function(req,res) {
 					res.send(examObj);
 				}
 			}).error(function(err) {
-				console.log('Quiz.crudExam action = update = '+err);
-				examObj.error = "Cannot update quiz details.Please try again";
+				console.log('Exam.crudExam action = update = '+err);
+				examObj.error = "Cannot update Exam details.Please try again";
 				res.send(examObj);
 			});
 		} else if(requestObj.action =='getExamAndQueDetails') {
@@ -261,26 +288,26 @@ Quiz.crudExamDetails = function(req,res) {
 	}
 };
 
-Quiz.uploadExamLogo = function(req,res) {
+Exam.uploadExamLogo = function(req,res) {
 	var mimeType = req.files.image.type;
 	var size = req.files.image.size;
 	var path = req.files.image.path;
 	
 	if(!req.isAuthenticated()) {
 		fs.unlink(path);
-		res.send({error:"You do not have access to upload this image"});
+		res.send({error:"You do not have access to upload image"});
 	} else if(size>500200) {
 		fs.unlink(path);
-		res.send({error:"File size should not be greater then 500KB"});
+		res.send({error:"File size should be less then 500KB"});
 	} else if(mimeType!="image/jpeg" && mimeType!="image/png" && mimeType!="image/gif"){
 		fs.unlink(path);
-		res.send({error:"Invalid image file format. You can upload only jpeg and png file formats"});
+		res.send({error:"Invalid file format. You can upload only gif , jpeg and png file formats"});
 	} else {
 		db.model("Exam").find({ where: {examCode: req.body.examCode} }).success(function(dbExamObj) {
 			if(res.locals.isAdmin || dbExamObj.createdBy == req.user.loggedInUserId) {
 				if(dbExamObj.examImg !="logo.png") {
 					console.log(dbExamObj.examImg);
-					aws.getAWSQuizBucket().deleteObject({Key:dbExamObj.examImg}, function(err, data) {
+					aws.getAWSExamBucket().deleteObject({Key:dbExamObj.examImg}, function(err, data) {
 					      if (err && err.code!="MissingRequiredParameter") {
 					    	  console.log(err);
 					    	  fs.unlink(path);
@@ -324,7 +351,7 @@ function insertExamLogo(req,res,dbExamObj) {
 		      ContentType: mimeType
 		    };
 			
-			aws.getAWSQuizBucket().putObject(params, function(err, data) {
+			aws.getAWSExamBucket().putObject(params, function(err, data) {
 				fs.unlink(path);
 			      if (err) {
 			    	  res.send({error:"Cannot upload image. Please try again."});
@@ -338,7 +365,7 @@ function insertExamLogo(req,res,dbExamObj) {
 	});
 }
 //---------------Question-------------------------------
-Quiz.crudQuestionDetails = function(req,res) {
+Exam.crudQuestionDetails = function(req,res) {
 	if(req.isAuthenticated()) {
 		var reqExamCode =  req.body.examCode;
 		var reqQuestionObj = req.body.questionObj;
@@ -364,14 +391,14 @@ Quiz.crudQuestionDetails = function(req,res) {
 									});
                                   });
 							}).error(function(err) {
-								console.log('Quiz.crudExam cannot add question to exam = '+err);
+								console.log('Exam.crudExam cannot add question to exam = '+err);
 								reqQuestionObj.error = "Cannot save question details.Please try again";
 								dbExamObj.questionObj = reqQuestionObj;
 								res.send(dbExamObj);
 							});
 						}).error(function(err) {
-							console.log('Quiz.crudExam action = create = '+err);
-							newExamObj.error = "Cannot save quiz details.Please try again";
+							console.log('Exam.crudExam action = create = '+err);
+							newExamObj.error = "Cannot save Exam details.Please try again";
 							res.send(newExamObj);
 						});
 				} else if(req.body.action=='update') {
@@ -439,7 +466,6 @@ Quiz.crudQuestionDetails = function(req,res) {
 						} else {
 							res.send(null);
 						}
-						
 					});
 				}
 			} else {
@@ -447,8 +473,8 @@ Quiz.crudQuestionDetails = function(req,res) {
 				res.send(null);
 			}
 		}).error(function(err) {
-			console.log('Quiz.crudQuestionDetails = '+err);
-			examObj.questionObj.error = "Cannot update question details.Quiz you have selected is invalid.Please try again";
+			console.log('Exam.crudQuestionDetails = '+err);
+			examObj.questionObj.error = "Cannot update question details.Exam you have selected is invalid.Please try again";
 			res.send(null);
 		});
 	} else {

@@ -1,0 +1,27 @@
+form.form-horizontal#publishExamForm(role="form")
+	div.form-group
+		label.col-lg-2.control-label Exam Time
+		div.col-lg-1
+			input.form-control(name="examName",id="examName",placeholder="Enter Exam Name",ng-model="examObj.examName")
+			p in minutes
+	div.form-group
+		label.col-lg-2.control-label Author Name
+		div.col-lg-10
+			input.form-control(name="examName",id="examName",placeholder="Enter Exam Name",ng-model="examObj.examName")	
+	div.form-group
+		label.col-lg-2.control-label Page URL
+		div.col-lg-10
+			input.form-control(name="examName",id="examName",placeholder="Enter Exam Name",ng-model="examObj.examName")
+	div.form-group
+		label.col-lg-2.control-label E-mail Addresses
+		div.col-lg-10
+			textarea.form-control(name="examDescr",id="examDescr",placeholder="Enter Exam Description",ng-model="examObj.examDescr")		
+	div.form-group		
+		div.col-lg-offset-2.col-lg-10
+			button.btn.btn-primary.margin5(ng-click="crudExamDetails('create')") Publish	
+			button.btn.btn-primary.margin5(ng-click="crudExamDetails('update')") Un Publish
+			button.btn.btn-primary.margin5(ng-click="crudExamDetails('addQuestions')") Preview
+			button.btn.btn-primary.margin5(ng-click="crudExamDetails('addQuestions')") Delete
+			
+div.alert.alert-danger(ng-if="examObj.error") {{examObj.error}}
+div.alert.alert-success(ng-if="examObj.success") {{examObj.success}}									

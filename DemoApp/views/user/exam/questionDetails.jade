@@ -1,7 +1,9 @@
 div.alert.alert-success.marginTop10(ng-if="(!examObj.questionList && !isAddingNewQuestion) || (examObj.questionList.length<1 && !isAddingNewQuestion)") 
-	b.marginRight10 There are no questions added
+	b.marginRight10 Oops... No Questions
 	button.btn.btn-success(ng-click="addNewQuestion()") Add New Question
+	
 p#noRichEditorMessage(style="color:red;display:none;") Rich editor is not supported on this device.
+
 div.table-responsive(ng-show="examObj.questionList && examObj.questionList.length>0")
 	table.table(style="padding:0px!important")
 		tr
@@ -20,14 +22,17 @@ div.panel.panel-primary.marginTop10(ng-if="isAddingNewQuestion")
 			div.form-group(ng-if="!examObj.questionObj.questionId")
 				label.col-lg-2.control-label Question Type
 				div.col-lg-10
-					select.form-control(name="questionType",ng-model="examObj.questionObj.questionType")
-						option(value="MC") Multiple Choice
-						option(value="TF") True / False
+					select.form-control(name="questionType",id="questionType",ng-model="examObj.questionObj.questionType")
+						option(value="MCSA") Multiple Choice - Single Answer
+						option(value="MCMA") Multiple Choice - Multiple Answers
+						option(value="TORF") True / False
 						option(value="ET") Essay Type 
-			div(ng-if="examObj.questionObj.questionType=='MC'")
-				include /user/exam/mcForm
-			div(ng-if="examObj.questionObj.questionType=='TF'")
-				include /user/exam/tfForm
+			div(ng-if="examObj.questionObj.questionType=='MCSA'")
+				include /user/exam/mcsaForm			
+			div(ng-if="examObj.questionObj.questionType=='MCMA'")
+				include /user/exam/mcmaForm
+			div(ng-if="examObj.questionObj.questionType=='TORF'")
+				include /user/exam/torfForm
 			div(ng-if="examObj.questionObj.questionType=='ET'")
 				include /user/exam/etForm
 			div.form-group
@@ -51,9 +56,10 @@ div.panel.panel-primary.marginTop10(ng-repeat="questionObjfromList in examObj.qu
 				span(ng-bind-html="questionObjfromList.question | unsafe")
 		div
 			span 
-				b Question Type : 
-			span(ng-if="questionObjfromList.questionType=='MC'") Multiple Choice
-			span(ng-if="questionObjfromList.questionType=='TF'") True / False
+				b Question Type :
+			span(ng-if="questionObjfromList.questionType=='MCSA'") Multiple Choice - Single Answer
+			span(ng-if="questionObjfromList.questionType=='MCMA'") Multiple Choice - Multiple Answers
+			span(ng-if="questionObjfromList.questionType=='TORF'") True / False
 			span(ng-if="questionObjfromList.questionType=='ET'") Essay Type 
 		div(ng-repeat="questionOptionsfromList in questionObjfromList.questionOptions",ng-if="questionObjfromList.questionType!='ET'")
 			span 

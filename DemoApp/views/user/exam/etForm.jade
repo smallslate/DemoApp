@@ -5,7 +5,7 @@ div.form-group
 	div.col-lg-10(ng-if="!examObj.questionObj.questionIsRich")
 		textarea.form-control(name="question",id="question",data-ng-model="examObj.questionObj.question",rows="4")
 	div.col-lg-10(ng-if="examObj.questionObj.questionIsRich")
-		textarea.form-control(ck-editor=400,name="question",id="question",data-ng-model="examObj.questionObj.question")
+		textarea.form-control(ck-editor=200,name="question",id="question",data-ng-model="examObj.questionObj.question")
 		
 div.form-group
 	label.col-lg-2.control-label Answer Description
@@ -14,7 +14,7 @@ div.form-group
 	div.col-lg-10(ng-show="!examObj.questionObj.answerDescrIsRich")
 		textarea.form-control(name="answerDescr",data-ng-model="examObj.questionObj.answerDescr",rows="4")
 	div.col-lg-10(ng-show="examObj.questionObj.answerDescrIsRich")
-		textarea.form-control(ck-editor=400,name="answerDescr",data-ng-model="examObj.questionObj.answerDescr")			
+		textarea.form-control(ck-editor=200,name="answerDescr",data-ng-model="examObj.questionObj.answerDescr")			
 		
 div.form-group
 	label.col-lg-2.control-label Difficulty Level 

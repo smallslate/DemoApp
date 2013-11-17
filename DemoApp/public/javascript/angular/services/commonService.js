@@ -24,6 +24,12 @@ angular.module('commonService', [ 'ngResource' ])
 		});
 	}])
 	
+	.factory('getSubCategoriesByExamCodeService', [ '$resource', function($resource) {
+		return $resource('/getSubCategoriesByExamCode', {}, {
+			query : {method : 'GET',isArray : true}
+		});
+	}])
+	
 	.factory('getAllCatAndSubCat', [ '$resource', function($resource) {
 			return $resource('/getAllCatAndSubCat', {}, {
 				query : {method : 'GET',isArray : true}

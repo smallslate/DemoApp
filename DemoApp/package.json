@@ -12,6 +12,7 @@
     "passport-google": "0.3.0",
     "mysql":"2.0.0-alpha9",
     "sequelize":"2.0.0-beta.1",
-    "hashids": "0.3.2"
+    "hashids": "0.3.2",
+    "aws-sdk": "1.12.0"
   }
 }

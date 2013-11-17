@@ -15,7 +15,7 @@ block head
 	
 	title Create And Edit Exams
 block content
-	div.marginTop10(ng-app="createExam")
+	div.marginTop10(ng-app="createExam",ng-cloak)
 		ul.nav.nav-tabs#createExamTab
 			li.active
 				a(href="#examDetails" data-toggle="tab") 
@@ -32,4 +32,4 @@ block content
 			div.tab-pane.fade#examQuestions
 				include /user/exam/questionDetails
 			div.tab-pane.fade#publishExam
-				p publish exam
+				include /user/exam/publishExam

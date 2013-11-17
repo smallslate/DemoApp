@@ -21,7 +21,7 @@ block content
 		div.col-sm-6.col-md-4.marginTop10(ng-repeat="examObj in myExamsList")
 			div.panel.panel-primary
 				div.panel-heading 
-					a(href="/user/createExam?examCode={{examObj.examCode}}&catCode={{examObj.categoryCode}}")
+					a(href="/user/createExam?examCode={{examObj.examCode}}")
 						b(style="color:white;") {{examObj.examName}}
 				div.panel-body
 					p {{examObj.examDescr}}

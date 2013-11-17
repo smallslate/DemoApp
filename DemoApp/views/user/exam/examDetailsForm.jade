@@ -32,7 +32,7 @@ form.form-horizontal#examDetailsForm(role="form")
 		div.col-lg-offset-2.col-lg-10
 			button.btn.btn-primary.margin5(ng-click="crudExamDetails('create')",ng-if="!examObj.examCode.length>0") Save	
 			button.btn.btn-primary.margin5(ng-click="crudExamDetails('update')",ng-if="examObj.examCode.length>0") Update
-			button.btn.btn-primary.margin5(ng-click="crudExamDetails('addQuestions')",ng-if="examObj.examCode.length>0") Add Questions
+			button.btn.btn-success.margin5(ng-click="crudExamDetails('addQuestions')",ng-if="examObj.examCode.length>0") Add Questions
 			
 div.alert.alert-danger(ng-if="examObj.error") {{examObj.error}}
 div.alert.alert-success(ng-if="examObj.success") {{examObj.success}}									

@@ -13,6 +13,8 @@ module.exports = function(sequelize, DataTypes) {
 	noOfViews: {type:DataTypes.BIGINT,defaultValue: 0},
 	isActive : {type:DataTypes.BOOLEAN,defaultValue: true},
 	isPublished : {type:DataTypes.BOOLEAN,defaultValue: false},
-	examTimeInMin: {type:DataTypes.BIGINT,defaultValue: 0}
+	examTimeInMin: {type:DataTypes.BIGINT,defaultValue: 0},
+	author : DataTypes.STRING(1000),
+	authorPage : DataTypes.STRING(4000),
   });
 };

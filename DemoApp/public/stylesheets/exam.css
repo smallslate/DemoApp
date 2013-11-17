@@ -3,9 +3,8 @@ html {
 }
 
 body {
-  padding-top: 50px;
+  padding-top: 10px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  width: 100%;
 }
 
 .marginTop10 {
@@ -14,6 +13,10 @@ body {
 
 .margin5 {
 	margin: 5px;
+}
+
+.margin10 {
+	margin: 10px;
 }
 
 label.error {
@@ -31,6 +34,15 @@ label.error {
 
 .marginRight10 {
 	margin-right: 10px;
+}
+
+.examBackground {
+	background :none repeat scroll 0 0 #400000;
+	min-height: 100%;
+}
+
+.examContentBackground {
+	background :none repeat scroll 0 0 white;
 }
 
 

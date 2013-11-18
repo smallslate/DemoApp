@@ -7,4 +7,3 @@ module.exports = function(sequelize, DataTypes) {
   });
 };
 
-//ALTER TABLE questionOptions MODIFY COLUMN optionDesc LONGTEXT

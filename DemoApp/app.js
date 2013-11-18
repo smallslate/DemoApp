@@ -95,7 +95,7 @@ app.get('/user/viewExams', exam.viewExams);
 app.post('/user/getMyExams', exam.getMyExams);
 app.post('/user/crudExamDetails', exam.crudExamDetails);
 app.post('/user/uploadExamLogo', exam.uploadExamLogo);
-//app.get('/user/epreview', exam.epreview);
+app.get('/epreview', exam.epreview);
 app.get('/user/exam', exam.exam);
 
 //---------------Question-------------------------------

@@ -13,6 +13,3 @@ module.exports = function(sequelize, DataTypes) {
 	difficultyLevel : {type:DataTypes.INTEGER,defaultValue: 0}
   });
 };
-
-//ALTER TABLE questions MODIFY COLUMN question LONGTEXT
-//ALTER TABLE questions MODIFY COLUMN answerDescr LONGTEXT

@@ -218,6 +218,10 @@ Exam.exam = function(req,res) {
 	res.render('exam/exam');	
 };
 
+Exam.epreview = function(req,res) {
+	res.render('exam/epreview');	
+};
+
 Exam.getMyExams = function(req,res) {
 	if(req.isAuthenticated()) {
 		db.model("Exam").findAll({ where: {createdBy:req.user.loggedInUserId} }).success(function(examList) {

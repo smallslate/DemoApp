@@ -50,6 +50,20 @@ createExamApp.controller('createExamCtrl', ['$scope','getAllCategoriesService','
 		}
 	};
 	
+	$scope.publishExam = function(action) {
+		var isValid = true;
+		if(action!='delete') {
+			if($scope.examObj.examTime.length>0 && (isNaN($scope.examObj.examTime) || $scope.examObj.examTime<5)) {
+				alert("Exam Time should be valid number greater then or equal to 5");
+				isValid = false;
+			}
+		}
+		//$('#createExamTab a[href="#examQuestions"]').tab('show');
+		if(isValid) {
+			$scope.examObj = crudExamDetailsService.crudExamDetails({examObj:$scope.examObj,action:action});
+		}
+	};
+	
 	$scope.addNewQuestion = function() {
 		if($scope.examObj && $scope.examObj.examCode.length>=8) {
 			$scope.isAddingNewQuestion =true;

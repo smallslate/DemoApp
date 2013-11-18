@@ -2,10 +2,10 @@ form.form-horizontal(ng-show="examObj.examCode",id="fileupload",action="/user/up
 	div.form-group
 			label.col-lg-2.control-label Exam Logo
 			div.col-lg-10
-				img.img-rounded#examLogo(ng-src="https://s3.amazonaws.com/uqi/{{examObj.examImg}}",alt="Exam Logo",height="100",width="100")
+				img.img-rounded#examLogo(ng-src="https://s3.amazonaws.com/uqi/{{examObj.examImg}}",alt="Exam Logo",height="128",width="128")
 				input(type="file",name="image", multiple)
 				input(type="hidden",name="examCode",value="{{examObj.examCode}}")		
-				div#fileUploadMessage
+				div#fileUploadMessage Upload image of 128x128 pixels for best view.
 					
 form.form-horizontal#examDetailsForm(role="form")
 	div.form-group

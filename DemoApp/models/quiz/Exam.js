@@ -13,8 +13,14 @@ module.exports = function(sequelize, DataTypes) {
 	noOfViews: {type:DataTypes.BIGINT,defaultValue: 0},
 	isActive : {type:DataTypes.BOOLEAN,defaultValue: true},
 	isPublished : {type:DataTypes.BOOLEAN,defaultValue: false},
-	examTimeInMin: {type:DataTypes.BIGINT,defaultValue: 0},
-	author : DataTypes.STRING(1000),
-	authorPage : DataTypes.STRING(4000),
+	examTime: {type:DataTypes.BIGINT,defaultValue: 0},
+	examReferences : DataTypes.TEXT,
+	authorDetails : DataTypes.TEXT
   });
 };
+
+//ALTER TABLE Exams MODIFY COLUMN authorDetails LONGTEXT
+//ALTER TABLE Exams MODIFY COLUMN examReferences LONGTEXT
+//ALTER TABLE questions MODIFY COLUMN question LONGTEXT
+//ALTER TABLE questions MODIFY COLUMN answerDescr LONGTEXT
+//ALTER TABLE questionOptions MODIFY COLUMN optionDesc LONGTEXT

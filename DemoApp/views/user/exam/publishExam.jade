@@ -1,27 +1,25 @@
 form.form-horizontal#publishExamForm(role="form")
 	div.form-group
-		label.col-lg-2.control-label Exam Time
+		label.col-lg-2.control-label Exam Time (Minutes)
 		div.col-lg-1
-			input.form-control(name="examName",id="examName",placeholder="Enter Exam Name",ng-model="examObj.examName")
-			p in minutes
-	div.form-group
-		label.col-lg-2.control-label Author Name
+			label 
+				input.form-control(type="number",ng-model="examObj.examTime")
+	div.form-group 
+		label.col-lg-2.control-label Exam References
 		div.col-lg-10
-			input.form-control(name="examName",id="examName",placeholder="Enter Exam Name",ng-model="examObj.examName")	
-	div.form-group
-		label.col-lg-2.control-label Page URL
+			textarea.form-control(ck-editor=100,data-ng-model="examObj.examReferences")	
+			p Add exam references like web site url's, videos etc. Users can use these references before taking the exam.  
+	div.form-group 
+		label.col-lg-2.control-label Author Contact Details
 		div.col-lg-10
-			input.form-control(name="examName",id="examName",placeholder="Enter Exam Name",ng-model="examObj.examName")
-	div.form-group
-		label.col-lg-2.control-label E-mail Addresses
-		div.col-lg-10
-			textarea.form-control(name="examDescr",id="examDescr",placeholder="Enter Exam Description",ng-model="examObj.examDescr")		
+			textarea.form-control(ck-editor=100,data-ng-model="examObj.authorDetails")	
+			p You can add author contact details for people to contact if they like your exam and want you as tutor. You can Add your website, Facebook, Twitter, Google+ or social network profile URL's you like.However be careful while providing your information,email's or phone numbers. Details you have provided will be shown on exam preview page.  
 	div.form-group		
 		div.col-lg-offset-2.col-lg-10
-			button.btn.btn-primary.margin5(ng-click="crudExamDetails('create')") Publish	
-			button.btn.btn-primary.margin5(ng-click="crudExamDetails('update')") Un Publish
-			button.btn.btn-primary.margin5(ng-click="crudExamDetails('addQuestions')") Preview
-			button.btn.btn-primary.margin5(ng-click="crudExamDetails('addQuestions')") Delete
+			button.btn.btn-primary.margin5(ng-click="publishExam('savePublishData')") Save	
+			button.btn.btn-success.margin5(ng-if="!examObj.isPublished",ng-click="publishExam('publishExam')") Publish Exam	
+			button.btn.btn-danger.margin5(ng-if="examObj.isPublished",ng-click="publishExam('unpublishExam')") Un Publish
+			button.btn.btn-danger.btn-xs.margin5.pull-right(ng-if="examObj.examId>0",ng-click="publishExam('delete')") Delete Exam
 			
 div.alert.alert-danger(ng-if="examObj.error") {{examObj.error}}
 div.alert.alert-success(ng-if="examObj.success") {{examObj.success}}									

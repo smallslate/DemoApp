@@ -107,7 +107,7 @@ Exam.getSubCategoriesByCategoryCode = function(req,res) {
 Exam.getSubCategoriesByExamCode = function(req,res) {
 	var examCode = req.query.examCode;
 	if(examCode && examCode.length>=8) {
-		db.model("Exam").find({ where: {examCode: examCode} }).success(function(dbExamObj) {
+		db.model("Exam").find({ where: {examCode: examCode,isActive:true} }).success(function(dbExamObj) {
 			db.model("Category").find({where:{categoryCode:dbExamObj.categoryCode,isActive: true}}).success(function(categoryObj) {
 				if(categoryObj) {
 					categoryObj.getSubCategories().success(function(subCategoryList) {
@@ -222,9 +222,17 @@ Exam.epreview = function(req,res) {
 	res.render('exam/epreview');	
 };
 
+Exam.eresult = function(req,res) {
+	res.render('user/profile/eresult');	
+};
+
+Exam.allMyExamResults = function(req,res) {
+	res.render('user/profile/allMyExamResults');	
+};
+
 Exam.getMyExams = function(req,res) {
 	if(req.isAuthenticated()) {
-		db.model("Exam").findAll({ where: {createdBy:req.user.loggedInUserId} }).success(function(examList) {
+		db.model("Exam").findAll({ where: {createdBy:req.user.loggedInUserId,isActive:true} }).success(function(examList) {
 			res.send(examList);
 		}).error(function(err) {
 			console.log('Exam.getMyExams '+err);
@@ -253,7 +261,7 @@ Exam.crudExamDetails = function(req,res) {
 			});
 		} else if(requestObj.action =='update' || requestObj.action =='addQuestions') {
 			var examObj = requestObj.examObj;
-			db.model("Exam").find({ where: {examCode: examObj.examCode} }).success(function(dbExamObj) {
+			db.model("Exam").find({ where: {examCode: examObj.examCode,isActive:true} }).success(function(dbExamObj) {
 				if(res.locals.isAdmin || dbExamObj.createdBy == req.user.loggedInUserId) {
 					dbExamObj.examName = examObj.examName;
 					dbExamObj.examDescr = examObj.examDescr;
@@ -274,7 +282,7 @@ Exam.crudExamDetails = function(req,res) {
 				res.send(examObj);
 			});
 		} else if(requestObj.action =='getExamAndQueDetails') {
-			db.model("Exam").find({ where: {examCode: req.body.examCode} }).success(function(dbExamObj) {
+			db.model("Exam").find({ where: {examCode: req.body.examCode,isActive:true} }).success(function(dbExamObj) {
 				if(res.locals.isAdmin || dbExamObj.createdBy == req.user.loggedInUserId) {
 					dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}],order: 'questionNumber ASC'}).success(function(questionList) {
 						dbExamObj.dataValues.questionList =questionList;
@@ -285,6 +293,59 @@ Exam.crudExamDetails = function(req,res) {
 				}
 			}).error(function(err) {
 				res.send(null);
+			});
+		} else if(requestObj.action =='updatePublishData' || requestObj.action =='publishExam' || requestObj.action =='unpublishExam') {
+			var examObj = requestObj.examObj;
+			db.model("Exam").find({ where: {examCode: examObj.examCode,isActive:true} }).success(function(dbExamObj) {
+				if(res.locals.isAdmin || dbExamObj.createdBy == req.user.loggedInUserId) {
+					dbExamObj.examTime = examObj.examTime;
+					dbExamObj.examReferences = examObj.examReferences;
+					dbExamObj.authorDetails = examObj.authorDetails;
+					dbExamObj.showResultsAfterExam = examObj.showResultsAfterExam;
+					dbExamObj.updatedBy = examObj.updatedBy = req.user.loggedInUserId;
+
+					if(requestObj.action =='publishExam') {
+						dbExamObj.isPublished = true;
+						examObj.isPublished = true;
+						dbExamObj.save(['examTime','examReferences','authorDetails','updatedBy','isPublished','showResultsAfterExam']);
+						examObj.publishSuccessMessage ='Exam is published successfully. All users will be able to access this exam. This exam will now appear in search results';
+					} else if(requestObj.action =='unpublishExam') {
+						dbExamObj.isPublished = false;
+						examObj.isPublished = false;
+						dbExamObj.save(['examTime','examReferences','authorDetails','updatedBy','isPublished','showResultsAfterExam']);
+						examObj.publishSuccessMessage ='Exam is now un published. Users will not be able to access this exam. This exam will not appear in search results';
+					} else {
+						dbExamObj.save(['examTime','examReferences','authorDetails','updatedBy','showResultsAfterExam']);
+						examObj.publishSuccessMessage ='Exam details updated successfully';
+					}
+					res.send(examObj);
+				} else {
+					examObj.publishErrorMessage = "You do not have access to update this exam.";
+					res.send(examObj);
+				}
+			}).error(function(err) {
+				console.log('Exam.crudExam action = updatePublishData = '+err);
+				examObj.publishErrorMessage = "Cannot update Exam details.Please try again";
+				res.send(examObj);
+			});
+		} else if(requestObj.action == 'deleteExam') {
+			db.model("Exam").find({ where: {examCode: requestObj.examCode,isActive:true} }).success(function(dbExamObj) {
+				if(res.locals.isAdmin || dbExamObj.createdBy == req.user.loggedInUserId) {
+					dbExamObj.isActive =false;
+					dbExamObj.isPublished =false;
+					dbExamObj.updatedBy = req.user.loggedInUserId;
+					dbExamObj.save(['isActive','updatedBy','isPublished']);
+					examObj =  new Object();
+					examObj.publishSuccessMessage = "Exam has been deleted successfully. If you want to revert back your deletion, please send email to support@smallslate.com";
+					res.send(examObj);
+				} else {
+					examObj.publishErrorMessage = "You do not have access to Delete this exam.";
+					res.send(examObj);
+				}
+			}).error(function(err) {
+				console.log('Exam.crudExam action = deleteExam = '+err);
+				examObj.publishErrorMessage = "Unable to Delete Exam.Please try again";
+				res.send(examObj);
 			});
 		}
 	} else {
@@ -307,7 +368,7 @@ Exam.uploadExamLogo = function(req,res) {
 		fs.unlink(path);
 		res.send({error:"Invalid file format. You can upload only gif , jpeg and png file formats"});
 	} else {
-		db.model("Exam").find({ where: {examCode: req.body.examCode} }).success(function(dbExamObj) {
+		db.model("Exam").find({ where: {examCode: req.body.examCode,isActive:true} }).success(function(dbExamObj) {
 			if(res.locals.isAdmin || dbExamObj.createdBy == req.user.loggedInUserId) {
 				if(dbExamObj.examImg !="logo.png") {
 					console.log(dbExamObj.examImg);
@@ -331,6 +392,164 @@ Exam.uploadExamLogo = function(req,res) {
 			fs.unlink(path);
 			res.send({error:"Exam data cannot be found.Please update exam details and then upload image"});
 		});
+	}
+};
+
+Exam.getExamPreview = function(req,res) { 
+	var examCode = req.body.examCode;
+	if(examCode && examCode.length>=8) {
+		db.model("Exam").find({ where: {examCode:examCode,isActive:true,isPublished:true} }).success(function(dbExamObj) {
+			res.send(dbExamObj);
+		}).error(function(err) {
+			console.log('Exam.crudExam getExamPreview = getExamPreview = '+err);
+			res.send(null);
+		});
+	} else {
+		res.send(null);
+	}
+};
+
+Exam.examService = function(req,res) { 
+	var action = req.body.action;
+	var examCode = req.body.examCode;
+
+	if(action && action == 'startExam' && examCode && examCode.length>=8 && req.isAuthenticated()) {
+		db.model("Exam").find({ where: {examCode:examCode,isActive:true,isPublished:true} }).success(function(dbExamObj) {
+			dbExamObj.getQuestions({order: 'questionNumber ASC',include:[{model: db.model("QuestionOption"),as:'questionOptions',attributes: ['optionId', 'optionDesc','isOptionRich']}]}).success(function(questionList) {
+				dbExamObj.dataValues.questionList =questionList;
+				db.model("ExamSession").create({userId:req.user.loggedInUserId,examStatus:'START',isResultPublished:dbExamObj.showResultsAfterExam}).success(function(newExamSessionObj) {
+					newExamSessionObj.sessionCode = hashids.encrypt(newExamSessionObj.examSessionId);
+					newExamSessionObj.save(['sessionCode']);
+					dbExamObj.addExamSession(newExamSessionObj).success(function() {
+						dbExamObj.dataValues.examSession =newExamSessionObj;
+						res.send(dbExamObj.dataValues);
+					});
+				}).error(function(err) {
+					console.log('Exam.crudCategory ExamSession = ExamSession = '+err);
+					res.send(null);
+				});
+			}).error(function(err) {
+				console.log('Exam.examService examService = examService get questions = '+err);
+				res.send(null);
+			});
+		}).error(function(err) {
+			console.log('Exam.examService examService = examService = '+err);
+			res.send(null);
+		});
+	} else if(action == 'submitExam') {
+		var examSession = req.body.examSession;
+		db.model("ExamSession").find({ where: {sessionCode:examSession.sessionCode,userId:req.user.loggedInUserId,examStatus:'START',examId:examSession.examId}}).success(function(dbExamSession) {
+			if(dbExamSession && dbExamSession.examSessionId>0) {
+				db.model("Question").findAll({where:{examId:examSession.examId},include:[{model: db.model("QuestionOption"),as:'questionOptions'}]}).success(function(questionsList) {
+					if(questionsList && questionsList.length>0) {
+						dbExamSession.answers = JSON.stringify(examSession.answers);
+						dbExamSession.evalAnswers = JSON.stringify(evalAnswers(examSession,questionsList));
+						dbExamSession.examStatus = 'SUBMIT';
+						dbExamSession.save(['answers','evalAnswers','examStatus']).success(function(dbExamSession) {
+							res.send({success:'success'});
+						}).error(function(err) {
+							console.log('Exam.examService ExamSession = ExamSession = '+err);
+							res.send({error:'Failed to save your data.Cannot find you session.'});
+						});
+					}
+				});
+			} else {
+				res.send({error:'Failed to save your data.Cannot find you session.'});
+			}
+		}).error(function(err) {
+			console.log('Exam.examService ExamSession = ExamSession = '+err);
+			res.send({error:'Failed to save your data.Please try again.'});
+		});
+	} else {
+		res.send(null);
+	}
+};
+
+function evalAnswers(examSession,questionsList) {
+	var answerList = new Object();
+	answerList.answers = {};
+	answerList.correct =0;
+	answerList.wrong =0;
+	answerList.notEval =0;
+	for(var i = 0;i<questionsList.length;i++) {
+		var answerDescObj = new Object();
+		answerDescObj.questionId = questionsList[i].questionId;
+		if(questionsList[i].questionType =='MCSA' || questionsList[i].questionType =='TORF') {
+			for(var j = 0;j<questionsList[i].questionOptions.length;j++) {
+				if(questionsList[i].questionOptions[j].isAnswer) {
+					if(questionsList[i].questionOptions[j].optionId == examSession.answers[questionsList[i].questionId].answer) {
+						answerDescObj.isAnswerCorrect =true;
+						answerList.correct+=1;
+					} else {
+						answerDescObj.isAnswerCorrect =false;
+						answerList.wrong+=1;
+					}
+					answerDescObj.userAnswer = examSession.answers[questionsList[i].questionId].answer;
+					answerDescObj.orginalAnswer = questionsList[i].questionOptions[j].optionId;
+					break;
+				}
+			}
+		} else if(questionsList[i].questionType =='MCMA') {
+			var userMCMAanswers = new Array();
+			var MCMAanswers = new Array();
+			
+			for(var j=0;j<examSession.answers[questionsList[i].questionId].answer.length;j++) {
+				if(examSession.answers[questionsList[i].questionId].answer[j]!=null) {
+					userMCMAanswers.push(examSession.answers[questionsList[i].questionId].answer[j]);
+				}
+			}
+			for(var j = 0;j<questionsList[i].questionOptions.length;j++) {
+				if(questionsList[i].questionOptions[j].isAnswer) {
+					MCMAanswers.push(questionsList[i].questionOptions[j].optionId);
+				}
+			}
+			answerDescObj.userAnswer = userMCMAanswers;
+			answerDescObj.orginalAnswer =MCMAanswers;
+			if(userMCMAanswers.sort().join(',') === MCMAanswers.sort().join(',')){
+				answerDescObj.isAnswerCorrect =true;
+				answerList.correct+=1;
+			} else {
+				answerDescObj.isAnswerCorrect =false;
+				answerList.wrong+=1;
+			}
+		} else {
+			answerDescObj.isAnswerCorrect ='NA';
+			answerList.notEval+=1;
+			answerDescObj.userAnswer = examSession.answers[questionsList[i].questionId].answer;
+		}
+		answerList.answers[questionsList[i].questionId] = answerDescObj;
+    }
+	return answerList;
+}
+
+Exam.examResultService = function(req,res) { 
+	var action = req.body.action;
+	var sessionCode = req.body.sessionCode;
+	if(action == 'viewExamResult') {
+		db.model("ExamSession").find({where:{sessionCode:sessionCode,examStatus:'SUBMIT'}}).success(function(dbExamSessionObj) {
+			db.model("Exam").find({where:{examId:dbExamSessionObj.examId}}).success(function(dbExamObj) {
+				if(dbExamSessionObj.userId == req.user.loggedInUserId || dbExamObj.createdBy == req.user.loggedInUserId || res.locals.isAdmin) {
+					dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}],order: 'questionNumber ASC'}).success(function(questionList) {
+						dbExamObj.dataValues.questionList = questionList;
+						if(dbExamSessionObj.isResultPublished == true) {
+							dbExamSessionObj.answers = eval("("+dbExamSessionObj.answers+ ")");
+							dbExamSessionObj.evalAnswers = eval("("+dbExamSessionObj.evalAnswers+")"); 
+							dbExamObj.dataValues.examSession = dbExamSessionObj;
+						}
+						db.model("User").find({ where:{userId:dbExamSessionObj.userId},attributes: ['userDisplayName']}).success(function(userObj) {
+							dbExamObj.dataValues.userObj = userObj;
+							res.send(dbExamObj.dataValues);
+						});
+					});
+				}
+			}).error(function(err) {
+				res.send(null);
+			});
+		}).error(function(err) {
+			res.send(null);
+		});
+	} else {
+		res.send(null);
 	}
 };
 
@@ -368,13 +587,67 @@ function insertExamLogo(req,res,dbExamObj) {
 		}
 	});
 }
+
+Exam.allMyExamResultsService = function(req,res) { 
+	var action = req.body.action;
+	if(action == 'getAllMyExamResults') {
+		getAllMyExamResults(req,res);
+	} else if(action == 'deleteMyResult') {
+		console.log(req.body.sessionCode);
+		db.model("ExamSession").find({where:{userId:req.user.loggedInUserId,sessionCode:req.body.sessionCode}}).success(function(examSessionObj) {
+			if(examSessionObj.hasAuthorDeleted == true) {
+				examSessionObj.destroy().success(function() {
+					getAllMyExamResults(req,res);
+				});
+			} else {
+				examSessionObj.hasUserDeleted = true;
+				examSessionObj.save(['hasUserDeleted']).success(function() {
+					getAllMyExamResults(req,res);
+				}).error(function(err) {
+					res.send(null);
+				});
+			}
+		});
+	} else {
+		res.send(null);
+	}
+};
+
+function getAllMyExamResults(req,res) {
+	db.model("ExamSession").findAll({where:{userId:req.user.loggedInUserId,hasUserDeleted:false},order: 'createdAt DESC'}).success(function(examSessionList) {
+		var examIds = new Array();
+		for(var i=0;i<examSessionList.length;i++) {
+			if(examIds.indexOf(examSessionList[i].examId)==-1) {
+				examIds.push(examSessionList[i].examId);
+			}
+		}
+		db.model("Exam").findAll({where:{examId:examIds}}).success(function(dbExamList) {
+			var myResults =new Array();
+			for(var i=0;i<dbExamList.length;i++) {
+				var resultExamObj = new Object();
+				resultExamObj.sessionList = new Array();
+				resultExamObj.examObj = dbExamList[i];
+				for(var j=0;j<examSessionList.length;j++) {
+					if(examSessionList[j].examId == dbExamList[i].examId) {
+						resultExamObj.sessionList.push(examSessionList[j]);
+					}
+				}
+				myResults.push(resultExamObj);
+			}
+			res.send(myResults);
+		});
+	}).error(function(err) {
+		res.send(null);
+	});
+}
+
 //---------------Question-------------------------------
 Exam.crudQuestionDetails = function(req,res) {
 	if(req.isAuthenticated()) {
 		var reqExamCode =  req.body.examCode;
 		var reqQuestionObj = req.body.questionObj;
 		
-		db.model("Exam").find({ where: {examCode: reqExamCode} }).success(function(dbExamObj) {
+		db.model("Exam").find({ where: {examCode: reqExamCode,isActive:true} }).success(function(dbExamObj) {
 			if(res.locals.isAdmin || dbExamObj.createdBy == req.user.loggedInUserId) {
 				if(req.body.action=='create') {
 					reqQuestionObj.createdBy = reqQuestionObj.updatedBy = req.user.loggedInUserId;
@@ -390,6 +663,8 @@ Exam.crudQuestionDetails = function(req,res) {
 											dbExamObj.dataValues.questionObj = insertedQuestionObj.dataValues;
 											dbExamObj.dataValues.questionObj.questionOptions = opts;
 											dbExamObj.dataValues.questionObj.success ='Question details saved successfully';
+											dbExamObj.numberOfQuestions = dbExamObj.numberOfQuestions+1;
+											dbExamObj.save(['numberOfQuestions']);
 											res.send(dbExamObj.dataValues);
 										});
 									});
@@ -457,10 +732,14 @@ Exam.crudQuestionDetails = function(req,res) {
 										questionList[kk].questionNumber = kk+1;
 										chainer.add(questionList[kk].save());
 									}
-									
 									chainer.runSerially().success(function(results) {
 										dbExamObj.dataValues.questionList = questionList;
 										dbExamObj.dataValues.questionObj =null;
+										dbExamObj.numberOfQuestions = dbExamObj.numberOfQuestions-1;
+										if(dbExamObj.numberOfQuestions < 0) {
+											dbExamObj.numberOfQuestions =0;
+										}
+										dbExamObj.save(['numberOfQuestions']);
 										res.send(dbExamObj.dataValues);
 									}).error(function(errors) {
 										res.send(null);

@@ -5,75 +5,98 @@ html
 		meta(http-equiv="X-UA-Compatible",content="IE=edge")
 		meta(name="viewport",content="width=device-width, initial-scale=1.0")
 		link(rel='stylesheet', href='/javascript/frameworks/bootstrap/css/bootstrap.min.css')
-		link(rel='stylesheet', href='/stylesheets/exam.css')
-		link(rel='stylesheet', href='/stylesheets/customStyle.css')
+		
+		link(rel='stylesheet', href='/stylesheets/style.css')
+		
 		script(src="/javascript/frameworks/jquery/jquery-1.10.2.min.js")
 		script(src="/javascript/frameworks/bootstrap/js/bootstrap.min.js")
-		script(src="/javascript/angular/apps/exam.js")
-		script(src="/javascript/common.js")
+		script(src="/javascript/frameworks/angular/angular.min.js")
+		script(src="/javascript/frameworks/angular/angular-resource.min.js")
+		script(src="/javascript/frameworks/angular/angular-sanitize.min.js")
 		
-	body.examBackground
-		div.container
-			.panel.panel-primary
-				.panel-heading
-					span.panel-title 1 of 50
-				.panel-body
-					ul.list-group
-						li.list-group-item(style="border:1px solid green;border-bottom:2px solid green;")
-							.margin5 Question  Question   
-						li.list-group-item(style="border-top:0px white;")
-							.checkbox
-								label
-									input(type="checkbox")   
-									| Check me out Check me
-						li.list-group-item
-							.checkbox
-								label
-									input(type="checkbox")   
-									| Check me out Check me
-						li.list-group-item
-							.checkbox
-								label
-									input(type="checkbox")   
-									| Check me out Check me
-						li.list-group-item
-							.checkbox
-								label
-									input(type="checkbox")   
-									| Check me out Check me
-						li.list-group-item
-							div
-								button.btn.btn-default.margin5(type="button") Previous
-								button.btn.btn-primary.margin5(type="button") Next 	
-					div.table-responsive
-						table.table(style="padding:0px!important")
-							tr
-								td
-									span 
-										button.btn.btn-default 1
-									span
-										button.btn.btn-default 2	
-									span
-										button.btn.btn-default 2
-									span
-										button.btn.btn-default 3
-									span
-										button.btn.btn-default 5
-									span
-										button.btn.btn-default 6
-									span
-										button.btn.btn-default 8
-									span
-										button.btn.btn-default 9
-									span
-										button.btn.btn-success Review
-				a.margin5(href="/",target="_blank") Powered by SmallSlate					
-										
-										
-										
-										
-										
-										
-										
-										
-														
+		script(src="/javascript/common.js")
+		script(src="/javascript/angular/filters/commonFilters.js")
+		script(src="/javascript/angular/apps/exam.js")
+		
+		title Exam
+	body(ng-app="exam",ng-controller="examCtrl",style="background-color:#EEEEEE")
+		div.navbar.navbar-fixed-top.navbar-inverse(role="navigation")
+			div.container
+				div.navbar-header
+					button.navbar-toggle(type="button" data-toggle="collapse" data-target=".navbar-collapse")
+						span.icon-bar
+						span.icon-bar
+						span.icon-bar
+					a.navbar-brand(style="color:white;") Time Limit
+				div.collapse.navbar-collapse	
+					ul.nav.navbar-nav
+							li
+								a.dropdown-toggle {{examObj.examName}}
+							li
+								a.dropdown-toggle #{displayName} 	
+					ul.nav.navbar-nav.navbar-right
+						if isAuthenticated
+							li
+								a.dropdown-toggle(href="#",data-toggle="dropdown",ng-click="submitExam();") Submit Exam
+		div.container.marginTop10
+			div
+				button.btn.btn-primary.btn-lg.btn-block.marginTop10.questionTextAlign(ng-if="!selectedQuestion.questionIsRich",type="button",ng-bind-html="selectedQuestion.question | unsafe")
+				button.btn.btn-default.btn-lg.btn-block.marginTop10.questionTextAlign(ng-if="selectedQuestion.questionIsRich",type="button",ng-bind-html="selectedQuestion.question | unsafe")
+				
+				label.btn.btn-labeled.btn-default.btn-lg.btn-block.marginTop10.buttonWrapText(ng-if="selectedQuestion.questionType=='MCSA'",ng-repeat="questionOptionObj in selectedQuestion.questionOptions")
+					table
+						tr
+							td
+								span.btn-label
+									input(type="radio",name="answer",value="{{questionOptionObj.optionId}}",ng-model="answerList[selectedQuestion.questionId].answer")
+							td
+								span(ng-bind-html="questionOptionObj.optionDesc | unsafe",style="text-align:center")
+					
+				label.btn.btn-labeled.btn-default.btn-lg.btn-block.marginTop10.buttonWrapText(ng-if="selectedQuestion.questionType=='MCMA'",ng-repeat="questionOptionObj in selectedQuestion.questionOptions")
+					table
+						tr
+							td
+								span.btn-label
+									input(type="checkbox",name="answer",ng-true-value="{{questionOptionObj.optionId}}",ng-model="answerList[selectedQuestion.questionId].answer[$index]")   
+							td
+								span(ng-bind-html="questionOptionObj.optionDesc | unsafe")
+				
+				label.btn.btn-labeled.btn-default.btn-lg.btn-block.marginTop10.buttonWrapText(ng-if="selectedQuestion.questionType=='TORF'",ng-repeat="questionOptionObj in selectedQuestion.questionOptions")
+					table
+						tr
+							td
+								span.btn-label
+									input(type="radio",name="answer",value="{{questionOptionObj.optionId}}",ng-model="answerList[selectedQuestion.questionId].answer")   
+							td
+								span(ng-bind-html="questionOptionObj.optionDesc | unsafe")		
+
+				label.btn.btn-default.btn-lg.btn-block.marginTop10.buttonWrapText(ng-if="selectedQuestion.questionType=='ET'")
+					textarea(id="answer",rows="5",style="width:100%",ng-model="answerList[selectedQuestion.questionId].answer") 
+								
+			div.table-responsive
+				table.table(style="padding:0px!important")
+					tr
+						td
+							span(ng-repeat = "questionObj in examObj.questionList") 
+								button.btn.btn-primary(ng-if="selectedQuestion.questionId==questionObj.questionId") {{questionObj.questionNumber}}
+								button.btn.btn-default(ng-if="selectedQuestion.questionId!=questionObj.questionId && !hasAnswered($index)",ng-click="selectQuestion($index);") {{questionObj.questionNumber}}
+								button.btn.btn-success(ng-if="selectedQuestion.questionId!=questionObj.questionId && hasAnswered($index)",ng-click="selectQuestion($index);") {{questionObj.questionNumber}}
+							span
+								button.btn.btn-warning.marginLeft5(ng-click="submitExam();") Submit Exam
+			//a.margin5(href="/",target="_blank") Powered by SmallSlate	
+				
+			//div(ng-repeat = "questionObj in examObj.questionList") 
+					span {{answerList[questionObj.questionId].questionId}} - {{answerList[questionObj.questionId].answer}}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				

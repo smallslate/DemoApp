@@ -96,7 +96,14 @@ app.post('/user/getMyExams', exam.getMyExams);
 app.post('/user/crudExamDetails', exam.crudExamDetails);
 app.post('/user/uploadExamLogo', exam.uploadExamLogo);
 app.get('/epreview', exam.epreview);
+app.post('/getExamPreview', exam.getExamPreview);
 app.get('/user/exam', exam.exam);
+app.post('/user/examService', exam.examService);
+app.get('/user/eresult', exam.eresult);
+app.post('/user/examResultService', exam.examResultService);
+app.get('/user/allMyExamResults', exam.allMyExamResults);
+app.post('/user/allMyExamResultsService', exam.allMyExamResultsService);
+
 
 //---------------Question-------------------------------
 app.post('/user/crudQuestionDetails', exam.crudQuestionDetails);

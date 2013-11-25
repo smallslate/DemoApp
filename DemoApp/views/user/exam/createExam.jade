@@ -16,7 +16,15 @@ block head
 	title Create And Edit Exams
 block content
 	p#noRichEditorMessage(style="color:red;display:none;") Rich editor is not supported on this device.
-	div.marginTop10(ng-app="createExam",ng-cloak)
+	div.marginTop10(ng-app="createExam",ng-cloak,ng-controller="createExamCtrl")
+		.alert.alert-success(ng-if="examObj.isPublished") 
+			p
+				b Exam Id = 
+					a(href="http://{{host}}:{{port}}/epreview?ec={{examObj.examCode}}") {{examObj.examCode}}
+			b Exam URL = 
+					a(href="http://{{host}}:{{port}}/epreview?ec={{examObj.examCode}}") http://{{host}}:{{port}}/epreview?ec={{examObj.examCode}}	
+			p
+				small Share this Exam ID or Exam URL with your users to access this Exam 		
 		ul.nav.nav-tabs#createExamTab
 			li.active
 				a(href="#examDetails" data-toggle="tab") 
@@ -27,10 +35,27 @@ block content
 			li
 				a(href="#publishExam" data-toggle="tab") 
 					b(style="color:#A52A2A;") 3. Publish Exam
-		div.tab-content.marginTop10#createExamTabContent(ng-controller="createExamCtrl")
+		div.tab-content.marginTop10#createExamTabContent
 			div.tab-pane.fade.in.active#examDetails
 				include /user/exam/examDetailsForm
 			div.tab-pane.fade#examQuestions
 				include /user/exam/questionDetails
 			div.tab-pane.fade#publishExam
 				include /user/exam/publishExam
+		.row
+			.col-sm-6.col-md-2
+				a(href="/user/profile") My Profile	
+			.col-sm-6.col-md-2
+				a(href="/user/viewExams") My Exams
+			.col-sm-6.col-md-2(ng-if="examObj.examId>0")
+				a(href="/user/createExam") Create New Exam					
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				

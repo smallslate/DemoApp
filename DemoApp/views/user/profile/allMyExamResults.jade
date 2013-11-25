@@ -1,0 +1,76 @@
+extends /common/layout
+block head
+	title Exam Preview
+	script(src="/javascript/frameworks/angular/angular.min.js")
+	script(src="/javascript/frameworks/angular/angular-resource.min.js")
+	script(src="/javascript/frameworks/misc/moment.min.js")
+	script.
+		var allMyExamResultsApp = angular.module('allMyExamResultsApp', ['ngResource']);
+		allMyExamResultsApp.controller('allMyExamResultsCtrl', ['$scope','allMyExamResultsService',function($scope,allMyExamResultsService) {
+			$scope.allMyExamResults = allMyExamResultsService.query({action:'getAllMyExamResults'});
+			$scope.deleteMyResult = function(sessionCode) {
+				if(confirm("After deletion, this result will never appear in your list... Do you want to delete this result?")) {
+					$scope.allMyExamResults = allMyExamResultsService.query({action:'deleteMyResult',sessionCode:sessionCode});
+				}
+			};
+		}]);
+		
+		allMyExamResultsApp.factory('allMyExamResultsService',['$resource', function($resource) {
+			return $resource('/user/allMyExamResultsService', {}, {
+				query : {method : 'POST',isArray : true}
+			});
+		}]);
+		
+		allMyExamResultsApp.filter('timeFormat', function() {
+			return function(val) {
+				return moment(val).format('lll');
+			};
+		})
+		
+block content
+	div(ng-app="allMyExamResultsApp",ng-controller="allMyExamResultsCtrl")
+		div(ng-if="allMyExamResults && allMyExamResults.length>0")
+			.panel.panel-primary.marginTop10(ng-repeat="examResult in allMyExamResults")
+				.panel-heading 
+					b {{examResult.examObj.examName}}
+				.panel-body
+					.row
+						.col-sm-4.col-md-3(ng-repeat="reltSession in examResult.sessionList")
+							div.thumbnail
+								div(ng-if="reltSession.examStatus=='SUBMIT' && reltSession.isResultPublished==true")
+									a(href="/user/eresult?sc={{reltSession.sessionCode}}") {{reltSession.createdAt | timeFormat}}
+									div
+										a(href="/user/eresult?sc={{reltSession.sessionCode}}") View Results
+									div
+										a(ng-click="deleteMyResult(reltSession.sessionCode)")
+											img.img-circle.pointer(src="/img/delete.png",title="delete")
+								
+								div(ng-if="reltSession.examStatus=='SUBMIT' && reltSession.isResultPublished==false") 
+									div {{reltSession.createdAt | timeFormat}}
+									div Pending for evaluation.
+									div
+										a(ng-click="deleteMyResult(reltSession.sessionCode)")
+											img.img-circle.pointer(src="/img/delete.png",title="delete")
+					
+								div(ng-if="reltSession.examStatus=='START'") 
+									div {{reltSession.createdAt | timeFormat}}
+									div Exam not completed.
+									div
+										a(ng-click="deleteMyResult(reltSession.sessionCode);")
+											img.img-circle.pointer(src="/img/delete.png",title="delete")
+		div(ng-if="!allMyExamResults || allMyExamResults.length<=0")
+			.alert.alert-success.marginTop10
+				b Exam result list is empty. 
+				
+		.row
+			.col-sm-6.col-md-2
+				a(href="/user/profile") My Profile					
+				
+				
+				
+				
+				
+							
+					
+					
+					

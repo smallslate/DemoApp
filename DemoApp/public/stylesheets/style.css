@@ -12,6 +12,14 @@ body {
 	margin-top: 10px;
 }
 
+.marginRight10 {
+	margin-right: 10px;
+}
+
+.marginLeft5 {
+	margin-left: 5px;
+}
+
 .margin5 {
 	margin: 5px;
 }
@@ -29,9 +37,42 @@ label.error {
 	cursor: pointer;
 }
 
-.marginRight10 {
-	margin-right: 10px;
+.imgSize {
+	height:128px !important;
+	width:128px!important;
 }
 
+.textAlignCenter {
+	text-align: center!important;
+}
 
+.examQuestion {
+	border:2px solid black;
+	border-bottom:3px solid black;
+}
 
+.buttonWrapText {
+	white-space: normal!important;
+}
+
+.questionTextAlign {
+	white-space: normal!important;
+	text-align:left;
+	padding-left:10px;
+}
+
+.btn-label {
+	position: relative;
+	display: inline-block;
+	padding: 6px 12px;
+	border-radius: 3px 3px 3px 3px;
+}
+
+.btn-labeled {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+.btn {
+	margin-bottom: 10px;
+}

@@ -12,6 +12,7 @@ module.exports = function(sequelize, DataTypes) {
 	numberOfQuestions: {type:DataTypes.INTEGER,defaultValue: 0},
 	noOfViews: {type:DataTypes.BIGINT,defaultValue: 0},
 	isActive : {type:DataTypes.BOOLEAN,defaultValue: true},
+	showResultsAfterExam : {type:DataTypes.BOOLEAN,defaultValue: true},
 	isPublished : {type:DataTypes.BOOLEAN,defaultValue: false},
 	examTime: {type:DataTypes.BIGINT,defaultValue: 0},
 	examReferences : DataTypes.TEXT,
@@ -24,3 +25,11 @@ module.exports = function(sequelize, DataTypes) {
 //ALTER TABLE questions MODIFY COLUMN question LONGTEXT
 //ALTER TABLE questions MODIFY COLUMN answerDescr LONGTEXT
 //ALTER TABLE questionOptions MODIFY COLUMN optionDesc LONGTEXT
+//ALTER TABLE ExamSessions MODIFY COLUMN answers LONGTEXT
+//ALTER TABLE ExamSessions MODIFY COLUMN evalAnswers LONGTEXT
+
+
+
+
+
+

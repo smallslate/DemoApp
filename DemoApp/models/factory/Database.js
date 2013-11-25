@@ -1,9 +1,10 @@
 var userModels = [{name:'User',path:'../common/User'},
                   {name:'Category',path:'../common/Category'},
                   {name:'SubCategory',path:'../common/SubCategory'},
-                  {name:'Exam',path:'../quiz/Exam'},
-                  {name:'Question',path:'../quiz/Question'},
-                  {name:'QuestionOption',path:'../quiz/QuestionOption'}
+                  {name:'Exam',path:'../exam/Exam'},
+                  {name:'Question',path:'../exam/Question'},
+                  {name:'QuestionOption',path:'../exam/QuestionOption'},
+                  {name:'ExamSession',path:'../exam/ExamSession'}
                  ];
 var models = {};
 
@@ -46,6 +47,7 @@ var Database = function Database() {
     	models["Category"].hasMany(models["SubCategory"],{as: 'subCategories',foreignKey: 'categoryId'});
     	models["Exam"].hasMany(models["Question"],{as: 'questions',foreignKey: 'examId'});
     	models["Question"].hasMany(models["QuestionOption"],{as: 'questionOptions',foreignKey: 'questionId'});
+    	models["Exam"].hasMany(models["ExamSession"],{as: 'examSessions',foreignKey: 'examId'});
     }
     
     if(Database.caller != Database.getInstance){

@@ -4,22 +4,29 @@ form.form-horizontal#publishExamForm(role="form")
 		div.col-lg-1
 			label 
 				input.form-control(type="number",ng-model="examObj.examTime")
+	div.form-group
+		label.col-lg-2.control-label Show Results After Exam
+		div.col-lg-1
+			input(type="checkbox",data-ng-model="examObj.showResultsAfterExam")  {{examObj.showResultsAfterExam}}
+		div.col-lg-9
+			span If checked, results will be evaluated automatically depending on answers you have provided and will be shown to user immediately after exam has been submitted. Please note, If your exam contains Essay type questions, these questions will not be evaluated and will not be counted 
+			| towards final score. You have to evalvate each user exam to publish final score. 
 	div.form-group 
 		label.col-lg-2.control-label Exam References
 		div.col-lg-10
 			textarea.form-control(ck-editor=100,data-ng-model="examObj.examReferences")	
 			p Add exam references like web site url's, videos etc. Users can use these references before taking the exam.  
 	div.form-group 
-		label.col-lg-2.control-label Author Contact Details
+		label.col-lg-2.control-label Author Details
 		div.col-lg-10
 			textarea.form-control(ck-editor=100,data-ng-model="examObj.authorDetails")	
 			p You can add author contact details for people to contact if they like your exam and want you as tutor. You can Add your website, Facebook, Twitter, Google+ or social network profile URL's you like.However be careful while providing your information,email's or phone numbers. Details you have provided will be shown on exam preview page.  
 	div.form-group		
 		div.col-lg-offset-2.col-lg-10
-			button.btn.btn-primary.margin5(ng-click="publishExam('savePublishData')") Save	
+			button.btn.btn-primary.margin5(ng-click="publishExam('updatePublishData')") Save	
 			button.btn.btn-success.margin5(ng-if="!examObj.isPublished",ng-click="publishExam('publishExam')") Publish Exam	
-			button.btn.btn-danger.margin5(ng-if="examObj.isPublished",ng-click="publishExam('unpublishExam')") Un Publish
-			button.btn.btn-danger.btn-xs.margin5.pull-right(ng-if="examObj.examId>0",ng-click="publishExam('delete')") Delete Exam
+			button.btn.btn-danger.btn-xs.margin5(ng-if="examObj.isPublished",ng-click="publishExam('unpublishExam')") Un Publish
+			button.btn.btn-danger.btn-xs.margin5.pull-right(ng-if="examObj.examId>0",ng-click="publishExam('deleteExam')") Delete Exam
 			
-div.alert.alert-danger(ng-if="examObj.error") {{examObj.error}}
-div.alert.alert-success(ng-if="examObj.success") {{examObj.success}}									
+div.alert.alert-danger(ng-if="examObj.publishErrorMessage") {{examObj.publishErrorMessage}}
+div.alert.alert-success(ng-if="examObj.publishSuccessMessage") {{examObj.publishSuccessMessage}}									

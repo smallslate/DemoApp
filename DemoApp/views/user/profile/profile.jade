@@ -10,15 +10,30 @@ block content
 			if isAdmin
 				li
 					a(href='#admin', data-toggle='tab')
-						b(style="color:#A52A2A") Admin
+						b(style="color:#A52A2A") Admin		
 		div.tab-content
 			div#exam.tab-pane.fade.in.active
+				div.panel.panel-primary.marginTop10
+					div.panel-heading 
+						b My Exams
+					div.panel-body
+						div.row
+							div.col-sm-6.col-md-4.margin5
+								a(href="/user/allMyExamResults",data-toggle="tooltip",data-title="View Exam Results")
+									table
+										tr
+											td
+												img.img-rounded(src="/img/eresults.png",alt="View Exam Results")
+											td 
+												div 
+													b Exam Results
+													div.textDescription View all your exam results	
 				div.panel.panel-primary.marginTop10
 					div.panel-heading 
 						b Exam Tools
 					div.panel-body
 						div.row
-							div.col-sm-6.col-md-4
+							div.col-sm-6.col-md-4.margin5
 								a(href="/user/createExam",data-toggle="tooltip",data-title="Create Exam")
 									table
 										tr
@@ -28,7 +43,7 @@ block content
 												div 
 													b Create Exam
 													div.textDescription Create and Share Exams
-							div.col-sm-6.col-md-4
+							div.col-sm-6.col-md-4.margin5
 								a(href="/user/viewExams",data-toggle="tooltip",data-title="View Exams")
 									table
 										tr
@@ -36,7 +51,7 @@ block content
 												img.img-rounded(src="/img/editExam.png",alt="View Exams")
 											td 
 												div 
-													b View Exams
+													b My Exams
 													div.textDescription View and edit exams you created					
 			
 			if isAdmin

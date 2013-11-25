@@ -1,9 +1,10 @@
 ﻿// Declare app level module which depends on filters, and services
 var createExamApp = angular.module('createExam', ['ngResource','commonService','ckEditorDirective','commonFilters']);
 
-createExamApp.controller('createExamCtrl', ['$scope','getAllCategoriesService','getSubCategoriesByCategoryCodeService', 'crudExamDetailsService','crudQuestionService','getSubCategoriesByExamCodeService',
-                                          function($scope,getAllCategoriesService,getSubCategoriesByCategoryCodeService,crudExamDetailsService,crudQuestionService,getSubCategoriesByExamCodeService) {
-	
+createExamApp.controller('createExamCtrl', ['$scope','$location','getAllCategoriesService','getSubCategoriesByCategoryCodeService', 'crudExamDetailsService','crudQuestionService','getSubCategoriesByExamCodeService',
+                                          function($scope,$location,getAllCategoriesService,getSubCategoriesByCategoryCodeService,crudExamDetailsService,crudQuestionService,getSubCategoriesByExamCodeService) {
+	$scope.host = $location.host();
+	$scope.port = $location.port();
 	$scope.categories = getAllCategoriesService.query({},function() {
 		if($scope.categories && $scope.categories.length>0) {
 			var examCode = getURLParameter('examCode'); 
@@ -53,13 +54,17 @@ createExamApp.controller('createExamCtrl', ['$scope','getAllCategoriesService','
 	$scope.publishExam = function(action) {
 		var isValid = true;
 		if(action!='delete') {
-			if($scope.examObj.examTime.length>0 && (isNaN($scope.examObj.examTime) || $scope.examObj.examTime<5)) {
+			if(isNaN($scope.examObj.examTime) || ($scope.examObj.examTime<5 && $scope.examObj.examTime>0)) {
 				alert("Exam Time should be valid number greater then or equal to 5");
 				isValid = false;
 			}
 		}
-		//$('#createExamTab a[href="#examQuestions"]').tab('show');
-		if(isValid) {
+		
+		if(action == 'deleteExam') {
+			if(confirm("Exam and all questions related to this exam will be deactivated. This exam will never appear in your list... Do you want to deactivate this exam?")) {
+				$scope.examObj = crudExamDetailsService.crudExamDetails({examCode:$scope.examObj.examCode,action:action});
+			}
+		} else if(isValid) {
 			$scope.examObj = crudExamDetailsService.crudExamDetails({examObj:$scope.examObj,action:action});
 		}
 	};

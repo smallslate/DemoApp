@@ -1,0 +1,181 @@
+extends /common/layout
+block head
+	title Exam Preview
+	script(src="/javascript/frameworks/angular/angular.min.js")
+	script(src="/javascript/frameworks/angular/angular-resource.min.js")
+	script(src="/javascript/frameworks/angular/angular-sanitize.min.js")
+	script(src="/javascript/frameworks/misc/moment.min.js")
+	script(src="/javascript/angular/filters/commonFilters.js")
+	script(src="/javascript/angular/apps/eResult.js")
+		
+block content
+	div(ng-app="examResultApp",ng-controller="examResultCtrl")
+		.row.marginTop10
+			.col-sm-6.col-md-2
+				a(href="/user/profile") My Profile
+			.col-sm-6.col-md-2
+				a(href="/user/allMyExamResults") Exam Results
+		.jumbotron
+			.row
+				.col-md-2 
+					img.img-rounded(ng-src="https://s3.amazonaws.com/uqi/{{examObj.examImg}}",height="128",width="128")
+				.col-md-10 
+					h1 {{examObj.examName}}
+			div(ng-if="examObj.examSession")		
+				.row.marginTop10
+					.col-md-3
+						button.btn.btn-primary.btn-lg.btn-block.buttonWrapText(type="button") 
+							b Questions :  {{evalObj.evalList.length}}
+					.col-md-3
+						button.btn.btn-success.btn-lg.btn-block.buttonWrapText(type="button") 
+							b Correct : {{evalObj.correct}}
+					.col-md-3
+						button.btn.btn-danger.btn-lg.btn-block.buttonWrapText(type="button") 
+							b Wrong : {{evalObj.wrong}}
+					.col-md-3
+						button.btn.btn-warning.btn-lg.btn-block.buttonWrapText(type="button") 
+							b Not Evaluated : {{evalObj.notElav}}
+			.row
+				.col-md-3 
+					div {{examObj.userObj.userDisplayName}}
+				.col-md-3 
+					div(style="font-size:60%;margin-top:10px;") Start Time - {{examObj.examSession.createdAt}}
+				.col-md-3 
+					div(style="font-size:60%;margin-top:10px;") End Time - {{examObj.examSession.updatedAt}}
+						
+		div(ng-if="examObj.examSession",ng-repeat="qAnswer in evalObj.evalList")
+			.panel.panel-success(ng-if="qAnswer.isAnswerCorrect == true")
+				.panel-heading 
+					b {{$index+1}} - Correct Answer
+				.panel-body(ng-if="!qAnswer.isDeleted")
+					div
+						span 
+							b Question : 
+						span(ng-bind-html="qAnswer.question.question | unsafe")	
+					div
+						span 
+							b Question Type :
+						span(ng-if="qAnswer.question.questionType=='MCSA'") Multiple Choice - Single Answer
+						span(ng-if="qAnswer.question.questionType=='MCMA'") Multiple Choice - Multiple Answers
+						span(ng-if="qAnswer.question.questionType=='TORF'") True / False
+						span(ng-if="qAnswer.question.questionType=='ET'") Essay Type
+					div(ng-repeat="questionOptionsfromList in qAnswer.question.questionOptions",ng-if="qAnswer.question.questionType!='ET'")
+						span 
+							b(ng-if="!questionOptionsfromList.isAnswer") Option {{$index+1}}    
+							b(ng-if="questionOptionsfromList.isAnswer",style="color:green;") Option {{$index+1}} (Answer) 
+						b :	    
+						span(ng-bind-html="questionOptionsfromList.optionDesc | unsafe")
+					div(ng-repeat="questionOptionsfromList in qAnswer.question.questionOptions",ng-if="qAnswer.question.questionType=='ET'")
+						span 
+							b Answer 
+						b :
+						span(ng-bind-html="qAnswer.userAnswer | unsafe")	
+					div	
+						span 
+							b(style="color:green;") Answer Description :    
+						span(ng-bind-html="qAnswer.question.answerDescr | unsafe")	
+					div		
+						span 
+							b Difficulty Level :    
+						span(ng-if="qAnswer.question.difficultyLevel==0") Easy
+						span(ng-if="qAnswer.question.difficultyLevel==1") Medium
+						span(ng-if="qAnswer.question.difficultyLevel==2") Hard			
+				.panel-body(ng-if="qAnswer.isDeleted")
+					div
+						span 
+							b This question has been deleted by Author		
+			
+			.panel.panel-danger(ng-if="qAnswer.isAnswerCorrect == false") 
+				.panel-heading 
+					b {{$index+1}} - Wrong Answer
+				.panel-body(ng-if="!qAnswer.isDeleted")
+					div
+						span 
+							b Question : 
+						span(ng-bind-html="qAnswer.question.question | unsafe")	
+					div
+						span 
+							b Question Type :
+						span(ng-if="qAnswer.question.questionType=='MCSA'") Multiple Choice - Single Answer
+						span(ng-if="qAnswer.question.questionType=='MCMA'") Multiple Choice - Multiple Answers
+						span(ng-if="qAnswer.question.questionType=='TORF'") True / False
+						span(ng-if="qAnswer.question.questionType=='ET'") Essay Type
+					div(ng-repeat="questionOptionsfromList in qAnswer.question.questionOptions",ng-if="qAnswer.question.questionType!='ET'")
+						span 
+							b(ng-if="!questionOptionsfromList.isAnswer && (qAnswer.userAnswer.indexOf(questionOptionsfromList.optionId.toString())== -1)") Option {{$index+1}} 
+							b(ng-if="questionOptionsfromList.isAnswer",style="color:green;") Option {{$index+1}} (Answer)    
+							
+							b(ng-if="questionOptionsfromList.isAnswer && (questionOptionsfromList.optionId == qAnswer.userAnswer || qAnswer.userAnswer.indexOf(questionOptionsfromList.optionId.toString())!=-1)",style="color:red;") (Selected Answer)    
+							b(ng-if="!questionOptionsfromList.isAnswer && (questionOptionsfromList.optionId == qAnswer.userAnswer || qAnswer.userAnswer.indexOf(questionOptionsfromList.optionId.toString())!=-1)",style="color:red;") Option {{$index+1}} (Selected Answer) 
+						b :
+						span(ng-bind-html="questionOptionsfromList.optionDesc | unsafe")
+						
+					div(ng-repeat="questionOptionsfromList in qAnswer.question.questionOptions",ng-if="qAnswer.question.questionType=='ET'")
+						span 
+							b Answer 
+						b :
+						span(ng-bind-html="qAnswer.userAnswer | unsafe")
+					div	
+						span 
+							b(style="color:green;") Answer Description :    
+						span(ng-bind-html="qAnswer.question.answerDescr | unsafe")	
+					div		
+						span 
+							b Difficulty Level :    
+						span(ng-if="qAnswer.question.difficultyLevel==0") Easy
+						span(ng-if="qAnswer.question.difficultyLevel==1") Medium
+						span(ng-if="qAnswer.question.difficultyLevel==2") Hard	
+									
+				.panel-body(ng-if="qAnswer.isDeleted")
+						div
+							span 
+								b This question has been deleted by Author			
+									
+			.panel.panel-primary(ng-if="qAnswer.isAnswerCorrect == 'NA'") 
+				.panel-heading 
+					b {{$index+1}} - Not Evaluated 
+					span - Author needs to evaluate
+				.panel-body(ng-if="!qAnswer.isDeleted")
+					div
+						span 
+							b Question : 
+						span(ng-bind-html="qAnswer.question.question | unsafe")
+					div
+						span 
+							b Question Type :
+						span(ng-if="qAnswer.question.questionType=='MCSA'") Multiple Choice - Single Answer
+						span(ng-if="qAnswer.question.questionType=='MCMA'") Multiple Choice - Multiple Answers
+						span(ng-if="qAnswer.question.questionType=='TORF'") True / False
+						span(ng-if="qAnswer.question.questionType=='ET'") Essay Type	
+					div
+						span 
+							b Answer:
+						span(ng-bind-html="qAnswer.userAnswer | unsafe")
+				.panel-body(ng-if="qAnswer.isDeleted")
+					div
+						span 
+							b This question has been deleted by Author 
+		div(ng-if="!examObj.examSession")
+			b Results are not available. Author needs to evaluate and publish your results.
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+
+					

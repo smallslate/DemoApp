@@ -9,14 +9,14 @@ div.form-group
 div.form-group 		
 	label.col-lg-2.control-label Option 1
 	div.col-lg-1
-		b True
+		b(style="color:green;") True
 	div.col-lg-2
 		label Answer
 			input(type="radio",name="answer",value="option1",id="option1Answer",ng-checked="examObj.questionObj.questionOptions[0].isAnswer")
 div.form-group 
 	label.col-lg-2.control-label Option 2
 	div.col-lg-1
-		b False
+		b(style="color:red;") False
 	div.col-lg-2
 		label Answer
 			input(type="radio",name="answer",value="option2",id="option2Answer",ng-checked="examObj.questionObj.questionOptions[1].isAnswer")

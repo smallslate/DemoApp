@@ -26,14 +26,14 @@ block content
 												img.img-rounded(src="/img/eresults.png",alt="View Exam Results")
 											td 
 												div 
-													b Exam Results
+													b My Exam Results
 													div.textDescription View all your exam results	
 				div.panel.panel-primary.marginTop10
 					div.panel-heading 
-						b Exam Tools
+						b Exam Tools - For Exam Authors
 					div.panel-body
 						div.row
-							div.col-sm-6.col-md-4.margin5
+							div.col-sm-6.col-md-4
 								a(href="/user/createExam",data-toggle="tooltip",data-title="Create Exam")
 									table
 										tr
@@ -43,7 +43,7 @@ block content
 												div 
 													b Create Exam
 													div.textDescription Create and Share Exams
-							div.col-sm-6.col-md-4.margin5
+							div.col-sm-6.col-md-4
 								a(href="/user/viewExams",data-toggle="tooltip",data-title="View Exams")
 									table
 										tr
@@ -51,8 +51,19 @@ block content
 												img.img-rounded(src="/img/editExam.png",alt="View Exams")
 											td 
 												div 
-													b My Exams
-													div.textDescription View and edit exams you created					
+													b Exams
+													div.textDescription View and edit exams you created	
+														div.col-sm-6.col-md-4.margin5
+							div.col-sm-6.col-md-4							
+								a(href="/user/evaluateList",data-toggle="tooltip",data-title="Evaluate Exams")
+									table
+										tr
+											td
+												img.img-rounded(src="/img/evaluate.png",alt="Evaluate Exams")
+											td 
+												div 
+													b Evaluate Exams
+													div.textDescription View and Evaluate Exams									
 			
 			if isAdmin
 				div#admin.tab-pane.fade 

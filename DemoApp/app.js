@@ -103,7 +103,9 @@ app.get('/user/eresult', exam.eresult);
 app.post('/user/examResultService', exam.examResultService);
 app.get('/user/allMyExamResults', exam.allMyExamResults);
 app.post('/user/allMyExamResultsService', exam.allMyExamResultsService);
-
+app.get('/user/evaluateList', exam.evaluateList);
+app.get('/exploreExams', exam.exploreExams);
+app.get('/examHome', exam.examHome);
 
 //---------------Question-------------------------------
 app.post('/user/crudQuestionDetails', exam.crudQuestionDetails);

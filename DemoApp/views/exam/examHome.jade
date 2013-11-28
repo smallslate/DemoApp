@@ -1,0 +1,51 @@
+extends /common/layout
+block head
+	link(rel='stylesheet', href='/stylesheets/carousel.css')
+	title Welcome - Exams
+	.carousel
+		.carousel-inner
+			.item.active
+				img(src='img/exam.png', alt='Exams')
+				.container
+					.carousel-caption
+						h1 Exams
+						p Find, Access & Save Results  
+						p Create, Share & Evaluate 
+	.container.marketing
+		.row.featurette
+			.col-md-7
+				h1 Exam features
+				h5
+					span Access Anywhere - 
+					span.text-muted Works across devices - phones, tablets, laptop and TV's
+				h5
+					span Take Exam - 
+					span.text-muted Rethought of exams with speed, simplicity and intuitive
+				h5
+					span History - 
+					span.text-muted Store and view your exam results any time
+				br	
+				h4 Exam Authors ... Here You Go	!!!
+				h5
+					span Create - 
+					span.text-muted Multiple choice, Multiple Answers, True/False, Essay Type
+				h5
+					span Rich - 
+					span.text-muted Create questions with images and rich text 	
+				h5
+					span Share Exam - 
+					span.text-muted Share exam id or exam URL with anyone  	
+				h5
+					span Track Who Took Exam - 
+					span.text-muted Track user name, answer sheet, time spent & more
+				h5
+					span Evaluate Exam - 
+					span.text-muted Evaluate exam and publish results to user
+					
+			.col-md-5
+				.jumbotron
+					a.btn.btn-primary.btn-lg.btn-block.buttonWrapText(href="/exploreExams") Find Exams
+					a.btn.btn-danger.btn-lg.btn-block.buttonWrapText(href="/user/allMyExamResults") View My Exam Results
+					a.btn.btn-success.btn-lg.btn-block.buttonWrapText(href="/user/createExam") Create Exam
+					a.btn.btn-info.btn-lg.btn-block.buttonWrapText(href="/user/viewExams") View Exams Created
+					a.btn.btn-warning.btn-lg.btn-block.buttonWrapText(href="/user/evaluateList") Evaluate Exams	

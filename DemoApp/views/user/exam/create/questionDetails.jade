@@ -1,5 +1,5 @@
 div.alert.alert-success.marginTop10(ng-if="(!examObj.questionList && !isAddingNewQuestion) || (examObj.questionList.length<1 && !isAddingNewQuestion)") 
-	b.marginRight10 Oops... No Questions
+	b.marginRight10 No questions yet
 	button.btn.btn-success(ng-click="addNewQuestion()") Add New Question
 div.table-responsive(ng-show="examObj.questionList && examObj.questionList.length>0")
 	table.table(style="padding:0px!important")
@@ -16,7 +16,7 @@ div.panel.panel-primary.marginTop10(ng-if="isAddingNewQuestion")
 		b Question# {{examObj.questionObj.questionNumber}}
 	div.panel-body
 		form.form-horizontal#examQuestionForm(role="form")
-			div.form-group(ng-if="!examObj.questionObj.questionId")
+			div.form-group(ng-show="!examObj.questionObj.questionId")
 				label.col-lg-2.control-label Question Type
 				div.col-lg-10
 					select.form-control(name="questionType",id="questionType",ng-model="examObj.questionObj.questionType")
@@ -25,13 +25,13 @@ div.panel.panel-primary.marginTop10(ng-if="isAddingNewQuestion")
 						option(value="TORF") True / False
 						option(value="ET") Essay Type 
 			div(ng-if="examObj.questionObj.questionType=='MCSA'")
-				include /user/exam/mcsaForm			
+				include /user/exam/create/mcsaForm			
 			div(ng-if="examObj.questionObj.questionType=='MCMA'")
-				include /user/exam/mcmaForm
+				include /user/exam/create/mcmaForm
 			div(ng-if="examObj.questionObj.questionType=='TORF'")
-				include /user/exam/torfForm
+				include /user/exam/create/torfForm
 			div(ng-if="examObj.questionObj.questionType=='ET'")
-				include /user/exam/etForm
+				include /user/exam/create/etForm
 			div.form-group
 				div.col-sm-offset-2.col-sm-10
 					button.btn.btn-default.marginRight10(type="submit",ng-click = "closeQuestionForm();") Close

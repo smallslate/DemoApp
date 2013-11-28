@@ -37,17 +37,19 @@ block content
 					b(style="color:#A52A2A;") 3. Publish Exam
 		div.tab-content.marginTop10#createExamTabContent
 			div.tab-pane.fade.in.active#examDetails
-				include /user/exam/examDetailsForm
+				include /user/exam/create/examDetailsForm
 			div.tab-pane.fade#examQuestions
-				include /user/exam/questionDetails
+				include /user/exam/create/questionDetails
 			div.tab-pane.fade#publishExam
-				include /user/exam/publishExam
+				include /user/exam/create/publishExam
 		.row
-			.col-sm-6.col-md-2
+			.col-sm-6.col-md-2.marginTop10
+				a(href="/examHome") Exam Home
+			.col-sm-6.col-md-2.marginTop10
 				a(href="/user/profile") My Profile	
-			.col-sm-6.col-md-2
-				a(href="/user/viewExams") My Exams
-			.col-sm-6.col-md-2(ng-if="examObj.examId>0")
+			.col-sm-6.col-md-2.marginTop10
+				a(href="/user/viewExams") Created Exams
+			.col-sm-6.col-md-2.marginTop10(ng-if="examObj.examId>0")
 				a(href="/user/createExam") Create New Exam					
 				
 				

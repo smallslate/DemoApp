@@ -134,7 +134,6 @@ createExamApp.controller('createExamCtrl', ['$scope','$location','getAllCategori
 	   }
 		
 	   if(isValid) {
-		   	//console.log($scope.examObj.questionObj);
 	   		$scope.examObj.questionObj.success = null;
 	   		$scope.examObj.questionObj.error = null;
 	   		$scope.examObj = crudQuestionService.crudQuestionDetails({examCode:$scope.examObj.examCode,questionObj:$scope.examObj.questionObj,action:action});

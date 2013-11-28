@@ -10,8 +10,13 @@ div.navbar.navbar-fixed-top.navbar-inverse(role="navigation")
 			ul.nav.navbar-nav
 				li
 					a(href="/user/profile") My Profile
-				li
-					a(href="/user/eresult") Result	
+			form.navbar-form.navbar-left(role="search",style="margin-bottom:-10px;")
+				div.input-group
+					input.form-control(type="text",placeholder="Search")
+					.input-group-btn
+						button.btn.btn-default(type="submit")
+							i.glyphicon.glyphicon-search
+					
 			ul.nav.navbar-nav.navbar-right
 				if isAuthenticated
 					li
@@ -19,7 +24,9 @@ div.navbar.navbar-fixed-top.navbar-inverse(role="navigation")
 							b.caret
 						ul.dropdown-menu
 							li
-								a(href="/logout") Log Out	
+								a(href="/examHome") Exams	
+							li
+								a(href="/logout") Log Out		
 				else 
 					li
-						a(href="/login") Log In
+						a(href="/login") Log In	

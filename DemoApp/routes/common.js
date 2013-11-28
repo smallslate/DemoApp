@@ -11,7 +11,7 @@ Common.commonFilter = function(req,res,next) {
 };
 
 Common.index = function(req,res) {
-	res.render('index');	
+	res.render('exam/examHome');	
 };
 
 Common.login = function(req,res) {

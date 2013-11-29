@@ -215,8 +215,8 @@ Exam.createExam = function(req,res) {
 	res.render('user/exam/create/createExam');	
 };
 
-Exam.viewExams = function(req,res) {
-	res.render('user/exam/viewExams');	
+Exam.myExams = function(req,res) {
+	res.render('user/exam/myExams');	
 };
 
 Exam.exam = function(req,res) {
@@ -428,7 +428,7 @@ Exam.examService = function(req,res) {
 
 	if(action && action == 'startExam' && examCode && examCode.length>=8 && req.isAuthenticated()) {
 		db.model("Exam").find({ where: {examCode:examCode,isActive:true,isPublished:true} }).success(function(dbExamObj) {
-			dbExamObj.getQuestions({order: 'questionNumber ASC',include:[{model: db.model("QuestionOption"),as:'questionOptions',attributes: ['optionId', 'optionDesc','isOptionRich']}]}).success(function(questionList) {
+			dbExamObj.getQuestions({order: 'questionNumber ASC',attributes: ['Questions.questionId', 'Questions.questionNumber','Questions.questionType','Questions.question', 'Questions.questionIsRich','Questions.examId'],include:[{model: db.model("QuestionOption"),as:'questionOptions',attributes: ['optionId', 'optionDesc','isOptionRich']}]}).success(function(questionList) {
 				dbExamObj.dataValues.questionList =questionList;
 				db.model("ExamSession").create({userId:req.user.loggedInUserId,examStatus:'START',isResultPublished:dbExamObj.showResultsAfterExam}).success(function(newExamSessionObj) {
 					newExamSessionObj.sessionCode = hashids.encrypt(newExamSessionObj.examSessionId);
@@ -459,7 +459,11 @@ Exam.examService = function(req,res) {
 						dbExamSession.evalAnswers = JSON.stringify(evalAnswers(examSession,questionsList));
 						dbExamSession.examStatus = 'SUBMIT';
 						dbExamSession.save(['answers','evalAnswers','examStatus']).success(function(dbExamSession) {
-							res.send({success:'success'});
+							db.model("Exam").find({ where: {examId:examSession.examId,isActive:true,isPublished:true} }).success(function(dbExamObjForUpdate) {
+								dbExamObjForUpdate.noOfViews += 1;
+								dbExamObjForUpdate.save(['noOfViews']);
+								res.send({success:'success'});
+							});
 						}).error(function(err) {
 							console.log('Exam.examService ExamSession = ExamSession = '+err);
 							res.send({error:'Failed to save your data.Cannot find you session.'});
@@ -544,7 +548,7 @@ Exam.examResultService = function(req,res) {
 				if(dbExamSessionObj.userId == req.user.loggedInUserId || dbExamObj.createdBy == req.user.loggedInUserId || res.locals.isAdmin) {
 					dbExamObj.getQuestions({include:[{model: db.model("QuestionOption"),as:'questionOptions'}],order: 'questionNumber ASC'}).success(function(questionList) {
 						dbExamObj.dataValues.questionList = questionList;
-						if(dbExamSessionObj.isResultPublished == true) {
+						if(dbExamSessionObj.isResultPublished == true || dbExamObj.showResultsAfterExam == true) {
 							dbExamSessionObj.answers = eval("("+dbExamSessionObj.answers+ ")");
 							dbExamSessionObj.evalAnswers = eval("("+dbExamSessionObj.evalAnswers+")"); 
 							dbExamObj.dataValues.examSession = dbExamSessionObj;

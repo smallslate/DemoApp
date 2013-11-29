@@ -1,5 +1,5 @@
 div.alert.alert-success.marginTop10(ng-if="(!examObj.questionList && !isAddingNewQuestion) || (examObj.questionList.length<1 && !isAddingNewQuestion)") 
-	b.marginRight10 No questions yet
+	b.marginRight10 No questions added
 	button.btn.btn-success(ng-click="addNewQuestion()") Add New Question
 div.table-responsive(ng-show="examObj.questionList && examObj.questionList.length>0")
 	table.table(style="padding:0px!important")

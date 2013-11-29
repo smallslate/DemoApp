@@ -53,19 +53,24 @@ createExamApp.controller('createExamCtrl', ['$scope','$location','getAllCategori
 	
 	$scope.publishExam = function(action) {
 		var isValid = true;
-		if(action!='delete') {
-			if(isNaN($scope.examObj.examTime) || ($scope.examObj.examTime<5 && $scope.examObj.examTime>0)) {
-				alert("Exam Time should be valid number greater then or equal to 5");
-				isValid = false;
+		if($scope.examObj && $scope.examObj.examCode.length>=8) {
+			if(action!='delete') {
+				if(isNaN($scope.examObj.examTime) || ($scope.examObj.examTime<5 && $scope.examObj.examTime>0)) {
+					alert("Exam Time should be valid number greater then or equal to 5");
+					isValid = false;
+				}
 			}
-		}
-		
-		if(action == 'deleteExam') {
-			if(confirm("Exam and all questions related to this exam will be deactivated. This exam will never appear in your list... Do you want to deactivate this exam?")) {
-				$scope.examObj = crudExamDetailsService.crudExamDetails({examCode:$scope.examObj.examCode,action:action});
+			
+			if(action == 'deleteExam') {
+				if(confirm("Exam and all questions related to this exam will be deactivated. This exam will never appear in your list or search results. Do you want to deactivate this exam?")) {
+					$scope.examObj = crudExamDetailsService.crudExamDetails({examCode:$scope.examObj.examCode,action:action});
+				}
+			} else if(isValid) {
+				$scope.examObj = crudExamDetailsService.crudExamDetails({examObj:$scope.examObj,action:action});
 			}
-		} else if(isValid) {
-			$scope.examObj = crudExamDetailsService.crudExamDetails({examObj:$scope.examObj,action:action});
+		} else {
+			alert('Please add exam details before saving this data');
+			$('#createExamTab a[href="#examDetails"]').tab('show');
 		}
 	};
 	

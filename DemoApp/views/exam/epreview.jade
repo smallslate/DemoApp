@@ -19,11 +19,15 @@ block head
 		}]);
 		
 block content
+	ol.breadcrumb
+		li
+			a(href="/") Exam Home	
+		li.active Preview 
 	div(ng-app="examPreviewApp",ng-controller="examPreviewCtrl")
 		.div(ng-if="!examObj.examId || examObj.examId<=0")
 			div.alert.alert-danger.marginTop10
-				b Exam you have selected is not valid. Exam may have been de-activated by Author.
-		.jumbotron.marginTop10(ng-if="examObj.examId>0")
+				b This exam is not valid. Exam have been deleted by Author.
+		.jumbotron(ng-if="examObj.examId>0")
 			.row
 				.col-md-2 
 					img.img-rounded(ng-src="https://s3.amazonaws.com/uqi/{{examObj.examImg}}",height="128",width="128")
@@ -36,6 +40,8 @@ block content
 				b Time - {{examObj.examTime}} min
 			button.btn.btn-default(ng-if="examObj.examTime<5",type="button") 
 				b No Time Limit	
+			button.btn.btn-default(type="button") 
+				b Views - {{examObj.noOfViews}} 	
 			div(ng-if="!examObj.showResultsAfterExam",style="font-size:70%;")
 				small You will not be able to view results immediately for this exam. Author will evalvate and publish your results to your profile.You can view your results under My Profile link after Author has published your results.
 			.marginTop10
@@ -59,6 +65,14 @@ block content
 				span.margin5(ng-bind-html="examObj.examReferences | unsafe") 
 			#references.tab-pane.fade.in.active(ng-if="(!examObj.authorDetails || !examObj.authorDetails.length>5) && examObj.examReferences && examObj.examReferences.length>5")
 				span.margin5(ng-bind-html="examObj.examReferences | unsafe") 
-				
+	.row
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/examHome") Exam Home
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/exploreExams") Explore Exams
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/user/profile") My Profile					
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/user/allMyExamResults") My Exam Results
 
 					

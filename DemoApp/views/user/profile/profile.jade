@@ -2,7 +2,11 @@ extends /common/layout
 block head
 	title My Profile
 block content
-	div.marginTop10
+	ol.breadcrumb
+		li
+			a(href="/") Home
+		li.active My Profile
+	div
 		ul.nav.nav-tabs
 			li.active
 				a(href='#exam', data-toggle='tab') 
@@ -19,11 +23,22 @@ block content
 					div.panel-body
 						div.row
 							div.col-sm-6.col-md-4.margin5
-								a(href="/user/allMyExamResults",data-toggle="tooltip",data-title="View Exam Results")
+								a(href="/exploreExams",data-toggle="tooltip",data-title="Explore Exams")
 									table
 										tr
 											td
-												img.img-rounded(src="/img/eresults.png",alt="View Exam Results")
+												img.img-rounded(src="/img/explore.png",alt="Explore Exams")
+											td 
+												div 
+													b Explore Exams
+													div.textDescription Find exams you need	
+													
+							div.col-sm-6.col-md-4.margin5
+								a(href="/user/allMyExamResults",data-toggle="tooltip",data-title="My Exam Results")
+									table
+										tr
+											td
+												img.img-rounded(src="/img/eresults.png",alt="My Exam Results")
 											td 
 												div 
 													b My Exam Results
@@ -44,14 +59,14 @@ block content
 													b Create Exam
 													div.textDescription Create and Share Exams
 							div.col-sm-6.col-md-4
-								a(href="/user/viewExams",data-toggle="tooltip",data-title="View Exams")
+								a(href="/user/myExams",data-toggle="tooltip",data-title="View Exams")
 									table
 										tr
 											td
 												img.img-rounded(src="/img/editExam.png",alt="View Exams")
 											td 
 												div 
-													b Exams
+													b My Exams
 													div.textDescription View and edit exams you created	
 														div.col-sm-6.col-md-4.margin5
 							div.col-sm-6.col-md-4							
@@ -64,7 +79,8 @@ block content
 												div 
 													b Evaluate Exams
 													div.textDescription View and Evaluate Exams									
-			
+				.col-sm-6.col-md-2.marginTop10
+					a(href="/examHome") Exam Home	
 			if isAdmin
 				div#admin.tab-pane.fade 
 					if isAdmin														
@@ -79,8 +95,8 @@ block content
 										a(href="/user/admin/subCategory") Create Sub Category	
 									div.col-sm-6.col-md-4
 										a(href="/user/admin/editCatSubCat") View Categories
-										
-										
+	.row
+								
 										
 										
 										

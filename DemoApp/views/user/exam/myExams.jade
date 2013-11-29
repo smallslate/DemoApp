@@ -16,17 +16,23 @@ block head
 		}]);
 block content
 	div.row(ng-app="myExamsApp",ng-controller="myExamsAppCtrl")
+		ol.breadcrumb
+			li
+				a(href="/") Exam Home
+			li
+				a(href="/user/profile") My Profile	
+			li.active My Exams
 		.alert.alert-success.marginTop10(ng-if="!myExamsList || myExamsList.length<1") 
-			b Oops... You have not yet created exams 
+			b You have not created any exams. 
 			a.btn.btn-primary(href="/user/createExam",data-toggle="tooltip",data-title="Create Exam") Create New Exam
 		.col-sm-3.col-md-2.marginTop10.textAlignCenter(ng-repeat="examObj in myExamsList")
 			.thumbnail
 				a(href="/user/createExam?examCode={{examObj.examCode}}",title="{{examObj.examName}}")
 					img.img-rounded.imgSize(ng-src="https://s3.amazonaws.com/uqi/{{examObj.examImg}}",alt="{{examObj.examName}}")
 				.caption
-					div
+					div(style="height:40px;")
 						a(href="/user/createExam?examCode={{examObj.examCode}}",title="{{examObj.examName}}")
-							strong {{examObj.examName|truncate:20:".."}}
+							strong {{examObj.examName|truncate:30:"."}}
 					div(ng-if="examObj.isPublished")
 						b(style="color:green") Code : {{examObj.examCode}}	
 					div(ng-if="!examObj.isPublished") 
@@ -35,9 +41,13 @@ block content
 					.badge {{examObj.noOfViews}} views
 					
 	.row
-		.col-sm-6.col-md-2
-			a(href="/user/createExam") Create New Exam
-		.col-sm-6.col-md-2
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/examHome") Exam Home
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/user/createExam") Create Exam
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/user/evaluateList") Evaluate Exams
+		.col-sm-6.col-md-2.marginTop10
 			a(href="/user/profile") My Profile			
 				
 				

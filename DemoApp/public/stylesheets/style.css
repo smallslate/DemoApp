@@ -8,6 +8,10 @@ body {
   width: 100%;
 }
 
+.breadcrumb {
+	margin-bottom: 5px;
+}
+
 .marginTop10 {
 	margin-top: 10px;
 }
@@ -49,6 +53,18 @@ label.error {
 .examQuestion {
 	border:2px solid black;
 	border-bottom:3px solid black;
+}
+
+.questionButton {
+	white-space: normal!important;
+	min-height:200px;
+	padding: 40px 0 40px 0;
+}
+
+.questionButtonRich {
+	white-space: normal!important;
+	text-align:inherit;
+	padding: 40px 0 40px 10px;
 }
 
 .buttonWrapText {

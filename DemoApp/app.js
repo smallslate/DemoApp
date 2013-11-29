@@ -91,7 +91,7 @@ app.get('/getSubCategoriesByExamCode', exam.getSubCategoriesByExamCode);
 
 //---------------Exam-------------------------------
 app.get('/user/createExam', exam.createExam);
-app.get('/user/viewExams', exam.viewExams);
+app.get('/user/myExams', exam.myExams);
 app.post('/user/getMyExams', exam.getMyExams);
 app.post('/user/crudExamDetails', exam.crudExamDetails);
 app.post('/user/uploadExamLogo', exam.uploadExamLogo);

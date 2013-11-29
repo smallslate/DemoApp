@@ -10,11 +10,15 @@ block head
 		
 block content
 	div(ng-app="examResultApp",ng-controller="examResultCtrl")
-		.row.marginTop10
-			.col-sm-6.col-md-2
-				a(href="/user/profile") My Profile
-			.col-sm-6.col-md-2
-				a(href="/user/allMyExamResults") Exam Results
+		.row
+			ol.breadcrumb
+				li
+					a(href="/") Exam Home
+				li
+					a(href="/user/profile") My Profile	
+				li
+					a(href="/user/allMyExamResults") My Exam Results		
+				li.active Result
 		.jumbotron
 			.row
 				.col-md-2 
@@ -38,9 +42,9 @@ block content
 			.row
 				.col-md-3 
 					div {{examObj.userObj.userDisplayName}}
-				.col-md-3 
+				.col-md-3(ng-if="examObj.examSession") 
 					div(style="font-size:60%;margin-top:10px;") Start Time - {{examObj.examSession.createdAt}}
-				.col-md-3 
+				.col-md-3(ng-if="examObj.examSession") 
 					div(style="font-size:60%;margin-top:10px;") End Time - {{examObj.examSession.updatedAt}}
 						
 		div(ng-if="examObj.examSession",ng-repeat="qAnswer in evalObj.evalList")
@@ -156,7 +160,10 @@ block content
 						span 
 							b This question has been deleted by Author 
 		div(ng-if="!examObj.examSession")
-			b Results are not available. Author needs to evaluate and publish your results.
+			.alert.alert-success 
+				b Your results are on hold. Author will review your answers and will published results. You can view your results at 
+					a(href="/user/allMyExamResults") My Exam Results 
+					|in your profile later. 
 			
 			
 			

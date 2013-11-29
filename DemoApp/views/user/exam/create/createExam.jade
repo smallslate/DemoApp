@@ -15,14 +15,20 @@ block head
 	
 	title Create And Edit Exams
 block content
+	ol.breadcrumb
+		li
+			a(href="/") Exam Home
+		li
+			a(href="/user/profile") My Profile	
+		li.active Create Exam
 	p#noRichEditorMessage(style="color:red;display:none;") Rich editor is not supported on this device.
 	div.marginTop10(ng-app="createExam",ng-cloak,ng-controller="createExamCtrl")
 		.alert.alert-success(ng-if="examObj.isPublished") 
 			p
 				b Exam Id = 
-					a(href="http://{{host}}:{{port}}/epreview?ec={{examObj.examCode}}") {{examObj.examCode}}
+					b(style="color:red;") {{examObj.examCode}}
 			b Exam URL = 
-					a(href="http://{{host}}:{{port}}/epreview?ec={{examObj.examCode}}") http://{{host}}:{{port}}/epreview?ec={{examObj.examCode}}	
+					a(href="http://{{host}}:{{port}}/epreview?ec={{examObj.examCode}}",target='_blank') http://{{host}}/epreview?ec={{examObj.examCode}}	
 			p
 				small Share this Exam ID or Exam URL with your users to access this Exam 		
 		ul.nav.nav-tabs#createExamTab
@@ -48,7 +54,7 @@ block content
 			.col-sm-6.col-md-2.marginTop10
 				a(href="/user/profile") My Profile	
 			.col-sm-6.col-md-2.marginTop10
-				a(href="/user/viewExams") Created Exams
+				a(href="/user/myExams") My Exams
 			.col-sm-6.col-md-2.marginTop10(ng-if="examObj.examId>0")
 				a(href="/user/createExam") Create New Exam					
 				

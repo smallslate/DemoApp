@@ -1,6 +1,6 @@
 form.form-horizontal#publishExamForm(role="form")
 	div.form-group
-		label.col-lg-2.control-label Exam Time (Minutes)
+		label.col-lg-2.control-label Exam Time (In Minutes)
 		div.col-lg-1
 			label 
 				input.form-control(type="number",ng-model="examObj.examTime")
@@ -15,7 +15,7 @@ form.form-horizontal#publishExamForm(role="form")
 		label.col-lg-2.control-label Exam References
 		div.col-lg-10
 			textarea.form-control(ck-editor=100,data-ng-model="examObj.examReferences")	
-			p Add exam references like web site url's, videos etc. Users can use these references before taking the exam.  
+			p Add exam references like web site url's, videos etc.  
 	div.form-group 
 		label.col-lg-2.control-label Author Details
 		div.col-lg-10

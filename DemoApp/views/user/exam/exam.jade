@@ -5,21 +5,17 @@ html
 		meta(http-equiv="X-UA-Compatible",content="IE=edge")
 		meta(name="viewport",content="width=device-width, initial-scale=1.0")
 		link(rel='stylesheet', href='/javascript/frameworks/bootstrap/css/bootstrap.min.css')
-		
 		link(rel='stylesheet', href='/stylesheets/style.css')
-		
 		script(src="/javascript/frameworks/jquery/jquery-1.10.2.min.js")
 		script(src="/javascript/frameworks/bootstrap/js/bootstrap.min.js")
 		script(src="/javascript/frameworks/angular/angular.min.js")
 		script(src="/javascript/frameworks/angular/angular-resource.min.js")
 		script(src="/javascript/frameworks/angular/angular-sanitize.min.js")
-		
 		script(src="/javascript/common.js")
 		script(src="/javascript/angular/filters/commonFilters.js")
 		script(src="/javascript/angular/apps/exam.js")
-		
 		title Exam
-	body(ng-app="exam",ng-controller="examCtrl",style="background-color:#EEEEEE")
+	body(ng-app="exam",ng-controller="examCtrl",style="background-color:#C0C0C0")
 		div.navbar.navbar-fixed-top.navbar-inverse(role="navigation")
 			div.container
 				div.navbar-header
@@ -27,66 +23,73 @@ html
 						span.icon-bar
 						span.icon-bar
 						span.icon-bar
-					a.navbar-brand(style="color:white;") Time Limit
+					a.navbar-brand(ng-if="examObj.examTime && examObj.examTime>=5",style="color:white;") {{examTimeMin}}:{{examTimeSec}}
+					a.navbar-brand(ng-if="!examObj.examTime || !examObj.examTime>5",style="color:white;") No Time Limit
 				div.collapse.navbar-collapse	
 					ul.nav.navbar-nav
 							li
-								a.dropdown-toggle {{examObj.examName}}
+								a.dropdown-toggle(style="color:white;") {{examObj.examName}}
 							li
-								a.dropdown-toggle #{displayName} 	
+								a.dropdown-toggle(style="color:white;") #{displayName} 	
 					ul.nav.navbar-nav.navbar-right
 						if isAuthenticated
 							li
 								a.dropdown-toggle(href="#",data-toggle="dropdown",ng-click="submitExam();") Submit Exam
 		div.container.marginTop10
-			div
-				button.btn.btn-primary.btn-lg.btn-block.marginTop10.questionTextAlign(ng-if="!selectedQuestion.questionIsRich",type="button",ng-bind-html="selectedQuestion.question | unsafe")
-				button.btn.btn-default.btn-lg.btn-block.marginTop10.questionTextAlign(ng-if="selectedQuestion.questionIsRich",type="button",ng-bind-html="selectedQuestion.question | unsafe")
-				
-				label.btn.btn-labeled.btn-default.btn-lg.btn-block.marginTop10.buttonWrapText(ng-if="selectedQuestion.questionType=='MCSA'",ng-repeat="questionOptionObj in selectedQuestion.questionOptions")
-					table
-						tr
-							td
-								span.btn-label
-									input(type="radio",name="answer",value="{{questionOptionObj.optionId}}",ng-model="answerList[selectedQuestion.questionId].answer")
-							td
-								span(ng-bind-html="questionOptionObj.optionDesc | unsafe",style="text-align:center")
+			div.panel.panel-primary(style="background-color:#EEEEEE")
+				.panel-heading 
+					b Question {{selectedQuestion.questionNumber}}   
+				.panel-body
+					button.btn.btn-default.btn-lg.btn-block.questionButton(ng-if="!selectedQuestion.questionIsRich",type="button",ng-bind-html="selectedQuestion.question | unsafe")
+					p.btn.btn-default.btn-lg.btn-block.questionButtonRich(ng-if="selectedQuestion.questionIsRich",type="button",ng-bind-html="selectedQuestion.question | unsafe")
 					
-				label.btn.btn-labeled.btn-default.btn-lg.btn-block.marginTop10.buttonWrapText(ng-if="selectedQuestion.questionType=='MCMA'",ng-repeat="questionOptionObj in selectedQuestion.questionOptions")
-					table
+					label.btn.btn-labeled.btn-default.btn-lg.btn-block.questionButtonRich(ng-if="selectedQuestion.questionType=='MCSA'",ng-repeat="questionOptionObj in selectedQuestion.questionOptions")
+						table
+							tr
+								td
+									span.btn-label
+										input(type="radio",name="answer",value="{{questionOptionObj.optionId}}",ng-model="answerList[selectedQuestion.questionId].answer")
+								td
+									p(ng-bind-html="questionOptionObj.optionDesc | unsafe")
+						
+					label.btn.btn-labeled.btn-default.btn-lg.btn-block.questionButtonRich(ng-if="selectedQuestion.questionType=='MCMA'",ng-repeat="questionOptionObj in selectedQuestion.questionOptions")
+						table
+							tr
+								td
+									span.btn-label
+										input(type="checkbox",name="answer",ng-true-value="{{questionOptionObj.optionId}}",ng-model="answerList[selectedQuestion.questionId].answer[$index]")   
+								td
+									span(ng-bind-html="questionOptionObj.optionDesc | unsafe")
+					
+					label.btn.btn-labeled.btn-default.btn-lg.btn-block.questionButtonRich(ng-if="selectedQuestion.questionType=='TORF'",ng-repeat="questionOptionObj in selectedQuestion.questionOptions")
+						table
+							tr
+								td
+									span.btn-label
+										input(type="radio",name="answer",value="{{questionOptionObj.optionId}}",ng-model="answerList[selectedQuestion.questionId].answer")   
+								td
+									span(ng-bind-html="questionOptionObj.optionDesc | unsafe")		
+	
+					label.btn.btn-default.btn-lg.btn-block.questionButtonRich(ng-if="selectedQuestion.questionType=='ET'")
+						textarea(id="answer",rows="5",style="width:100%",ng-model="answerList[selectedQuestion.questionId].answer") 
+					
+					ul.pager
+						li
+							a(href="",ng-show="selectedQuestion.questionNumber>1",ng-click="selectNext('Previous');")	
+								b Previous
+						li
+							a(href="",ng-show="selectedQuestion.questionNumber<examObj.questionList.length",ng-click="selectNext('Next');")	
+								b Next
+				div.table-responsive
+					table.table
 						tr
 							td
-								span.btn-label
-									input(type="checkbox",name="answer",ng-true-value="{{questionOptionObj.optionId}}",ng-model="answerList[selectedQuestion.questionId].answer[$index]")   
-							td
-								span(ng-bind-html="questionOptionObj.optionDesc | unsafe")
-				
-				label.btn.btn-labeled.btn-default.btn-lg.btn-block.marginTop10.buttonWrapText(ng-if="selectedQuestion.questionType=='TORF'",ng-repeat="questionOptionObj in selectedQuestion.questionOptions")
-					table
-						tr
-							td
-								span.btn-label
-									input(type="radio",name="answer",value="{{questionOptionObj.optionId}}",ng-model="answerList[selectedQuestion.questionId].answer")   
-							td
-								span(ng-bind-html="questionOptionObj.optionDesc | unsafe")		
-
-				label.btn.btn-default.btn-lg.btn-block.marginTop10.buttonWrapText(ng-if="selectedQuestion.questionType=='ET'")
-					textarea(id="answer",rows="5",style="width:100%",ng-model="answerList[selectedQuestion.questionId].answer") 
-								
-			div.table-responsive
-				table.table(style="padding:0px!important")
-					tr
-						td
-							span(ng-repeat = "questionObj in examObj.questionList") 
-								button.btn.btn-primary(ng-if="selectedQuestion.questionId==questionObj.questionId") {{questionObj.questionNumber}}
-								button.btn.btn-default(ng-if="selectedQuestion.questionId!=questionObj.questionId && !hasAnswered($index)",ng-click="selectQuestion($index);") {{questionObj.questionNumber}}
-								button.btn.btn-success(ng-if="selectedQuestion.questionId!=questionObj.questionId && hasAnswered($index)",ng-click="selectQuestion($index);") {{questionObj.questionNumber}}
-							span
-								button.btn.btn-warning.marginLeft5(ng-click="submitExam();") Submit Exam
-			//a.margin5(href="/",target="_blank") Powered by SmallSlate	
-				
-			//div(ng-repeat = "questionObj in examObj.questionList") 
-					span {{answerList[questionObj.questionId].questionId}} - {{answerList[questionObj.questionId].answer}}
+								span(ng-repeat = "questionObj in examObj.questionList") 
+									button.btn.btn-primary(ng-if="selectedQuestion.questionId==questionObj.questionId") {{questionObj.questionNumber}}
+									button.btn.btn-default(ng-if="selectedQuestion.questionId!=questionObj.questionId && !hasAnswered($index)",ng-click="selectQuestion($index);") {{questionObj.questionNumber}}
+									button.btn.btn-success(ng-if="selectedQuestion.questionId!=questionObj.questionId && hasAnswered($index)",ng-click="selectQuestion($index);") {{questionObj.questionNumber}}
+								span
+									button.btn.btn-warning.marginLeft5(ng-click="submitExam();") Submit Exam
 				
 				
 				

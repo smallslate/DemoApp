@@ -21,7 +21,9 @@ block head
 block content
 	ol.breadcrumb
 		li
-			a(href="/") Exam Home	
+			a(href="/examHome") Exam Home
+		li
+			a(href="/exploreExams") Explore Exams
 		li.active Preview 
 	div(ng-app="examPreviewApp",ng-controller="examPreviewCtrl")
 		.div(ng-if="!examObj.examId || examObj.examId<=0")

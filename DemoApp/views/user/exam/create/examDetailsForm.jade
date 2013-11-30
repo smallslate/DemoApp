@@ -19,15 +19,17 @@ form.form-horizontal#examDetailsForm(role="form")
 	div.form-group
 		label.col-lg-2.control-label Category
 		div.col-lg-10
-			select.form-control(name="categoryCode",id="categoryCode",ng-model="examObj.categoryCode",ng-change="onCategoryChange()")		
+			select.form-control(name="categoryCode",id="categoryCode",ng-model="examObj.categoryCode",ng-change="onCategoryChange()",ng-disabled="examObj.examCode.length>0")		
 				option(value="") ---- Select Category ---- 
 				option(value="{{category.categoryCode}}",ng-repeat="category in categories") {{category.categoryName}}
 	div.form-group
 		label.col-lg-2.control-label Sub Category
 		div.col-lg-10
-			select.form-control(name="subCategoryCode",id="subCategoryCode",ng-model="examObj.subCategoryCode",ng-disabled="!examObj.categoryCode.length>0")		
+			select.form-control(name="subCategoryCode",id="subCategoryCode",ng-model="examObj.subCategoryCode",ng-disabled="!examObj.categoryCode.length>0 || examObj.examCode.length>0")		
 				option(value="") ---- Select Sub Category ---- 
-				option(value="{{subCategory.subCategoryCode}}",ng-repeat="subCategory in subCategories") {{subCategory.subCategoryName}}	
+				option(value="{{subCategory.subCategoryCode}}",ng-repeat="subCategory in subCategories") {{subCategory.subCategoryName}}
+			b Note:		
+			| Please select valid category and sub category.You cannot change these values after save.	
 	div.form-group		
 		div.col-lg-offset-2.col-lg-10
 			button.btn.btn-primary.margin5(ng-click="crudExamDetails('create')",ng-if="!examObj.examCode.length>0") Save	

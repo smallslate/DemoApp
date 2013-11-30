@@ -133,10 +133,10 @@ Exam.getSubCategoriesByExamCode = function(req,res) {
 };
 
 Exam.getAllCatAndSubCat = function(req,res) {
-	db.model("Category").findAll({where:{isActive: true}}).success(function(categoryList) {
+	db.model("Category").findAll({where:{isActive: true},order: 'categoryName'}).success(function(categoryList) {
 		var chainer = new Sequelize.Utils.QueryChainer;
 		categoryList.forEach(function(categoryObj) {
-			chainer.add(categoryObj.getSubCategories());
+			chainer.add(categoryObj.getSubCategories({order: 'subCategoryName'}));
 	    });
 		chainer.runSerially().success(function(results) {
 			var categoryListWithSubCat = [];
@@ -243,6 +243,10 @@ Exam.exploreExams = function(req,res) {
 	res.render('exam/exploreExams');	
 };
 
+Exam.searchExams = function(req,res) {
+	res.render('exam/searchExams');	
+};
+
 Exam.getMyExams = function(req,res) {
 	if(req.isAuthenticated()) {
 		db.model("Exam").findAll({ where: {createdBy:req.user.loggedInUserId,isActive:true} }).success(function(examList) {
@@ -316,22 +320,30 @@ Exam.crudExamDetails = function(req,res) {
 					dbExamObj.authorDetails = examObj.authorDetails;
 					dbExamObj.showResultsAfterExam = examObj.showResultsAfterExam;
 					dbExamObj.updatedBy = examObj.updatedBy = req.user.loggedInUserId;
-
-					if(requestObj.action =='publishExam') {
-						dbExamObj.isPublished = true;
-						examObj.isPublished = true;
-						dbExamObj.save(['examTime','examReferences','authorDetails','updatedBy','isPublished','showResultsAfterExam']);
-						examObj.publishSuccessMessage ='Exam is published successfully. All users will be able to access this exam. This exam will now appear in search results';
-					} else if(requestObj.action =='unpublishExam') {
-						dbExamObj.isPublished = false;
-						examObj.isPublished = false;
-						dbExamObj.save(['examTime','examReferences','authorDetails','updatedBy','isPublished','showResultsAfterExam']);
-						examObj.publishSuccessMessage ='Exam is now un published. Users will not be able to access this exam. This exam will not appear in search results';
+					if(requestObj.action =='publishExam' || requestObj.action =='unpublishExam') {
+						console.log(examObj.subCategoryId);
+						db.model("SubCategory").find({where:{subCategoryCode:examObj.subCategoryCode,isActive: true}}).success(function(dbSubCategory) {
+							if(requestObj.action =='publishExam') {
+								dbExamObj.isPublished = true;
+								examObj.isPublished = true;
+								dbExamObj.save(['examTime','examReferences','authorDetails','updatedBy','isPublished','showResultsAfterExam']);
+								examObj.publishSuccessMessage ='Exam is published successfully. All users will be able to access this exam. This exam will now appear in search results';
+								dbSubCategory.numberOfExams+=1;
+							} else if(requestObj.action =='unpublishExam') {
+								dbExamObj.isPublished = false;
+								examObj.isPublished = false;
+								dbExamObj.save(['examTime','examReferences','authorDetails','updatedBy','isPublished','showResultsAfterExam']);
+								examObj.publishSuccessMessage ='Exam is now un published. Users will not be able to access this exam. This exam will not appear in search results';
+								dbSubCategory.numberOfExams-=1;
+							}
+							dbSubCategory.save();
+							res.send(examObj);
+						});
 					} else {
 						dbExamObj.save(['examTime','examReferences','authorDetails','updatedBy','showResultsAfterExam']);
 						examObj.publishSuccessMessage ='Exam details updated successfully';
+						res.send(examObj);
 					}
-					res.send(examObj);
 				} else {
 					examObj.publishErrorMessage = "You do not have access to update this exam.";
 					res.send(examObj);

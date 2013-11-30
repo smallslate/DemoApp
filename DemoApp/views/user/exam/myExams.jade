@@ -18,7 +18,7 @@ block content
 	div.row(ng-app="myExamsApp",ng-controller="myExamsAppCtrl")
 		ol.breadcrumb
 			li
-				a(href="/") Exam Home
+				a(href="/examHome") Exam Home
 			li
 				a(href="/user/profile") My Profile	
 			li.active My Exams
@@ -39,7 +39,6 @@ block content
 						b(style="color:red") Not Published			
 					.badge {{examObj.numberOfQuestions}} Q
 					.badge {{examObj.noOfViews}} views
-					
 	.row
 		.col-sm-6.col-md-2.marginTop10
 			a(href="/examHome") Exam Home

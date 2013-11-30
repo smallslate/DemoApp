@@ -1,47 +1,48 @@
 extends /common/layout
 block head
-	title Explore Exams
+	title Search Exams
 	script(src="/javascript/frameworks/angular/angular.min.js")
 	script(src="/javascript/frameworks/angular/angular-resource.min.js")
 	script(src="/javascript/angular/services/commonService.js")
 	script(src="/javascript/angular/filters/truncate.js")
 	script.
-		var exploreExamsApp = angular.module('exploreExamsApp', ['ngResource','commonService','truncateFilter']);
-		exploreExamsApp.controller('exploreExamsCtrl', ['$scope','search','getAllCatAndSubCat',function($scope,search,getAllCatAndSubCat) {
-			$scope.categoriesList = getAllCatAndSubCat.query();
+		var searchExamsApp = angular.module('searchExamsApp', ['ngResource','commonService','truncateFilter']);
+		searchExamsApp.controller('searchExamsCtrl', ['$scope','search',function($scope,search) {
+			$scope.init = function() {
+				if(getURLParameter('cc') && getURLParameter('cc').length>=8) {
+					$scope.searchResults = search.query({cc:getURLParameter('cc'),type:'exam'});
+				} else if(getURLParameter('sc') && getURLParameter('sc').length>=8) {
+					$scope.searchResults = search.query({sc:getURLParameter('sc')});
+				} else if(getURLParameter('sq') && getURLParameter('sq').length>=0) {
+					$scope.searchResults = search.query({sq:getURLParameter('sq')});
+					$scope.searchQuery = getURLParameter('sq');
+				}
+			}
 			
 			$scope.onSearchQueryChange = function() {
 				if($scope.searchQuery && $scope.searchQuery.trim().length>0) {
 					$scope.searchResults = search.query({sq:$scope.searchQuery});
 				} else {
-					$scope.searchResults = null;
+					$scope.init();
 				}
 			}
+			$scope.init();
 		}]);
 block content
 	ol.breadcrumb
 		li
-			a(href="/examHome") Exam Home	
-		li.active Explore Exams
-	div(ng-app="exploreExamsApp",ng-controller="exploreExamsCtrl")
+			a(href="/") Home
+		li
+			a(href="/exploreExams") Explore Exams		
+		li.active Exams
+	div(ng-app="searchExamsApp",ng-controller="searchExamsCtrl")
 		.jumbotron(style="background-color:#686868;margin-bottom:0px;")
 			div
 				.input-group
-					input.form-control(type="text",placeholder="Search Exams...",ng-model="searchQuery" ng-change="onSearchQueryChange()")
+					input.form-control(type="text",placeholder="Search Exams...",ng-model="searchQuery",ng-change="onSearchQueryChange()")
 					.input-group-btn
 						button.btn.btn-default(type="submit",ng-click="onSearchQueryChange()")
 							i.glyphicon.glyphicon-search
-	
-		.row(ng-show="(!searchResults || searchResults.length<=0) && (!searchQuery || searchQuery.trim().length<=0)")
-			div.col-sm-6.col-md-3.marginTop10(ng-repeat="category in categoriesList")
-				div.panel.panel-primary
-					div.panel-heading 
-						a(href="/searchExams?cc={{category.categoryCode}}",style="color:white;") 
-							b {{category.categoryName}}
-					div.panel-body
-						p(ng-repeat="subCategory in category.subCategoryList")
-							a(href="/searchExams?sc={{subCategory.subCategoryCode}}") {{subCategory.subCategoryName}}	
-								span.badge {{subCategory.numberOfExams}}	
 		div(ng-show="searchResults.length>=1")					
 			.panel.panel-primary.marginTop10(ng-repeat = "searchObj in searchResults")
 				.panel-heading(ng-if="searchObj.subCategory.subCategoryCode.length>=8") 
@@ -59,13 +60,16 @@ block content
 								div
 									b(style="color:green") Code : {{examObj.examCode}}
 								.badge {{examObj.numberOfQuestions}} Q
-								.badge {{examObj.noOfViews}} views	
-		div.marginTop10(ng-show="(!searchResults || searchResults.length<=0) && searchQuery.trim().length>0")
+								.badge {{examObj.noOfViews}} views
+		div.marginTop10(ng-show="!searchResults || searchResults.length<=0")
 			.alert.alert-success 
 				b No Exams Found. Try creating new exam. 
-				a.btn.btn-success(href="/user/createExam") Create Exam													
+				a.btn.btn-success(href="/user/createExam") Create Exam
 	.row
 		.col-sm-6.col-md-2.marginTop10
-			a(href="/examHome") Exam Home
+			a(href="/exploreExams") Explore Exams
 		.col-sm-6.col-md-2.marginTop10
-			a(href="/user/profile") My Profile										
+			a(href="/examHome") Exam Home	
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/user/profile") My Profile			
+											

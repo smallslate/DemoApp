@@ -34,4 +34,10 @@ angular.module('commonService', [ 'ngResource' ])
 			return $resource('/getAllCatAndSubCat', {}, {
 				query : {method : 'GET',isArray : true}
 			});
+	}])
+
+	.factory('search', ['$resource', function($resource) {
+		return $resource('/search', {}, {
+			query : {method : 'POST',isArray : true}
+		});
 	}]);

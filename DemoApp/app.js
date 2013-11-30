@@ -69,7 +69,7 @@ app.get('/', common.index);
 app.get('/login', common.login);
 app.get('/logout', common.logout);
 app.get('/user/profile', common.profile);
-
+app.post('/search', common.search);
 //---------------Auth-------------------------------
 app.get('/auth/google', passport.authenticate('google'));
 app.get('/auth/google/return',passport.authenticate('google', { failureRedirect: '/login' }), common.afterLogin);
@@ -106,6 +106,7 @@ app.post('/user/allMyExamResultsService', exam.allMyExamResultsService);
 app.get('/user/evaluateList', exam.evaluateList);
 app.get('/exploreExams', exam.exploreExams);
 app.get('/examHome', exam.examHome);
+app.get('/searchExams', exam.searchExams);
 
 //---------------Question-------------------------------
 app.post('/user/crudQuestionDetails', exam.crudQuestionDetails);

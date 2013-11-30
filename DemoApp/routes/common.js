@@ -87,3 +87,118 @@ Common.prototype.isAdmin = function(user) {
 	}
 	return false;
 };
+
+Common.search = function(req,res) {
+	if(req.body.cc && req.body.cc.length>=8) {
+		db.model("Exam").findAll({where:{categoryCode:req.body.cc,isActive: true,isPublished:true}}).success(function(examList) {
+			if(examList && examList.length>0) {
+				var subCatList = new Array();
+				for(var k=0;k<examList.length;k++) {
+					subCatList.push(examList[k].subCategoryCode);
+				}
+				db.model("SubCategory").findAll({where:{subCategoryCode:subCatList,isActive: true}}).success(function(subCategoryList) {
+					var responseList = new Array();
+					for(var k=0;k<subCategoryList.length;k++) {
+						var subCatObj = new Object();
+						subCatObj.subCategory =  subCategoryList[k];
+						subCatObj.quizList=new Array();
+						responseList.push(subCatObj);
+					}
+					
+					for(var k=0;k<examList.length;k++) {
+						for(var m=0;m<responseList.length;m++) {
+							if(examList[k].subCategoryCode == responseList[m].subCategory.subCategoryCode) {
+								responseList[m].quizList.push(examList[k]);
+								break;
+							}
+						}
+					}
+					res.send(responseList);
+				}).error(function(err) {
+					res.send(null);
+				});
+			} else {
+				res.send(null);
+			}
+		}).error(function(err) {
+			res.send(null);
+		});
+	} else if(req.body.sc && req.body.sc.length>=8) {
+		db.model("Exam").findAll({where:{subCategoryCode:req.body.sc,isActive: true,isPublished:true}}).success(function(examList) {
+			if(examList && examList.length>0) {
+				db.model("SubCategory").find({where:{subCategoryCode:req.body.sc,isActive: true}}).success(function(subCategoryObj) {
+					var responseList = new Array();
+					var subCatObj = new Object();
+					subCatObj.subCategory =  subCategoryObj;
+					subCatObj.quizList=examList;
+					responseList.push(subCatObj);
+					res.send(responseList);
+				}).error(function(err) {
+					res.send(null);
+				});
+			} else {
+				res.send(null);
+			}
+		}).error(function(err) {
+			res.send(null);
+		});
+	} else if(req.body.sq && req.body.sq.length>=0) {
+		var responseList = new Array();
+		var subCatObj = new Object();
+		subCatObj.quizList = new Array();
+		db.model("Exam").findAll({where:["examCode LIKE '"+req.body.sq+"%' and isActive=true and isPublished = true"]}).success(function(examListWithCode) {
+			if(examListWithCode && examListWithCode.length>0) {
+				subCatObj.quizList = examListWithCode;
+			} 
+			db.model("Exam").findAll({where:["examName LIKE '%"+req.body.sq+"%' and isActive=true and isPublished = true"]}).success(function(examListWithName) {
+				if(examListWithName && examListWithName.length>0) {
+					for(var k=0;k<examListWithName.length;k++) {
+						var found = false;
+						for(var m=0;m<subCatObj.quizList.length;m++) {
+							if(subCatObj.quizList[m].examId == examListWithName[k].examId) {
+								found = true;
+							}
+						}
+						if(!found) {
+							subCatObj.quizList.push(examListWithName[k]);
+						}
+					}
+				}
+				
+				db.model("Exam").findAll({where:["examDescr LIKE '"+req.body.sq+"%' and isActive=true and isPublished = true"]}).success(function(examListWithDescr) {
+					if(examListWithDescr && examListWithDescr.length>0) {
+						for(var k=0;k<examListWithDescr.length;k++) {
+							var found = false;
+							for(var m=0;m<subCatObj.quizList.length;m++) {
+								if(subCatObj.quizList[m].examId == examListWithDescr[k].examId) {
+									found = true;
+								}
+							}
+							if(!found) {
+								subCatObj.quizList.push(examListWithDescr[k]);
+							}
+						}
+					}
+					if(subCatObj.quizList.length>0) {
+						responseList.push(subCatObj);
+						res.send(responseList);
+					} else {
+						res.send(null);
+					}
+				});
+			});
+		});
+	} else if(req.body.msq && req.body.msq.length>=0) {
+		res.redirect("/searchExams?sq="+req.body.msq);
+	} else {
+		res.send(null);
+	}
+};
+
+
+
+
+
+
+
+

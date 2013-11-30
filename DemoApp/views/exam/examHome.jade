@@ -1,6 +1,15 @@
 extends /common/layout
 block head
 	link(rel='stylesheet', href='/stylesheets/carousel.css')
+	script(type='text/javascript').
+		function validateSearch(obj) {
+			if($('#searchQuery').val().trim().length>0) {
+				return true;
+			} else {
+				alert('Please enter valid search query');
+				return false;
+			}
+		}
 	title Welcome - Exams
 	.carousel
 		.carousel-inner
@@ -9,8 +18,13 @@ block head
 				.container
 					.carousel-caption
 						h1 Exams
-						p Find, Access & Save results  
-						p Create, Share & Evaluate
+						p Find, Create, Share, Evaluate
+						form(role="form",method="post",action="/search")
+							.input-group
+								input.form-control#searchQuery(type="text",name="msq",placeholder="Search Exams...")
+								.input-group-btn
+									button.btn.btn-default(type="submit",onclick="return validateSearch(this);")
+										i.glyphicon.glyphicon-search
 	.container.marketing
 		.row.featurette
 			.col-md-7

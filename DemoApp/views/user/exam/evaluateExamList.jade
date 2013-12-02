@@ -1,0 +1,56 @@
+extends /common/layout
+block head
+	title Evaluate Exam List
+	script(src="/javascript/frameworks/angular/angular.min.js")
+	script(src="/javascript/frameworks/angular/angular-resource.min.js")
+	script(src="/javascript/frameworks/misc/moment.min.js")
+	script(src="/javascript/angular/apps/exam/evaluateExamList.js")
+block content
+	.row
+		ol.breadcrumb
+			li
+				a(href="/examHome") Exam Home
+			li
+				a(href="/user/profile") My Profile	
+			li.active Evaluate Exams
+	div(ng-app="evaluateExamListApp",ng-controller="evaluateExamListCtrl")		
+		.form-horizontal
+			.form-group
+				label.col-sm-2.control-label Select Exam
+				.col-sm-10
+					select.form-control(ng-model="selectedExam" ng-change="onExamChange();",ng-options="exam.examName for exam in myExamsList")
+						option(value="") -- Select Exam--
+		div(ng-if="evaluateExamList && evaluateExamList.length>0")	
+			.panel.panel-primary.marginTop10(ng-repeat="evaluateExam in evaluateExamList")	
+				.panel-heading 
+							b {{evaluateExam.user.userDisplayName}}	
+							span.badge 	{{evaluateExam.evalList.length}}	
+				.panel-body
+					.row
+						.col-sm-4.col-md-3(ng-repeat="reltSession in evaluateExam.evalList")
+							div.thumbnail
+								div(ng-if="reltSession.examStatus=='SUBMIT'")
+									a(href="/user/evaluateExam?sc={{reltSession.sessionCode}}") {{reltSession.createdAt | timeFormat}}
+									div
+										a(href="/user/evaluateExam?sc={{reltSession.sessionCode}}",ng-if="reltSession.isEvaluated==true",style="color:green") Evaluated
+										a(href="/user/evaluateExam?sc={{reltSession.sessionCode}}",ng-if="!reltSession.isEvaluated==true",style="color:red") Evaluate
+									div
+										a(ng-click="deleteFromMyList(reltSession.sessionCode)")
+											img.img-circle.pointer(src="/img/delete.png",title="delete")
+								div(ng-if="reltSession.examStatus=='START'") 
+									div {{reltSession.createdAt | timeFormat}}
+									div Not submitted
+									div
+										a(ng-click="deleteFromMyList(reltSession.sessionCode);")
+											img.img-circle.pointer(src="/img/delete.png",title="delete")	
+		div(ng-if="selectedExam && selectedExam.examId>0 && (!evaluateExamList || evaluateExamList.length<1)")
+			.alert.alert-success.marginTop10
+				b 0 Users has taken this exam.										
+						
+						
+										
+										
+										
+										
+										
+										

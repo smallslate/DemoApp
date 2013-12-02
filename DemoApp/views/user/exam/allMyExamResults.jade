@@ -43,14 +43,14 @@ block content
 					.row
 						.col-sm-4.col-md-3(ng-repeat="reltSession in examResult.sessionList")
 							div.thumbnail
-								div(ng-if="reltSession.examStatus=='SUBMIT' && (reltSession.isResultPublished==true || examResult.examObj.showResultsAfterExam == true)")
+								div(ng-if="reltSession.examStatus=='SUBMIT' && (reltSession.isEvaluated==true || examResult.examObj.showResultsAfterExam == true)")
 									a(href="/user/eresult?sc={{reltSession.sessionCode}}") {{reltSession.createdAt | timeFormat}}
 									div
 										a(href="/user/eresult?sc={{reltSession.sessionCode}}") View Results
 									div
 										a(ng-click="deleteMyResult(reltSession.sessionCode)")
 											img.img-circle.pointer(src="/img/delete.png",title="delete")
-								div(ng-if="reltSession.examStatus=='SUBMIT' && (reltSession.isResultPublished==false && examResult.examObj.showResultsAfterExam == false)") 
+								div(ng-if="reltSession.examStatus=='SUBMIT' && (reltSession.isEvaluated==false && examResult.examObj.showResultsAfterExam == false)") 
 									div {{reltSession.createdAt | timeFormat}}
 									div Pending for evaluation.
 									div

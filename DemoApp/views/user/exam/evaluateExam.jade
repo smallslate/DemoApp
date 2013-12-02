@@ -17,7 +17,7 @@ block content
 				li
 					a(href="/user/profile") My Profile	
 				li
-					a(href="/user/allMyExamResults") My Exam Results		
+					a(href="/user/evaluateExamList?ec={{examObj.examCode}}") Evaluate Exams	
 				li.active Result
 		.jumbotron
 			.row
@@ -155,15 +155,15 @@ block content
 						span 
 							b Answer:
 						span(ng-bind-html="qAnswer.userAnswer | unsafe")
+					div
+						button.btn.btn-success(ng-click="evaluateQuestion(true,qAnswer.question.questionId);") 
+							b Mark Correct
+						button.btn.btn-danger(ng-click="evaluateQuestion(false,qAnswer.question.questionId);")  
+							b Mark Wrong	
 				.panel-body(ng-if="qAnswer.isDeleted")
 					div
 						span 
-							b This question has been deleted by Author 
-		div(ng-if="!examObj.examSession")
-			.alert.alert-success 
-				b Your results are on hold. Author will review your answers and will published results. You can view your results at 
-					a(href="/user/allMyExamResults") My Exam Results 
-					|in your profile later. 
+							b This question has been deleted by Author  
 		.row
 			.col-sm-6.col-md-2.marginTop10
 				a(href="/examHome") Exam Home
@@ -171,26 +171,3 @@ block content
 				a(href="/user/profile") My Profile
 			.col-sm-6.col-md-2.marginTop10
 				a(href="/exploreExams") Explore Exams
-			.col-sm-6.col-md-2.marginTop10	
-				a(href="/user/allMyExamResults") My Exam Results	
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-
-					

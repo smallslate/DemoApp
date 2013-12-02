@@ -6,7 +6,7 @@ module.exports = function(sequelize, DataTypes) {
 	examStatus : DataTypes.STRING(200),
 	answers:DataTypes.TEXT,
 	evalAnswers:DataTypes.TEXT,
-	isResultPublished : {type:DataTypes.BOOLEAN,defaultValue: true},
+	isEvaluated : {type:DataTypes.BOOLEAN,defaultValue: false},
 	hasUserDeleted : {type:DataTypes.BOOLEAN,defaultValue: false},
 	hasAuthorDeleted : {type:DataTypes.BOOLEAN,defaultValue: false}
   });

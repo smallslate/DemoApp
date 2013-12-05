@@ -1,0 +1,39 @@
+form.form-horizontal(ng-show="flashDeckObj.flashDeckCode",id="fileupload",action="/user/uploadFlashDeckLogo" method="post" enctype="multipart/form-data")
+	div.form-group
+			label.col-lg-2.control-label Flash Deck Logo
+			div.col-lg-10
+				img.img-rounded.imgSize#flashDeckLogo(ng-src="https://s3.amazonaws.com/uqi/{{flashDeckObj.flashDeckImg}}",alt="Flash Deck Logo")
+				input(type="file",name="image", multiple)
+				input(type="hidden",name="flashDeckCode",value="{{flashDeckObj.flashDeckCode}}")		
+				div#fileUploadMessage Upload image of 128x128 pixels for best view.
+
+form.form-horizontal#examDetailsForm(role="form")
+	div.form-group
+		label.col-lg-2.control-label Flash Deck Name
+		div.col-lg-10
+			input.form-control(placeholder="Enter Flash Deck Name",id="flashDeckName",ng-model="flashDeckObj.flashDeckName")
+	div.form-group
+		label.col-lg-2.control-label Description
+		div.col-lg-10
+			textarea.form-control(id="flashDeckDescr",placeholder="Enter Flash Deck Description",ng-model="flashDeckObj.flashDeckDescr")		
+	div.form-group
+		label.col-lg-2.control-label Category
+		div.col-lg-10
+			select.form-control(id="categoryCode",ng-model="flashDeckObj.categoryCode",ng-change="onCategoryChange()",ng-disabled="flashDeckObj.isPublished")		
+				option(value="") ---- Select Category ---- 
+				option(value="{{category.categoryCode}}",ng-repeat="category in categories") {{category.categoryName}}
+	div.form-group
+		label.col-lg-2.control-label Sub Category
+		div.col-lg-10
+			select.form-control(id="subCategoryCode",ng-model="flashDeckObj.subCategoryCode",ng-disabled="!flashDeckObj.categoryCode.length>0 || flashDeckObj.isPublished>0")		
+				option(value="") ---- Select Sub Category ---- 
+				option(value="{{subCategory.subCategoryCode}}",ng-repeat="subCategory in subCategories") {{subCategory.subCategoryName}}
+	div.form-group		
+		div.col-lg-offset-2.col-lg-10
+			button.btn.btn-primary.margin5(ng-click="crudFlashDeckDetails('create')",ng-if="!flashDeckObj || !flashDeckObj.flashDeckCode || !flashDeckObj.flashDeckCode.length>=8") Save	
+			button.btn.btn-primary.margin5(ng-click="crudFlashDeckDetails('update')",ng-if="flashDeckObj.flashDeckCode.length>=8") Update
+			button.btn.btn-success.margin5(ng-click="crudFlashDeckDetails('addCards')",ng-if="flashDeckObj.flashDeckCode.length>=8") Add Cards
+div.alert.alert-danger(ng-if="flashDeckObj.error") 
+	b {{flashDeckObj.error}}
+div.alert.alert-success(ng-if="flashDeckObj.success") 
+	b {{flashDeckObj.success}}									

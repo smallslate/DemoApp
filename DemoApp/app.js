@@ -5,6 +5,7 @@ var express = require('express')
   , GoogleStrategy = require('passport-google').Strategy
   , common = require('./routes/common')
   , exam = require('./routes/exam')
+  , cards = require('./routes/cards')
   , db = require("./models/factory/Database");
 
 var app = express();
@@ -113,6 +114,34 @@ app.get('/searchExams', exam.searchExams);
 
 //---------------Question-------------------------------
 app.post('/user/crudQuestionDetails', exam.crudQuestionDetails);
+
+//---------------CARDS-------------------------------
+app.get('/cardsHome', cards.cardsHome);
+app.get('/user/createCard', cards.createCard);
+app.post('/user/crudFlashDeckDetails', cards.crudFlashDeckDetails);
+app.post('/user/uploadFlashDeckLogo', cards.uploadFlashDeckLogo);
+app.get('/user/myFlashCards', cards.myFlashCards);
+app.post('/user/getAllMyFlashDecks', cards.getAllMyFlashDecks);
+app.post('/user/crudFlashCardDetails', cards.crudFlashCardDetails);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 http.createServer(app).listen(app.get('port'), function(){
 	console.log("Express server listening on port " + app.get('port'));

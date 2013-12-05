@@ -1,0 +1,54 @@
+extends /common/layout
+block head
+	link(rel='stylesheet', href='/stylesheets/customStyle.css')
+	script(src="/javascript/frameworks/angular/angular.min.js")
+	script(src="/javascript/frameworks/angular/angular-resource.min.js")
+	script(src="/javascript/frameworks/angular/angular-sanitize.min.js")
+	script(src="/javascript/angular/apps/flashcards/createCards.js")
+	script(src="/javascript/angular/services/commonService.js")
+	script(src="/javascript/angular/directives/ckEditorDirective.js")
+	script(src="/javascript/angular/filters/commonFilters.js")
+	script(src="/javascript/frameworks/ckeditor/ckeditor.js")
+	script(src="/javascript/frameworks/jquery/jquery-file-upload/jquery.ui.widget.js")
+	script(src="/javascript/frameworks/jquery/jquery-file-upload/jquery.iframe-transport.js")
+	script(src="/javascript/frameworks/jquery/jquery-file-upload/jquery.fileupload.js")
+	title Create And Edit Flash Cards
+block content
+	ol.breadcrumb
+		li
+			a(href="/cardsHome") Flash Cards Home
+		li
+			a(href="/user/profile") My Profile	
+		li.active Create Flash Cards
+	p#noRichEditorMessage(style="color:red;display:none;") Rich editor is not supported on this device.
+	div.marginTop10(ng-app="createCardApp", ng-controller="createCardCtrl")	
+		ul.nav.nav-tabs#createCardsTab
+			li.active
+				a(href="#cardDetails" data-toggle="tab") 
+					b(style="color:#000080;") 1. Flash Deck Details
+			li
+				a(href="#addCards" data-toggle="tab",ng-if="flashDeckObj.flashDeckId>0") 
+					b(style="color:green;") 2. Add Cards
+				a(href="",ng-if="!flashDeckObj.flashDeckCode",ng-click="validateAddCards();") 
+					b(style="color:green;") 2. Add Cards
+			li
+				a(href="#publishCards" data-toggle="tab",ng-if="flashDeckObj.flashDeckId>0")
+					b(style="color:#A52A2A;") 3. Publish Flash Cards 
+				a(href="",ng-if="!flashDeckObj.flashDeckCode",ng-click="validatePublishCards();") 
+					b(style="color:#A52A2A;") 3. Publish Flash Cards
+		div.tab-content.marginTop10#createCardsTabContent
+			div.tab-pane.fade.in.active#cardDetails
+				include /user/cards/create/cardDeckDetailsForm
+			div.tab-pane.fade#addCards
+				include /user/cards/create/cardDetailsForm
+			div.tab-pane.fade#publishCards
+				p publish cards
+		.row
+			.col-sm-6.col-md-2.marginTop10
+				a(href="/cardsHome") Flash Cards Home
+			.col-sm-6.col-md-2.marginTop10
+				a(href="/user/profile") My Profile	
+			.col-sm-6.col-md-2.marginTop10
+				a(href="/user/myExams") My Flash Cards
+			.col-sm-6.col-md-2.marginTop10(ng-if="flashDeckObj.flashDeckId>0")
+				a(href="/user/createCard") Create New Flash Deck			

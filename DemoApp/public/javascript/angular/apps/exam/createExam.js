@@ -216,65 +216,6 @@ function validateQuestionForm(questionObj) {
 			  }
 		  }
 	  } 
-//	  if($('#question').val().trim().length<2) {
-//		  isValid = false;
-//		  alert("Please enter valid question");
-//	  } else if($scope.examObj.questionObj.questionType == 'MC') {
-//		  if($('#option1').val().trim().length<2) {
-//			  isValid = false;
-//			  alert("Please enter valid option 1");
-//		  } else if($('#option2').val().trim().length<2) {
-//			  isValid = false;
-//			  alert("Please enter valid option 2");
-//		  } else if(!$('[name=answer]:checked').val()) {
-//			  isValid = false;
-//			  alert("Please select valid answer");
-//		  } else if(!$('[name=answer]:checked').val()) {
-//			  isValid = false;
-//			  alert("Please select valid answer.");
-//		  } else if($('[name=answer]:checked').val()) {
-//			  var checkedAnswers = $('[name=answer]:checked');
-//			  if(checkedAnswers) {
-//				  for(var j=0;j<checkedAnswers.length;j++) {
-//					  if($('#'+checkedAnswers[j].id.replace('_','')).val().trim().length<2) {
-//						  isValid = false;
-//						  alert("Please select valid answer. Answer you have selected doesn't have option value");
-//					  }
-//				  }
-//			  } else {
-//				  isValid = false;
-//				  alert("Please select valid answer."); 
-//			  }
-//		  }
-//	  } else if($scope.examObj.questionObj.questionType == 'TF') {
-//		  $scope.examObj.questionObj.questionOptions = new Array();
-//		  $scope.examObj.questionObj.questionOptions[0] = new Object();
-//		  $scope.examObj.questionObj.questionOptions[1] = new Object();
-//		  
-//		  $scope.examObj.questionObj.questionOptions[0].optionDesc ="True";
-//		  $scope.examObj.questionObj.questionOptions[1].optionDesc ="False";
-//
-//		  if(!$('[name=answer]:checked').val() ||  $('[name=answer]:checked').val().length<1) {
-//			  isValid = false;
-//			  alert("Please select valid answer");
-//		  } else {
-//			  if( $('[name=answer]:checked').val() == "option1") {
-//				  $scope.examObj.questionObj.questionOptions[0].isAnswer = true;
-//				  $scope.examObj.questionObj.questionOptions[1].isAnswer = false; 
-//			  } else {
-//				  $scope.examObj.questionObj.questionOptions[0].isAnswer = false;  
-//				  $scope.examObj.questionObj.questionOptions[1].isAnswer = true;
-//			  }
-//		  }
-//	  } else if($scope.examObj.questionObj.questionType == 'TF') {
-//		  $scope.examObj.questionObj.questionOptions = null;
-//		  $scope.examObj.questionObj.questionOptions[0] = new Object();
-//		  $scope.examObj.questionObj.questionOptions[1] = new Object();
-//		  $scope.examObj.questionObj.questionOptions[0].optionDesc ="";
-//		  $scope.examObj.questionObj.questionOptions[1].optionDesc ="";
-//		  $scope.examObj.questionObj.questionOptions[0].isAnswer = false;  
-//		  $scope.examObj.questionObj.questionOptions[1].isAnswer = false;
-//	  }
 	return isValid;
 }
 

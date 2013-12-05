@@ -1,0 +1,53 @@
+extends /common/layout
+block head
+	title My Flash Cards
+	script(src="/javascript/frameworks/angular/angular.min.js")
+	script(src="/javascript/frameworks/angular/angular-resource.min.js")
+	script(src="/javascript/angular/filters/truncate.js")
+	script.
+		var myFlashCardsApp = angular.module('myFlashCardsApp', ['ngResource','truncateFilter']);
+		myFlashCardsApp.controller('myFlashCardsCtrl', ['$scope','getMyFlashDeckService',function($scope,getMyFlashDeckService) {
+			$scope.myFlashDeckList = getMyFlashDeckService.query();		
+		}]);
+		myFlashCardsApp.factory('getMyFlashDeckService',['$resource', function($resource) {
+			return $resource('/user/getAllMyFlashDecks', {}, {
+				query : {method : 'POST',isArray : true}
+			});
+		}]);
+block content
+	div.row(ng-app="myFlashCardsApp",ng-controller="myFlashCardsCtrl")
+			ol.breadcrumb
+				li
+					a(href="/cardsHome") Flash Cards Home
+				li
+					a(href="/user/profile") My Profile	
+				li.active My Flash Cards
+			.alert.alert-success.marginTop10(ng-if="!myFlashDeckList || myFlashDeckList.length<1") 
+				b You have not created Flash Cards. 
+				a.btn.btn-primary(href="/user/createCard",data-toggle="tooltip",data-title="Create Flash Cards") Create Flash Cards
+			.col-sm-3.col-md-2.marginTop10.textAlignCenter(ng-repeat="flashDeckObj in myFlashDeckList")
+				.thumbnail
+					a(href="/user/flashDeck?fdc={{flashDeckObj.flashDeckCode}}",title="{{flashDeckObj.flashDeckName}}")
+						img.img-rounded.imgSize(ng-src="https://s3.amazonaws.com/uqi/{{flashDeckObj.flashDeckImg}}",alt="{{flashDeckObj.flashDeckName}}")
+					.caption
+						div(style="height:40px;")
+							a(href="/user/flashDeck?fdc={{flashDeckObj.flashDeckCode}}",title="{{flashDeckObj.flashDeckName}}")
+								strong {{flashDeckObj.flashDeckName|truncate:30:"."}}
+						div(ng-if="flashDeckObj.isPublished")
+							b(style="color:green") Published	
+						div(ng-if="!flashDeckObj.isPublished") 
+							b(style="color:red") Not Published			
+						.badge {{flashDeckObj.noOfFlashCards}} Cards
+						.badge {{flashDeckObj.noOfViews}} views
+						div
+							a.btn.btn-primary.btn-xs.margin5(href="/user/createCard?fdc={{flashDeckObj.flashDeckCode}}") 
+								b Edit
+							a.btn.btn-success.btn-xs.margin5 
+								b Open Cards
+		.row
+			.col-sm-6.col-md-2.marginTop10
+				a(href="/cardsHome") Flash Cards Home
+			.col-sm-6.col-md-2.marginTop10
+				a(href="/user/createCard") Create Flash Cards
+			.col-sm-6.col-md-2.marginTop10
+				a(href="/user/profile") My Profile

@@ -4,7 +4,9 @@ var userModels = [{name:'User',path:'../common/User'},
                   {name:'Exam',path:'../exam/Exam'},
                   {name:'Question',path:'../exam/Question'},
                   {name:'QuestionOption',path:'../exam/QuestionOption'},
-                  {name:'ExamSession',path:'../exam/ExamSession'}
+                  {name:'ExamSession',path:'../exam/ExamSession'},
+                  {name:'FlashDeck',path:'../cards/FlashDeck'},
+                  {name:'FlashCard',path:'../cards/FlashCard'}
                  ];
 var models = {};
 
@@ -48,6 +50,7 @@ var Database = function Database() {
     	models["Exam"].hasMany(models["Question"],{as: 'questions',foreignKey: 'examId'});
     	models["Question"].hasMany(models["QuestionOption"],{as: 'questionOptions',foreignKey: 'questionId'});
     	models["Exam"].hasMany(models["ExamSession"],{as: 'examSessions',foreignKey: 'examId'});
+    	models["FlashDeck"].hasMany(models["FlashCard"],{as: 'flashCards',foreignKey: 'flashDeckId'});
     }
     
     if(Database.caller != Database.getInstance){

@@ -1,0 +1,61 @@
+extends /common/layout
+block head
+	link(rel='stylesheet', href='/stylesheets/carousel.css')
+	link(rel='stylesheet', href='/stylesheets/flip.css')
+	title Welcome - Flash Cards
+	.carousel
+		.carousel-inner
+			.item.active
+				img(src='img/cards.png', alt='Flash Cards')
+				.container
+					.carousel-caption
+						h1 Flash 
+							span#cards Cards
+						p Find, Create, Learn & Share
+						form(role="form",method="post",action="/search")
+							.input-group
+								input.form-control#searchQuery(type="text",name="msq",placeholder="Search Flash Cards...")
+								.input-group-btn
+									button.btn.btn-default(type="submit",onclick="return validateSearch(this);")
+										i.glyphicon.glyphicon-search
+	.container.marketing
+		.row.featurette
+			.col-md-7
+				h1 Flash Cards features
+				hr
+				h5
+					span Access Anywhere - 
+					span.text-muted Works across devices - phones, tablets, laptop and TV's
+				h5
+					span Take Exam - 
+					span.text-muted Rethought of exams with speed, simplicity and intuitive
+				h5
+					span History - 
+					span.text-muted Store and view your exam results any time
+				br	
+				h4 Exam Authors ... Here You Go	!!!
+				h5
+					span Create - 
+					span.text-muted Multiple choice, Multiple Answers, True/False, Essay Type
+				h5
+					span Rich - 
+					span.text-muted Create questions with images and rich text 	
+				h5
+					span Share Exam - 
+					span.text-muted Share exam id or exam URL with anyone  	
+				h5
+					span Track Who Took Exam - 
+					span.text-muted Track user name, answer sheet, time spent & more
+				h5
+					span Evaluate Exam - 
+					span.text-muted Evaluate exam and publish results to user
+				h5
+					span Its Completely Free - 
+					span.text-muted Create unlimited exams and questions for any number of users	
+					
+			.col-md-5
+				.jumbotron
+					a.btn.btn-success.btn-lg.btn-block.buttonWrapText(href="/user/createCard") Create Flash Cards
+					a.btn.btn-danger.btn-lg.btn-block.buttonWrapText(href="/user/myFlashCards") My Flash Cards
+					a.btn.btn-primary.btn-lg.btn-block.buttonWrapText(href="/exploreExams") Explore Flash Cards
+					a.btn.btn-default.btn-lg.btn-block.buttonWrapText(href="/user/profile") My Profile

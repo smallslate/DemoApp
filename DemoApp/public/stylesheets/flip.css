@@ -1,0 +1,57 @@
+h1 span {
+	animation: flipper 3s ease-in 4s infinite;
+	-moz-animation: flipper 3s ease-in 4s infinite;
+	-webkit-animation: flipper 3s ease-in 4s infinite;
+	transform-style: preserve-3d;
+	-webkit-transform-style: preserve-3d;
+	-moz-transform-style: preserve-3d;
+	display: inline-block;
+}
+
+@-webkit-keyframes flipper {
+  0% {
+    -webkit-transform: perspective(300px) rotateY(0deg);
+  }
+  15%, 100% {
+    -webkit-transform: perspective(300px) rotateY(360deg);
+  }
+}
+@-moz-keyframes flipper {
+  0% {
+    -moz-transform: perspective(300px) rotateY(0deg);
+  }
+  15%, 100% {
+    -moz-transform: perspective(300px) rotateY(360deg);
+  }
+}
+@keyframes flipper {
+  0% {
+    transform: perspective(300px) rotateY(0deg);
+  }
+  15%, 100% {
+    transform: perspective(300px) rotateY(360deg);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

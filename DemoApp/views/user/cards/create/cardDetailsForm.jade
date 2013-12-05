@@ -1,0 +1,45 @@
+div.alert.alert-success.marginTop10(ng-if="(!flashDeckObj || !flashDeckObj.flashCards || flashDeckObj.flashCards.length<=0) && !isAddingCard")
+	b.marginRight10 No Cards added
+	button.btn.btn-success(ng-click="addNewCard()") Add New Card
+	
+div.table-responsive(ng-show="flashDeckObj.flashCards && flashDeckObj.flashCards.length>0")
+	table.table(style="padding:0px!important")
+		tr
+			td
+				span.marginRight10 
+					button.btn.btn-success(ng-click="addNewCard()") New
+				span(ng-repeat="cardObj in flashDeckObj.flashCards")
+					button.btn.btn-primary(ng-click="editFlashCard(cardObj.flashCardNumber)",ng-if="flashDeckObj.newCard.flashCardNumber==cardObj.flashCardNumber") {{cardObj.flashCardNumber}}
+					button.btn.btn-default(ng-click="editFlashCard(cardObj.flashCardNumber)",ng-if="flashDeckObj.newCard.flashCardNumber!=cardObj.flashCardNumber") {{cardObj.flashCardNumber}}
+						
+div.panel.panel-primary.marginTop10(ng-if="isAddingCard")
+	div.panel-heading
+		b Card {{flashDeckObj.newCard.flashCardNumber}}
+	div.panel-body
+		form.form-horizontal#flashCardForm(role="form")
+			div.form-group 
+				label.col-lg-2.control-label Card Front
+					p.showHideEditor Show Rich Editor
+						input(type="checkbox",data-ng-model="flashDeckObj.newCard.cardFrontIsRich") 
+				div.col-lg-10(ng-if="!flashDeckObj.newCard.cardFrontIsRich")
+					textarea.form-control(id="cardFront",data-ng-model="flashDeckObj.newCard.cardFront",rows="6")
+				div.col-lg-10(ng-if="flashDeckObj.newCard.cardFrontIsRich")
+					textarea.form-control(ck-editor=200,id="cardFront",data-ng-model="flashDeckObj.newCard.cardFront")
+			div.form-group 
+				label.col-lg-2.control-label Card Back
+					p.showHideEditor Show Rich Editor
+						input(type="checkbox",data-ng-model="flashDeckObj.newCard.cardBackIsRich") 
+				div.col-lg-10(ng-if="!flashDeckObj.newCard.cardBackIsRich")
+					textarea.form-control(id="cardBack",data-ng-model="flashDeckObj.newCard.cardBack",rows="6")
+				div.col-lg-10(ng-if="flashDeckObj.newCard.cardBackIsRich")
+					textarea.form-control(ck-editor=200,id="cardBack",data-ng-model="flashDeckObj.newCard.cardBack")			
+			div.form-group
+				div.col-sm-offset-2.col-sm-10
+					button.btn.btn-default.marginRight10(type="submit",ng-click = "closeCardForm();") Close
+					button.btn.btn-primary.marginRight10(type="submit",ng-click="saveFlashCard('create');",ng-if="!flashDeckObj.newCard.flashCardId") Save
+					button.btn.btn-primary.marginRight10(ng-click="saveFlashCard('update')",ng-if="flashDeckObj.newCard.flashCardId>0") Update
+					button.btn.btn-danger.marginRight10(ng-click="deleteFlashCard(flashDeckObj.newCard.flashCardId)",ng-if="flashDeckObj.newCard.flashCardId>0") Delete
+		div.alert.alert-danger(ng-if="flashDeckObj.newCard.error") 
+			b {{flashDeckObj.newCard.error}}
+		div.alert.alert-success(ng-if="flashDeckObj.newCard.success") 
+			b {{flashDeckObj.newCard.success}}					

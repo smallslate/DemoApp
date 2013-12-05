@@ -111,9 +111,26 @@ Exam.getSubCategoriesByCategoryCode = function(req,res) {
 
 Exam.getSubCategoriesByExamCode = function(req,res) {
 	var examCode = req.query.examCode;
+	var flashDeckCode = req.query.flashDeckCode;
 	if(examCode && examCode.length>=8) {
 		db.model("Exam").find({ where: {examCode: examCode,isActive:true} }).success(function(dbExamObj) {
 			db.model("Category").find({where:{categoryCode:dbExamObj.categoryCode,isActive: true}}).success(function(categoryObj) {
+				if(categoryObj) {
+					categoryObj.getSubCategories().success(function(subCategoryList) {
+						res.send(subCategoryList);
+					});
+				} else {
+					res.send(null);
+				}
+			}).error(function(err) {
+				res.send(null);
+			});
+		}).error(function(err) {
+			res.send(null);
+		});
+	} else if(flashDeckCode && flashDeckCode.length>=8) {
+		db.model("FlashDeck").find({ where: {flashDeckCode: flashDeckCode,isActive:true} }).success(function(dbFlashDeckObj) {
+			db.model("Category").find({where:{categoryCode:dbFlashDeckObj.categoryCode,isActive: true}}).success(function(categoryObj) {
 				if(categoryObj) {
 					categoryObj.getSubCategories().success(function(subCategoryList) {
 						res.send(subCategoryList);
@@ -400,7 +417,6 @@ Exam.uploadExamLogo = function(req,res) {
 		db.model("Exam").find({ where: {examCode: req.body.examCode,isActive:true} }).success(function(dbExamObj) {
 			if(res.locals.isAdmin || dbExamObj.createdBy == req.user.loggedInUserId) {
 				if(dbExamObj.examImg !="logo.png") {
-					console.log(dbExamObj.examImg);
 					aws.getAWSExamBucket().deleteObject({Key:dbExamObj.examImg}, function(err, data) {
 					      if (err && err.code!="MissingRequiredParameter") {
 					    	  console.log(err);

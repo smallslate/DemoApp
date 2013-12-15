@@ -1,0 +1,53 @@
+div.form-group 
+	label.col-lg-2.control-label Question
+		p.showHideEditor Show Rich Editor
+			input(type="checkbox",data-ng-model="quizObj.questionObj.questionIsRich") 
+	div.col-lg-10(ng-if="!quizObj.questionObj.questionIsRich")
+		textarea.form-control(name="question",id="question",data-ng-model="quizObj.questionObj.question")
+	div.col-lg-10(ng-if="quizObj.questionObj.questionIsRich")
+		textarea.form-control(ck-editor=100,name="question",id="question",data-ng-model="quizObj.questionObj.question")
+		
+div.form-group(ng-repeat="optionObj in quizObj.questionObj.questionOptions")
+	label.col-lg-2.control-label Option {{$index+1}}
+		p.showHideEditor Show Rich Editor 
+			input(type="checkbox",data-ng-model="optionObj.isOptionRich") 
+	div.col-lg-8(ng-show="!optionObj.isOptionRich")
+		textarea.form-control(name="option{{$index+1}}",id="option{{$index+1}}",rows="1",data-ng-model="optionObj.optionDesc")
+	div.col-lg-8(ng-show="optionObj.isOptionRich")
+		textarea.form-control(name="option{{$index+1}}",id="option{{$index+1}}",rows="1",data-ng-model="optionObj.optionDesc",ck-editor=100)	
+	div.col-lg-2
+		label Answer
+			input(type="checkbox",name="answer",value="true",id="option{{$index+1}}Answer",ng-checked="optionObj.isAnswer",data-ng-model="optionObj.isAnswer")
+		div(ng-if="$index>1")
+			a(ng-click="deleteAdditionalOption($index)")
+				img.img-circle.pointer(src="/img/delete.png",title="delete")
+									
+div.form-group(ng-if="quizObj.questionObj.questionOptions.length<5")
+	div.col-sm-offset-2.col-sm-10
+		button.btn.btn-link.marginRight10(type="submit",ng-click="addAdditionalOption()") Add Option	
+		
+div.form-group
+	label.col-lg-2.control-label Answer Description
+		p.showHideEditor Show Rich Editor 
+			input(type="checkbox",data-ng-model="quizObj.questionObj.answerDescrIsRich") 
+	div.col-lg-10(ng-show="!quizObj.questionObj.answerDescrIsRich")
+		textarea.form-control(name="answerDescr",data-ng-model="quizObj.questionObj.answerDescr",rows="2")
+	div.col-lg-10(ng-show="quizObj.questionObj.answerDescrIsRich")
+		textarea.form-control(ck-editor=200,name="answerDescr",data-ng-model="quizObj.questionObj.answerDescr")			
+		
+div.form-group
+	label.col-lg-2.control-label Difficulty Level 
+	div.col-lg-10
+		select.form-control(name="difficultyLevel",data-ng-model="quizObj.questionObj.difficultyLevel")
+			option(value="0") Easy
+			option(value="1") Medium
+			option(value="2") Hard			
+		
+		
+		
+		
+		
+		
+		
+		
+		

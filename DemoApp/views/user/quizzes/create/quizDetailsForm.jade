@@ -1,0 +1,40 @@
+form.form-horizontal(ng-show="quizObj.quizCode",id="fileupload",action="/user/uploadQuizLogo" method="post" enctype="multipart/form-data")
+	div.form-group
+			label.col-lg-2.control-label Quiz Logo
+			div.col-lg-10
+				img.img-rounded.imgSize#quizLogo(ng-src="https://s3.amazonaws.com/uqi/{{quizObj.quizImg}}",alt="Quiz Logo")
+				input(type="file",name="image", multiple)
+				input(type="hidden",name="quizCode",value="{{quizObj.quizCode}}")		
+				div#fileUploadMessage Upload image of 128x128 pixels for best view.
+					
+form.form-horizontal(role="form")
+	div.form-group
+		label.col-lg-2.control-label Quiz Name
+		div.col-lg-10
+			input.form-control#quizName(placeholder="Enter Quiz Name",ng-model="quizObj.quizName")
+	div.form-group
+		label.col-lg-2.control-label Description
+		div.col-lg-10
+			textarea.form-control#quizDescr(placeholder="Enter Quiz Description",ng-model="quizObj.quizDescr")		
+	div.form-group
+		label.col-lg-2.control-label Category
+		div.col-lg-10
+			select.form-control#categoryCode(ng-model="quizObj.categoryCode",ng-change="onCategoryChange()",ng-disabled="quizObj.isPublished")		
+				option(value="") ---- Select Category ---- 
+				option(value="{{category.categoryCode}}",ng-repeat="category in categories") {{category.categoryName}}
+	div.form-group
+		label.col-lg-2.control-label Sub Category
+		div.col-lg-10
+			select.form-control#subCategoryCode(ng-model="quizObj.subCategoryCode",ng-disabled="!quizObj.categoryCode.length>0 || quizObj.isPublished")		
+				option(value="") ---- Select Sub Category ---- 
+				option(value="{{subCategory.subCategoryCode}}",ng-repeat="subCategory in subCategories") {{subCategory.subCategoryName}}
+	div.form-group		
+		div.col-lg-offset-2.col-lg-10
+			button.btn.btn-primary.margin5(ng-click="crudQuizDetails('create')",ng-if="!quizObj.quizCode.length>0") Save	
+			button.btn.btn-primary.margin5(ng-click="crudQuizDetails('update')",ng-if="quizObj.quizCode.length>0") Update
+			button.btn.btn-success.margin5(ng-click="crudQuizDetails('addQuestions')",ng-if="quizObj.quizCode.length>0") Add Questions
+
+div.alert.alert-danger(ng-if="quizObj.error") 
+	b {{quizObj.error}}
+div.alert.alert-success(ng-if="quizObj.success") 
+	b {{quizObj.success}}									

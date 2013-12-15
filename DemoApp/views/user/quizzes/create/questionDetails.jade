@@ -1,0 +1,88 @@
+div.alert.alert-success.marginTop10(ng-if="(!quizObj.questionList && !isAddingNewQuestion) || (quizObj.questionList.length<1 && !isAddingNewQuestion)") 
+	b.marginRight10 No questions added
+	button.btn.btn-success(ng-click="addNewQuestion()") Add New Question
+div.table-responsive(ng-show="quizObj.questionList && quizObj.questionList.length>0")
+	table.table(style="padding:0px!important")
+		tr
+			td
+				span.marginRight10 
+					button.btn.btn-success(ng-click="addNewQuestion()") New
+				span(ng-repeat="questionObj in quizObj.questionList")
+					button.btn.btn-primary(ng-click="editQuestion(questionObj.questionNumber)",ng-if="quizObj.questionObj.questionNumber==questionObj.questionNumber") {{questionObj.questionNumber}}
+					button.btn.btn-default(ng-click="editQuestion(questionObj.questionNumber)",ng-if="quizObj.questionObj.questionNumber!=questionObj.questionNumber") {{questionObj.questionNumber}}
+					
+div.panel.panel-primary.marginTop10(ng-if="isAddingNewQuestion")
+	div.panel-heading
+		b Question# {{quizObj.questionObj.questionNumber}}
+	div.panel-body
+		form.form-horizontal(role="form")
+			div.form-group(ng-show="!quizObj.questionObj.questionId")
+				label.col-lg-2.control-label Question Type
+				div.col-lg-10
+					select.form-control(name="questionType",id="questionType",ng-model="quizObj.questionObj.questionType")
+						option(value="MCSA") Multiple Choice - Single Answer
+						option(value="MCMA") Multiple Choice - Multiple Answers
+						option(value="TORF") True / False
+			div(ng-if="quizObj.questionObj.questionType=='MCSA'")
+				include /user/quizzes/create/mcsaForm			
+			div(ng-if="quizObj.questionObj.questionType=='MCMA'")
+				include /user/quizzes/create/mcmaForm
+			div(ng-if="quizObj.questionObj.questionType=='TORF'")
+				include /user/quizzes/create/torfForm
+			div.form-group
+				div.col-sm-offset-2.col-sm-10
+					button.btn.btn-default.marginRight10(type="submit",ng-click = "closeQuestionForm();") Close
+					button.btn.btn-primary.marginRight10(type="submit",ng-click="saveQuestion('create');",ng-if="!quizObj.questionObj.questionId") Save
+					button.btn.btn-primary.marginRight10(ng-click="saveQuestion('update')",ng-if="quizObj.questionObj.questionId>0") Update
+					button.btn.btn-danger.marginRight10(ng-click="deleteQuestion(quizObj.questionObj.questionNumber)",ng-if="quizObj.questionObj.questionId>0") Delete
+
+		div.alert.alert-danger(ng-if="quizObj.questionObj.error") 
+			b {{quizObj.questionObj.error}}
+		div.alert.alert-success(ng-if="quizObj.questionObj.success") 
+			b {{quizObj.questionObj.success}}	
+	
+div.panel.panel-primary.marginTop10(ng-repeat="questionObjfromList in quizObj.questionList | reverse")
+	div.panel-heading
+		span
+			b Question {{questionObjfromList.questionNumber}}.
+	div.panel-body 
+		div
+			span 
+				b Question : 
+				span(ng-bind-html="questionObjfromList.question | unsafe")
+		div
+			span 
+				b Question Type :
+			span(ng-if="questionObjfromList.questionType=='MCSA'") Multiple Choice - Single Answer
+			span(ng-if="questionObjfromList.questionType=='MCMA'") Multiple Choice - Multiple Answers
+			span(ng-if="questionObjfromList.questionType=='TORF'") True / False
+		div(ng-repeat="questionOptionsfromList in questionObjfromList.questionOptions")
+			span 
+				b(ng-if="!questionOptionsfromList.isAnswer") Option {{$index+1}} :   
+				b(ng-if="questionOptionsfromList.isAnswer",style="color:green;") Option {{$index+1}} (Answer) :    
+			span(ng-bind-html="questionOptionsfromList.optionDesc | unsafe")
+		div		
+			span 
+				b Difficulty Level :    
+			span(ng-if="questionObjfromList.difficultyLevel==0") Easy
+			span(ng-if="questionObjfromList.difficultyLevel==1") Medium
+			span(ng-if="questionObjfromList.difficultyLevel==2") Hard
+		div	
+			span 
+				b Answer Description :    
+			span(ng-bind-html="questionObjfromList.answerDescr | unsafe")			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+				
+				
+				
+				
+						

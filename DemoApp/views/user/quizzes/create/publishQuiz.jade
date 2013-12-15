@@ -1,0 +1,22 @@
+form.form-horizontal(role="form")
+	div.form-group 
+		label.col-lg-2.control-label Quiz References (Optional)
+		div.col-lg-10
+			textarea.form-control(ck-editor=100,data-ng-model="quizObj.references")	
+			p Add Quiz references like web site url's, videos etc.  
+	div.form-group 
+		label.col-lg-2.control-label Author Details (Optional)
+		div.col-lg-10
+			textarea.form-control(ck-editor=100,data-ng-model="quizObj.authorDetails")	
+			p You can add author contact details like website, Facebook, Twitter, Google+ or social network profile URL's you like.However be careful while providing your information like email's or phone numbers. Details you have provided will be shown on Quiz preview page.  
+	div.form-group		
+		div.col-lg-offset-2.col-lg-10
+			button.btn.btn-primary.margin5(ng-click="publishQuiz('updatePublishData')") Save	
+			button.btn.btn-success.margin5(ng-if="!quizObj.isPublished",ng-click="publishQuiz('publishQuiz')") Publish Quiz	
+			button.btn.btn-danger.btn-xs.margin5(ng-if="quizObj.isPublished",ng-click="publishQuiz('unpublishQuiz')") Un Publish Quiz
+			button.btn.btn-danger.btn-xs.margin5.pull-right(ng-if="quizObj.quizId>0",ng-click="publishQuiz('deleteQuiz')") Delete Quiz
+			
+div.alert.alert-danger(ng-if="quizObj.publishErrorMessage") 
+	b {{quizObj.publishErrorMessage}}
+div.alert.alert-success(ng-if="quizObj.publishSuccessMessage") 
+	b {{quizObj.publishSuccessMessage}}									

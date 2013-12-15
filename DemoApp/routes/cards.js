@@ -173,7 +173,7 @@ Cards.uploadFlashDeckLogo = function(req,res) {
 		db.model("FlashDeck").find({ where: {flashDeckCode: req.body.flashDeckCode,isActive:true} }).success(function(dbflashDeckObj) {
 			if(res.locals.isAdmin || dbflashDeckObj.createdBy == req.user.loggedInUserId) {
 				if(dbflashDeckObj.flashDeckImg !="logo.png") {
-					aws.getAWSExamBucket().deleteObject({Key:dbflashDeckObj.flashDeckImg}, function(err, data) {
+					aws.getAWSBucket().deleteObject({Key:dbflashDeckObj.flashDeckImg}, function(err, data) {
 					      if (err && err.code!="MissingRequiredParameter") {
 					    	  fs.unlink(path);
 					    	  res.send(null);
@@ -217,7 +217,7 @@ function insertFlashDeckLogo(req,res,dbflashDeckObj) {
 		      ContentType: mimeType
 		    };
 			
-			aws.getAWSExamBucket().putObject(params, function(err, data) {
+			aws.getAWSBucket().putObject(params, function(err, data) {
 				fs.unlink(path);
 			      if (err) {
 			    	  res.send({error:"Cannot upload image. Please try again."});

@@ -1,0 +1,48 @@
+extends /common/layout
+block head
+	title My Quizzes
+	script(src="/javascript/frameworks/angular/angular.min.js")
+	script(src="/javascript/frameworks/angular/angular-resource.min.js")
+	script(src="/javascript/angular/filters/truncate.js")
+	script.
+		var myQuizzesApp = angular.module('myQuizzesApp', ['ngResource','truncateFilter']);
+		myQuizzesApp.controller('myQuizzesCtrl', ['$scope','getMyQuizzesService',function($scope,getMyQuizzesService) {
+			$scope.myQuizzesList = getMyQuizzesService.query();		
+		}]);
+		myQuizzesApp.factory('getMyQuizzesService',['$resource', function($resource) {
+			return $resource('/user/getMyQuizzes', {}, {
+				query : {method : 'POST',isArray : true}
+			});
+		}]);
+block content
+	div.row(ng-app="myQuizzesApp",ng-controller="myQuizzesCtrl")
+		ol.breadcrumb
+			li
+				a(href="/quizHome") Quizzes Home
+			li
+				a(href="/user/profile") My Profile	
+			li.active My Quizzes
+		.alert.alert-success.marginTop10(ng-if="!myQuizzesList || myQuizzesList.length<1") 
+			b You have not created Quiz. 
+			a.btn.btn-primary(href="/user/createQuiz",data-toggle="tooltip",data-title="Create Quiz") Create Quiz
+		.col-sm-3.col-md-2.marginTop10.textAlignCenter(ng-repeat="quizObj in myQuizzesList")
+			.thumbnail
+				a(href="/user/createQuiz?qc={{quizObj.quizCode}}",title="{{quizObj.quizName}}")
+					img.img-rounded.imgSize(ng-src="https://s3.amazonaws.com/uqi/{{quizObj.quizImg}}",alt="{{quizObj.quizName}}")
+				.caption
+					div(style="height:40px;")
+						a(href="/user/createQuiz?qc={{quizObj.quizCode}}",title="{{quizObj.quizName}}")
+							strong {{quizObj.quizName|truncate:30:"."}}
+					div(ng-if="quizObj.isPublished")
+						b(style="color:green") Code : {{quizObj.quizCode}}	
+					div(ng-if="!quizObj.isPublished") 
+						b(style="color:red") Not Published			
+					.badge {{quizObj.numberOfQuestions}} Q
+					.badge {{quizObj.noOfViews}} views
+	.row
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/quizHome") Quiz Home
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/user/createQuiz") Create Quiz
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/user/profile") My Profile	

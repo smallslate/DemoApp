@@ -1,27 +1,25 @@
 extends /common/layout
 block head
 	link(rel='stylesheet', href='/stylesheets/carousel.css')
-	link(rel='stylesheet', href='/stylesheets/flip.css')
-	title Welcome - Flash Cards
+	title Welcome - Quizzes
 	.carousel
 		.carousel-inner
 			.item.active
-				img(src='img/exam.png', alt='Flash Cards')
+				img(src='img/exam.png', alt='Quizzes')
 				.container
 					.carousel-caption
-						h1 Flash 
-							span#cards Cards
+						h1 Quizzes 
 						p Find, Create, Learn & Share
 						form(role="form",method="post",action="/search")
 							.input-group
-								input.form-control#searchQuery(type="text",name="msq",placeholder="Search Flash Cards...")
+								input.form-control#searchQuery(type="text",name="msq",placeholder="Search Quizzes...")
 								.input-group-btn
 									button.btn.btn-default(type="submit",onclick="return validateSearch(this);")
 										i.glyphicon.glyphicon-search
 	.container.marketing
 		.row.featurette
 			.col-md-7
-				h1 Flash Cards features
+				h1 Quizzes features
 				hr
 				h5
 					span Access Anywhere - 
@@ -55,7 +53,7 @@ block head
 					
 			.col-md-5
 				.jumbotron
-					a.btn.btn-success.btn-lg.btn-block.buttonWrapText(href="/user/createCard") Create Flash Cards
-					a.btn.btn-danger.btn-lg.btn-block.buttonWrapText(href="/user/myFlashCards") My Flash Cards
-					a.btn.btn-primary.btn-lg.btn-block.buttonWrapText(href="/exploreExams") Explore Flash Cards
+					a.btn.btn-primary.btn-lg.btn-block.buttonWrapText(href="/exploreExams") Explore Quizzes
+					a.btn.btn-success.btn-lg.btn-block.buttonWrapText(href="/user/createQuiz") Create Quiz
+					a.btn.btn-danger.btn-lg.btn-block.buttonWrapText(href="/user/myQuizzes") My Quizzes
 					a.btn.btn-default.btn-lg.btn-block.buttonWrapText(href="/user/profile") My Profile

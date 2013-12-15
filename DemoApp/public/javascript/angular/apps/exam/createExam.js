@@ -183,7 +183,7 @@ createExamApp.factory('crudQuestionService',['$resource', function($resource) {
 	});
 }]);
 
-function validateQuestionForm(questionObj) {
+function validateQuestionForm() {
 	var isValid = true;	
 	  for(var instance in CKEDITOR.instances) { 
 		  CKEDITOR.instances[instance].updateElement();

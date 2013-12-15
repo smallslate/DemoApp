@@ -112,6 +112,8 @@ Exam.getSubCategoriesByCategoryCode = function(req,res) {
 Exam.getSubCategoriesByExamCode = function(req,res) {
 	var examCode = req.query.examCode;
 	var flashDeckCode = req.query.flashDeckCode;
+	var quizCode = req.query.quizCode;
+	
 	if(examCode && examCode.length>=8) {
 		db.model("Exam").find({ where: {examCode: examCode,isActive:true} }).success(function(dbExamObj) {
 			db.model("Category").find({where:{categoryCode:dbExamObj.categoryCode,isActive: true}}).success(function(categoryObj) {
@@ -131,6 +133,22 @@ Exam.getSubCategoriesByExamCode = function(req,res) {
 	} else if(flashDeckCode && flashDeckCode.length>=8) {
 		db.model("FlashDeck").find({ where: {flashDeckCode: flashDeckCode,isActive:true} }).success(function(dbFlashDeckObj) {
 			db.model("Category").find({where:{categoryCode:dbFlashDeckObj.categoryCode,isActive: true}}).success(function(categoryObj) {
+				if(categoryObj) {
+					categoryObj.getSubCategories().success(function(subCategoryList) {
+						res.send(subCategoryList);
+					});
+				} else {
+					res.send(null);
+				}
+			}).error(function(err) {
+				res.send(null);
+			});
+		}).error(function(err) {
+			res.send(null);
+		});
+	} else if(quizCode && quizCode.length>=8) {
+		db.model("Quiz").find({ where: {quizCode: quizCode,isActive:true} }).success(function(dbQuizObj) {
+			db.model("Category").find({where:{categoryCode:dbQuizObj.categoryCode,isActive: true}}).success(function(categoryObj) {
 				if(categoryObj) {
 					categoryObj.getSubCategories().success(function(subCategoryList) {
 						res.send(subCategoryList);
@@ -342,7 +360,6 @@ Exam.crudExamDetails = function(req,res) {
 					dbExamObj.showResultsAfterExam = examObj.showResultsAfterExam;
 					dbExamObj.updatedBy = examObj.updatedBy = req.user.loggedInUserId;
 					if(requestObj.action =='publishExam' || requestObj.action =='unpublishExam') {
-						console.log(examObj.subCategoryId);
 						db.model("SubCategory").find({where:{subCategoryCode:examObj.subCategoryCode,isActive: true}}).success(function(dbSubCategory) {
 							if(requestObj.action =='publishExam') {
 								dbExamObj.isPublished = true;
@@ -417,7 +434,7 @@ Exam.uploadExamLogo = function(req,res) {
 		db.model("Exam").find({ where: {examCode: req.body.examCode,isActive:true} }).success(function(dbExamObj) {
 			if(res.locals.isAdmin || dbExamObj.createdBy == req.user.loggedInUserId) {
 				if(dbExamObj.examImg !="logo.png") {
-					aws.getAWSExamBucket().deleteObject({Key:dbExamObj.examImg}, function(err, data) {
+					aws.getAWSBucket().deleteObject({Key:dbExamObj.examImg}, function(err, data) {
 					      if (err && err.code!="MissingRequiredParameter") {
 					    	  console.log(err);
 					    	  fs.unlink(path);
@@ -752,7 +769,7 @@ function insertExamLogo(req,res,dbExamObj) {
 		      ContentType: mimeType
 		    };
 			
-			aws.getAWSExamBucket().putObject(params, function(err, data) {
+			aws.getAWSBucket().putObject(params, function(err, data) {
 				fs.unlink(path);
 			      if (err) {
 			    	  res.send({error:"Cannot upload image. Please try again."});

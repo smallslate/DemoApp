@@ -6,7 +6,7 @@ var AWS = function AWS() {
 			  s3: '2013-11-11'
 	};   
     
-    this.getAWSExamBucket = function (){
+    this.getAWSBucket = function (){
         return new AWSSDK.S3({params: {Bucket: 'uqi'}});
     };
 };

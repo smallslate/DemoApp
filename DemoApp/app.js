@@ -6,6 +6,7 @@ var express = require('express')
   , common = require('./routes/common')
   , exam = require('./routes/exam')
   , cards = require('./routes/cards')
+  , quizzes = require('./routes/quizzes')
   , db = require("./models/factory/Database");
 
 var app = express();
@@ -124,13 +125,14 @@ app.get('/user/myFlashCards', cards.myFlashCards);
 app.post('/user/getAllMyFlashDecks', cards.getAllMyFlashDecks);
 app.post('/user/crudFlashCardDetails', cards.crudFlashCardDetails);
 
-
-
-
-
-
-
-
+//---------------QUIZZES-------------------------------
+app.get('/quizHome', quizzes.quizHome);
+app.get('/user/createQuiz', quizzes.createQuiz);
+app.post('/user/crudQuizDetails', quizzes.crudQuizDetails);
+app.post('/user/uploadQuizLogo', quizzes.uploadQuizLogo);
+app.get('/user/myQuizzes', quizzes.myQuizzes);
+app.post('/user/getMyQuizzes', quizzes.getMyQuizzes);
+app.post('/user/crudQuizQuestionDetails', quizzes.crudQuizQuestionDetails);
 
 
 

@@ -6,7 +6,10 @@ var userModels = [{name:'User',path:'../common/User'},
                   {name:'QuestionOption',path:'../exam/QuestionOption'},
                   {name:'ExamSession',path:'../exam/ExamSession'},
                   {name:'FlashDeck',path:'../cards/FlashDeck'},
-                  {name:'FlashCard',path:'../cards/FlashCard'}
+                  {name:'FlashCard',path:'../cards/FlashCard'},
+                  {name:'Quiz',path:'../quizzes/Quiz'},
+                  {name:'QuizQuestion',path:'../quizzes/QuizQuestion'},
+                  {name:'QuizQuestionOption',path:'../quizzes/QuizQuestionOption'}
                  ];
 var models = {};
 
@@ -51,6 +54,8 @@ var Database = function Database() {
     	models["Question"].hasMany(models["QuestionOption"],{as: 'questionOptions',foreignKey: 'questionId'});
     	models["Exam"].hasMany(models["ExamSession"],{as: 'examSessions',foreignKey: 'examId'});
     	models["FlashDeck"].hasMany(models["FlashCard"],{as: 'flashCards',foreignKey: 'flashDeckId'});
+    	models["Quiz"].hasMany(models["QuizQuestion"],{as: 'questions',foreignKey: 'quizId'});
+    	models["QuizQuestion"].hasMany(models["QuizQuestionOption"],{as: 'questionOptions',foreignKey: 'questionId'});
     }
     
     if(Database.caller != Database.getInstance){

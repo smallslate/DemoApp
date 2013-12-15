@@ -1,0 +1,63 @@
+extends /common/layout
+block head
+	link(rel='stylesheet', href='/stylesheets/table-responsive.css')
+	script(src="/javascript/frameworks/angular/angular.min.js")
+	script(src="/javascript/frameworks/angular/angular-resource.min.js")
+	script(src="/javascript/frameworks/angular/angular-sanitize.min.js")
+	script(src="/javascript/angular/apps/quizzes/createQuiz.js")
+	script(src="/javascript/angular/services/commonService.js")
+	script(src="/javascript/angular/directives/ckEditorDirective.js")
+	script(src="/javascript/angular/filters/commonFilters.js")
+	script(src="/javascript/frameworks/ckeditor/ckeditor.js")
+	script(src="/javascript/frameworks/jquery/jquery-file-upload/jquery.ui.widget.js")
+	script(src="/javascript/frameworks/jquery/jquery-file-upload/jquery.iframe-transport.js")
+	script(src="/javascript/frameworks/jquery/jquery-file-upload/jquery.fileupload.js")
+	
+	title Create And Edit Quizzes
+block content
+	ol.breadcrumb
+		li
+			a(href="/quizHome") Quizzes Home
+		li
+			a(href="/user/profile") My Profile	
+		li.active Create Quiz
+	p#noRichEditorMessage(style="color:red;display:none;") Rich editor is not supported on this device.
+	div.marginTop10(ng-app="createQuiz",ng-cloak,ng-controller="createQuizCtrl")
+		.alert.alert-success(ng-if="quizObj.isPublished") 
+			p
+				b Quiz Id = 
+					b(style="color:red;") {{quizObj.quizCode}}
+			b Quiz URL = 
+					a(href="http://{{host}}:{{port}}/qpreview?qc={{quizObj.quizCode}}",target='_blank') http://{{host}}/qpreview?qc={{quizObj.quizCode}}	
+			p
+				small Share this Quiz ID or Quiz URL with your users to access this Quiz 		
+		ul.nav.nav-tabs#createQuizTab
+			li.active
+				a(href="#quizDetails" data-toggle="tab") 
+					b(style="color:#000080;") 1. Quiz Details
+			li
+				a(href="",ng-if="!quizObj.quizCode",ng-click="onAddQuestionsTabClick();") 
+					b(style="color:green;") 2. Add Questions
+				a(href="#quizQuestions",data-toggle="tab",ng-if="quizObj.quizCode.length>=8") 
+					b(style="color:green;") 2. Add Questions	
+			li
+				a(href="",ng-if="!quizObj.quizCode || !quizObj.questionList || quizObj.questionList.length <=0",ng-click="onPublishQuizTabClick();") 
+					b(style="color:#A52A2A;") 3. Publish Quiz
+				a(href="#publishQuiz",data-toggle="tab",ng-if="quizObj.quizCode.length>=8 && quizObj.questionList.length>0") 
+					b(style="color:#A52A2A;") 3. Publish Quiz	
+		div.tab-content.marginTop10#createQuizTabContent
+			div.tab-pane.fade.in.active#quizDetails
+				include /user/quizzes/create/quizDetailsForm
+			div.tab-pane.fade#quizQuestions
+				include /user/quizzes/create/questionDetails
+			div.tab-pane.fade#publishQuiz
+				include /user/quizzes/create/publishQuiz
+		.row
+			.col-sm-6.col-md-2.marginTop10
+				a(href="/quizHome") Quizzes Home
+			.col-sm-6.col-md-2.marginTop10
+				a(href="/user/profile") My Profile	
+			.col-sm-6.col-md-2.marginTop10
+				a(href="/user/myQuizzes") My Quizzes
+			.col-sm-6.col-md-2.marginTop10(ng-if="quizObj.quizId>0")
+				a(href="/user/createQuiz") Create New Quiz					

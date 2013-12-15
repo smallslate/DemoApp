@@ -22,7 +22,7 @@ div.panel.panel-primary.marginTop10(ng-if="isAddingCard")
 					p.showHideEditor Show Rich Editor
 						input(type="checkbox",data-ng-model="flashDeckObj.newCard.cardFrontIsRich") 
 				div.col-lg-10(ng-if="!flashDeckObj.newCard.cardFrontIsRich")
-					textarea.form-control(id="cardFront",data-ng-model="flashDeckObj.newCard.cardFront",rows="6")
+					textarea.form-control(id="cardFront",data-ng-model="flashDeckObj.newCard.cardFront",rows="4")
 				div.col-lg-10(ng-if="flashDeckObj.newCard.cardFrontIsRich")
 					textarea.form-control(ck-editor=200,id="cardFront",data-ng-model="flashDeckObj.newCard.cardFront")
 			div.form-group 
@@ -30,7 +30,7 @@ div.panel.panel-primary.marginTop10(ng-if="isAddingCard")
 					p.showHideEditor Show Rich Editor
 						input(type="checkbox",data-ng-model="flashDeckObj.newCard.cardBackIsRich") 
 				div.col-lg-10(ng-if="!flashDeckObj.newCard.cardBackIsRich")
-					textarea.form-control(id="cardBack",data-ng-model="flashDeckObj.newCard.cardBack",rows="6")
+					textarea.form-control(id="cardBack",data-ng-model="flashDeckObj.newCard.cardBack",rows="4")
 				div.col-lg-10(ng-if="flashDeckObj.newCard.cardBackIsRich")
 					textarea.form-control(ck-editor=200,id="cardBack",data-ng-model="flashDeckObj.newCard.cardBack")			
 			div.form-group
@@ -42,4 +42,47 @@ div.panel.panel-primary.marginTop10(ng-if="isAddingCard")
 		div.alert.alert-danger(ng-if="flashDeckObj.newCard.error") 
 			b {{flashDeckObj.newCard.error}}
 		div.alert.alert-success(ng-if="flashDeckObj.newCard.success") 
-			b {{flashDeckObj.newCard.success}}					
+			b {{flashDeckObj.newCard.success}}
+
+div.col-md-6(ng-repeat="cardObj in flashDeckObj.flashCards")	
+	.panel.panel-primary
+		.panel-heading 
+			b {{cardObj.flashCardNumber}} - Card Front 
+		.panel-body
+			span(ng-bind-html="cardObj.cardFront | unsafe")	
+			br	
+			button.btn.btn-default.btn-xs.pull-right 
+				span.glyphicon.glyphicon-transfer(title="Flip") 
+				span.marginLeft5 Flip
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+							

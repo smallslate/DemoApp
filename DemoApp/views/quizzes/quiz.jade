@@ -1,0 +1,107 @@
+doctype 5
+html
+	head
+		meta(charset="utf-8")
+		meta(http-equiv="X-UA-Compatible",content="IE=edge")
+		meta(name="viewport",content="width=device-width, initial-scale=1.0")
+		link(rel='stylesheet', href='/javascript/frameworks/bootstrap/css/bootstrap.min.css')
+		link(rel='stylesheet', href='/stylesheets/style.css')
+		script(src="/javascript/frameworks/jquery/jquery-1.10.2.min.js")
+		script(src="/javascript/frameworks/bootstrap/js/bootstrap.min.js")
+		script.
+			function onChangeQuestion(obj,quizCode) {
+				window.open("/quiz?qc="+quizCode+"&qn="+obj.value,"_self")
+			}
+			function evalAnswer(obj,type) {
+				if(type=='MCSA' || type=='TORF') {
+					if(obj.value=='true') {
+						showHideAnswer(true);
+					} else {
+						showHideAnswer(false);
+					}
+				} else if(type=='MCMA') {
+					var isCorrect = true;
+					$('input:checkbox[name=answer]').each(function() {
+						if(this.checked && this.value!='true') {
+							isCorrect = false;
+						} else if(!this.checked && this.value =='true') {
+							isCorrect = false;
+						}
+					});
+					showHideAnswer(isCorrect);
+				}
+			}
+			function showHideAnswer(isCorrect) {
+				if(isCorrect) {
+					$('#correctAnswer').removeClass('hide')
+					$('#wrongAnswer').addClass('hide')
+				} else {
+					$('#correctAnswer').addClass('hide')
+					$('#wrongAnswer').removeClass('hide')
+				}
+			}
+		title Quiz
+	body(style="background-color:#C0C0C0",ng-app="quizApp",ng-controller="quizCtrl")
+		include /common/menu
+		div.container.marginTop10
+			.panel.panel-primary(style="background-color:#EEEEEE")
+				.panel-heading
+					b #{quizObj.quizName} - #{questionObj.questionNumber}
+				.panel-body(style="padding-bottom:0px!important;")
+						p.btn.btn-default.btn-lg.btn-block.questionButton #{questionObj.question}
+						for option in questionObj.questionOptions
+							label.btn.btn-default.btn-lg.btn-block.optionButton
+								if questionObj.questionType=='MCSA' || questionObj.questionType=='TORF'
+									input(type="radio",name="answer",value="#{option.isAnswer}",style="margin-right:5px;",onclick="evalAnswer(this,'#{questionObj.questionType}');")
+								if questionObj.questionType=='MCMA'
+									input(type="checkbox",name="answer",value="#{option.isAnswer}",style="margin-right:5px;")	
+								span #{option.optionDesc}
+						if	questionObj.questionType=='MCMA'	
+							ul.pager
+								li		
+									button.btn.btn-primary(onclick="evalAnswer(this,'#{questionObj.questionType}');") 
+										b Submit Answer
+						div.marginTop10		
+							div.panel.panel-success.hide#correctAnswer
+								.panel-heading 
+									b Correct Answer
+								.panel-body
+									p #{questionObj.answerDescr}				
+							div.panel.panel-danger.hide#wrongAnswer
+								.panel-heading 
+									b Wrong Answer
+								.panel-body
+									p #{questionObj.answerDescr}		
+				.panel-footer
+					ul.pager
+						if questionObj.questionNumber!=1
+							li
+								a(href="/quiz?qc=#{quizObj.quizCode}&qn=#{questionObj.questionNumber-1}")	
+									b Previous
+						if questionObj.questionNumber <	quizObj.numberOfQuestions	
+							li
+								a(href="/quiz?qc=#{quizObj.quizCode}&qn=#{questionObj.questionNumber+1}")	
+									b Next
+						if questionObj.questionNumber == quizObj.numberOfQuestions		
+							li
+								a(href="/quiz?qc=#{quizObj.quizCode}&qn=finish")	
+									b Finish			
+						li
+							a
+								b(style="padding-right:5px;") Jump To
+								select(onchange="onChangeQuestion(this,'#{quizObj.quizCode}');")
+									-for(var i = 1; i <= quizObj.numberOfQuestions;i++) {
+										if questionObj.questionNumber ==i
+											option(value="#{i}",selected="selected") #{i}
+										else
+											option(value="#{i}") #{i}	
+									-} 
+			.row
+				.col-sm-6.col-md-2.marginTop10
+					a(href="/quizHome") Quizzes Home
+				.col-sm-6.col-md-2.marginTop10
+					a(href="/exploreQuizzes") Explore Quizzes
+				.col-sm-6.col-md-2.marginTop10
+					a(href="/user/createQuiz") Create Quiz	
+				.col-sm-6.col-md-2.marginTop10
+					a(href="/user/profile") My Profile	

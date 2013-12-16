@@ -67,6 +67,9 @@ createQuizApp.controller('createQuizCtrl', ['$scope','$location','getAllCategori
 			tempQuizObj.subCategoryCode = $scope.quizObj.subCategoryCode;
 			tempQuizObj.quizCode = $scope.quizObj.quizCode;
 			tempQuizObj.quizImg = $scope.quizObj.quizImg;
+			tempQuizObj.isPublished = $scope.quizObj.isPublished;
+			tempQuizObj.authorDetails = $scope.quizObj.authorDetails;
+			tempQuizObj.references = $scope.quizObj.references;
 			$scope.quizObj = crudQuizDetailsService.crudQuizDetails({quizObj:tempQuizObj,action:action});
 			if(action =='addQuestions') {
 				$('#createQuizTab a[href="#quizQuestions"]').tab('show');

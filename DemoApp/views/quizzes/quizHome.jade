@@ -1,59 +1,51 @@
 extends /common/layout
 block head
 	link(rel='stylesheet', href='/stylesheets/carousel.css')
-	title Welcome - Quizzes
+	title Welcome - Quizzes Home
 	.carousel
 		.carousel-inner
 			.item.active
-				img(src='img/exam.png', alt='Quizzes')
 				.container
 					.carousel-caption
 						h1 Quizzes 
-						p Find, Create, Learn & Share
-						form(role="form",method="post",action="/search")
+						p Find, Learn, Create, Share & Use
+						form(role="form",method="get",action="/searchQuiz")
 							.input-group
-								input.form-control#searchQuery(type="text",name="msq",placeholder="Search Quizzes...")
+								input.form-control#searchQuery(type="text",name="sq",placeholder="Search Quizzes...")
+								input(type="hidden",name="type",value="quiz")
 								.input-group-btn
 									button.btn.btn-default(type="submit",onclick="return validateSearch(this);")
 										i.glyphicon.glyphicon-search
 	.container.marketing
 		.row.featurette
 			.col-md-7
-				h1 Quizzes features
+				h1 Quiz features - Completely free
 				hr
 				h5
 					span Access Anywhere - 
 					span.text-muted Works across devices - phones, tablets, laptop and TV's
 				h5
-					span Take Exam - 
-					span.text-muted Rethought of exams with speed, simplicity and intuitive
-				h5
-					span History - 
-					span.text-muted Store and view your exam results any time
-				br	
-				h4 Exam Authors ... Here You Go	!!!
+					span Take Quiz - 
+					span.text-muted Rethought of Quizzes with speed, simplicity and intuitiveness
 				h5
 					span Create - 
-					span.text-muted Multiple choice, Multiple Answers, True/False, Essay Type
+					span.text-muted Create Single Answer, Multiple Answers, True/False type quizzes
+				h5
+					span Use - 
+					span.text-muted Integrate quizzes into your site/blog for free
 				h5
 					span Rich - 
-					span.text-muted Create questions with images and rich text 	
+					span.text-muted Create questions with rich text and images 	
 				h5
-					span Share Exam - 
-					span.text-muted Share exam id or exam URL with anyone  	
-				h5
-					span Track Who Took Exam - 
-					span.text-muted Track user name, answer sheet, time spent & more
-				h5
-					span Evaluate Exam - 
-					span.text-muted Evaluate exam and publish results to user
+					span Share Quiz - 
+					span.text-muted Share Quiz id or Quiz URL with your friends  	
 				h5
 					span Its Completely Free - 
-					span.text-muted Create unlimited exams and questions for any number of users	
+					span.text-muted Create unlimited quizzes and questions
 					
 			.col-md-5
 				.jumbotron
-					a.btn.btn-primary.btn-lg.btn-block.buttonWrapText(href="/exploreExams") Explore Quizzes
+					a.btn.btn-primary.btn-lg.btn-block.buttonWrapText(href="/exploreQuizzes") Explore Quizzes
 					a.btn.btn-success.btn-lg.btn-block.buttonWrapText(href="/user/createQuiz") Create Quiz
 					a.btn.btn-danger.btn-lg.btn-block.buttonWrapText(href="/user/myQuizzes") My Quizzes
 					a.btn.btn-default.btn-lg.btn-block.buttonWrapText(href="/user/profile") My Profile

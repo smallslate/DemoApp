@@ -11,7 +11,7 @@ Common.commonFilter = function(req,res,next) {
 };
 
 Common.index = function(req,res) {
-	res.render('exam/examHome');	
+	res.render('quizzes/quizHome');	
 };
 
 Common.login = function(req,res) {
@@ -88,8 +88,103 @@ Common.prototype.isAdmin = function(user) {
 	return false;
 };
 
+function bindSearchResultsToSubCategory(resultList,req,res) {
+	var subCatList = new Array();
+	for(var k=0;k<resultList.length;k++) {
+		subCatList.push(resultList[k].subCategoryCode);
+	}
+	db.model("SubCategory").findAll({where:{subCategoryCode:subCatList,isActive: true}}).success(function(subCategoryList) {
+		var responseList = new Array();
+		for(var k=0;k<subCategoryList.length;k++) {
+			var subCatObj = new Object();
+			subCatObj.subCategory =  subCategoryList[k];
+			subCatObj.objectList=new Array();
+			responseList.push(subCatObj);
+		}
+		for(var k=0;k<resultList.length;k++) {
+			for(var m=0;m<responseList.length;m++) {
+				if(resultList[k].subCategoryCode == responseList[m].subCategory.subCategoryCode) {
+					responseList[m].objectList.push(resultList[k]);
+					break;
+				}
+			}
+		}
+		res.send(responseList);
+	}).error(function(err) {
+		res.send(null);
+	});
+};
+
 Common.search = function(req,res) {
-	if(req.body.cc && req.body.cc.length>=8) {
+	if(req.body.type && req.body.type=='quiz') {
+		if(req.body.cc && req.body.cc.length>=8) {
+			db.model("Quiz").findAll({where:{categoryCode:req.body.cc,isActive: true,isPublished:true}}).success(function(quizList) {
+				if(quizList && quizList.length>0) {
+					bindSearchResultsToSubCategory(quizList,req,res);
+				} else {
+					res.send(null);
+				}
+			}).error(function(err) {
+				res.send(null);
+			});
+		} else if(req.body.sc && req.body.sc.length>=8) {
+			db.model("Quiz").findAll({where:{subCategoryCode:req.body.sc,isActive: true,isPublished:true}}).success(function(quizList) {
+				if(quizList && quizList.length>0) {
+					bindSearchResultsToSubCategory(quizList,req,res);
+				} else {
+					res.send(null);
+				}
+			}).error(function(err) {
+				res.send(null);
+			});
+		} else if(req.body.sq && req.body.sq.length>=0) {
+			var responseList = new Array();
+			var subCatObj = new Object();
+			subCatObj.objectList = new Array();
+			db.model("Quiz").findAll({where:["quizCode LIKE '"+req.body.sq+"%' and isActive=true and isPublished = true"]}).success(function(quizListWithCode) {
+				if(quizListWithCode && quizListWithCode.length>0) {
+					subCatObj.objectList = quizListWithCode;
+				} 
+				db.model("Quiz").findAll({where:["quizName LIKE '%"+req.body.sq+"%' and isActive=true and isPublished = true"]}).success(function(quizListWithName) {
+					if(quizListWithName && quizListWithName.length>0) {
+						for(var k=0;k<quizListWithName.length;k++) {
+							var found = false;
+							for(var m=0;m<subCatObj.objectList.length;m++) {
+								if(subCatObj.objectList[m].quizId == quizListWithName[k].quizId) {
+									found = true;
+								}
+							}
+							if(!found) {
+								subCatObj.objectList.push(quizListWithName[k]);
+							}
+						}
+					}
+					
+					db.model("Quiz").findAll({where:["quizDescr LIKE '"+req.body.sq+"%' and isActive=true and isPublished = true"]}).success(function(quizListWithDescr) {
+						if(quizListWithDescr && quizListWithDescr.length>0) {
+							for(var k=0;k<quizListWithDescr.length;k++) {
+								var found = false;
+								for(var m=0;m<subCatObj.objectList.length;m++) {
+									if(subCatObj.objectList[m].quizId == quizListWithDescr[k].quizId) {
+										found = true;
+									}
+								}
+								if(!found) {
+									subCatObj.objectList.push(quizListWithDescr[k]);
+								}
+							}
+						}
+						if(subCatObj.objectList.length>0) {
+							responseList.push(subCatObj);
+							res.send(responseList);
+						} else {
+							res.send(null);
+						}
+					});
+				});
+			});
+		}
+	} else if(req.body.cc && req.body.cc.length>=8) {
 		db.model("Exam").findAll({where:{categoryCode:req.body.cc,isActive: true,isPublished:true}}).success(function(examList) {
 			if(examList && examList.length>0) {
 				var subCatList = new Array();
@@ -188,7 +283,7 @@ Common.search = function(req,res) {
 				});
 			});
 		});
-	} else if(req.body.msq && req.body.msq.length>=0) {
+	} else if(req.body.sq && req.body.sq.length>=0) {
 		res.redirect("/searchExams?sq="+req.body.msq);
 	} else {
 		res.send(null);

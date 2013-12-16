@@ -1,0 +1,78 @@
+extends /common/layout
+block head
+	title Search Quizzes
+	script(src="/javascript/frameworks/angular/angular.min.js")
+	script(src="/javascript/frameworks/angular/angular-resource.min.js")
+	script(src="/javascript/angular/services/commonService.js")
+	script(src="/javascript/angular/filters/truncate.js")
+	script.
+		var searchQuizzesApp = angular.module('searchQuizzesApp', ['ngResource','commonService','truncateFilter']);
+		searchQuizzesApp.controller('searchQuizzesCtrl', ['$scope','search',function($scope,search) {
+			$scope.initSearch = function(type) {
+				$scope.searchType= type;
+				if($scope.searchQuery && $scope.searchQuery.length>=0) {
+					if($scope.searchType =='quiz') {
+						$scope.quizSearchResults = search.query({sq:$scope.searchQuery,type:type});
+					}
+				} else if(getURLParameter('cc') && getURLParameter('cc').length>=8) {
+					if($scope.searchType =='quiz') {
+						$scope.quizSearchResults = search.query({cc:getURLParameter('cc'),type:type});
+					}
+				} else if(getURLParameter('sc') && getURLParameter('sc').length>=8) {
+					if($scope.searchType =='quiz') {
+						$scope.quizSearchResults = search.query({sc:getURLParameter('sc'),type:type});
+					}
+				} else if(getURLParameter('sq') && getURLParameter('sq').length>=0 && getURLParameter('type') && getURLParameter('type').length>0) {
+					if($scope.searchType =='quiz') {
+						$scope.quizSearchResults = search.query({sq:getURLParameter('sq'),type:getURLParameter('type')});
+					}
+				} 
+			}
+			$scope.initSearch('quiz');
+		}]);
+block content
+	ol.breadcrumb
+		li
+			a(href="/quizHome") Quizzes Home
+		li
+			a(href="/exploreQuizzes") Explore Quizzes	
+		li.active Search
+	div(ng-app="searchQuizzesApp",ng-controller="searchQuizzesCtrl")
+		div(style="border-radius:6px;border:2px solid #428BCA;")
+			form
+				.input-group
+					input.form-control(type="text",placeholder="Search ...",ng-model="searchQuery")
+					.input-group-btn
+						button.btn.btn-default(type="submit",ng-click="initSearch(searchType)")
+							i.glyphicon.glyphicon-search			
+		div(ng-show="quizSearchResults && quizSearchResults.length>=1 && searchType=='quiz'")	
+			.panel.panel-primary.marginTop10(ng-repeat = "searchObj in quizSearchResults")
+				.panel-heading(ng-if="searchObj.subCategory.subCategoryCode.length>=8") 
+					b {{searchObj.subCategory.subCategoryName}}
+				.panel-body(style="padding:0px;")	
+					.col-sm-3.col-md-2.marginTop10.textAlignCenter(style="padding-left:0px;",ng-repeat = "quizObj in searchObj.objectList")
+						.thumbnail
+							a(href="/quizPreview?qc={{quizObj.quizCode}}",title="{{quizObj.quizName}}")
+								img.img-rounded.imgSize(ng-src="https://s3.amazonaws.com/uqi/{{quizObj.quizImg}}",alt="{{quizObj.quizName}}")
+							.caption
+								div(style="height:40px;")
+									a(href="/quizPreview?qc={{quizObj.quizCode}}",title="{{quizObj.quizName}}")
+										strong {{quizObj.quizName|truncate:30:"."}}
+								div {{quizObj.quizDescr|truncate:15:"."}}
+								div
+									b(style="color:green") Code : {{quizObj.quizCode}}
+								.badge {{quizObj.numberOfQuestions}} Q
+								.badge {{quizObj.noOfViews}} views
+		div.marginTop10(ng-show="!quizSearchResults || quizSearchResults.length<=0")
+			.alert.alert-success 
+				b No Quizzes Found. Try creating new Quiz. 
+				a.btn.btn-success(href="/user/createQuiz") Create Quiz						
+	.row
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/quizHome") Quizzes Home
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/exploreQuizzes") Explore Quizzes	
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/user/profile") My Profile	
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/user/createQuiz") Create Quiz	

@@ -9,6 +9,9 @@ block content
 	div
 		ul.nav.nav-tabs
 			li.active
+				a(href='#quizzes', data-toggle='tab') 
+					b(style="color:#428BCA") Quizzes
+			//li.active
 				a(href='#exam', data-toggle='tab') 
 					b(style="color:#428BCA") Exam
 			if isAdmin
@@ -16,7 +19,46 @@ block content
 					a(href='#admin', data-toggle='tab')
 						b(style="color:#A52A2A") Admin		
 		div.tab-content
-			div#exam.tab-pane.fade.in.active
+			div#quizzes.tab-pane.fade.in.active
+				div.panel.panel-primary.marginTop10
+					div.panel-heading 
+						b Quiz Tools
+					div.panel-body
+						div.row
+							div.col-sm-6.col-md-4
+								a(href="/exploreQuizzes",data-toggle="tooltip",data-title="Explore Quizzes")
+									table
+										tr
+											td
+												img.img-rounded(src="/img/explore.png",alt="Explore Quizzes")
+											td 
+												div 
+													b Explore Quizzes
+													div.textDescription Find Quizzes
+							div.col-sm-6.col-md-4
+								a(href="/user/createQuiz",data-toggle="tooltip",data-title="Create Quiz")
+									table
+										tr
+											td
+												img.img-rounded(src="/img/createExam.png",alt="Create Quiz")
+											td 
+												div 
+													b Create Quiz
+													div.textDescription Create and Share Quizzes
+							div.col-sm-6.col-md-4
+								a(href="/user/myQuizzes",data-toggle="tooltip",data-title="View My Quizzes")
+									table
+										tr
+											td
+												img.img-rounded(src="/img/editExam.png",alt="View My Quizzes")
+											td 
+												div 
+													b My Quizzes
+													div.textDescription View and edit quizzes you created	
+														div.col-sm-6.col-md-4.margin5													
+
+
+			//div#exam.tab-pane.fade.in.active
 				div.panel.panel-primary.marginTop10
 					div.panel-heading 
 						b My Exams

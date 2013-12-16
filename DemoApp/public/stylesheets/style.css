@@ -57,14 +57,22 @@ label.error {
 
 .questionButton {
 	white-space: normal!important;
-	min-height:200px;
 	padding: 40px 0 40px 0;
+	text-align:inherit;
+	padding-left: 10px;
 }
 
-.questionButtonRich {
+.optionButtonContainer {
 	white-space: normal!important;
 	text-align:inherit;
-	padding: 40px 0 40px 10px;
+	margin: 0px;
+	padding: 0px;
+}
+
+.optionButton {
+	white-space: normal!important;
+	text-align:inherit;
+	padding-left: 10px;
 }
 
 .buttonWrapText {
@@ -87,4 +95,8 @@ label.error {
 .btn-labeled {
 	padding-top: 0;
 	padding-bottom: 0;
+}
+
+.hide {
+	display:none;
 }

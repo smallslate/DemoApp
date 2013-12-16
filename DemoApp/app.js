@@ -133,16 +133,12 @@ app.post('/user/uploadQuizLogo', quizzes.uploadQuizLogo);
 app.get('/user/myQuizzes', quizzes.myQuizzes);
 app.post('/user/getMyQuizzes', quizzes.getMyQuizzes);
 app.post('/user/crudQuizQuestionDetails', quizzes.crudQuizQuestionDetails);
-
-
-
-
-
-
-
-
-
-
+app.get('/quizPreview', quizzes.quizPreview);
+app.post('/getQuizPreview', quizzes.getQuizPreview);
+app.get('/exploreQuizzes', quizzes.exploreQuizzes);
+app.get('/quiz', quizzes.quiz);
+app.get('/searchQuiz', quizzes.searchQuiz);
+app.post('/searchQuizQuery', quizzes.searchQuizQuery);
 
 
 http.createServer(app).listen(app.get('port'), function(){

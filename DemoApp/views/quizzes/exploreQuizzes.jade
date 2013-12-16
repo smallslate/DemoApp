@@ -1,0 +1,47 @@
+extends /common/layout
+block head
+	title Explore Quizzes
+	script(src="/javascript/frameworks/angular/angular.min.js")
+	script(src="/javascript/frameworks/angular/angular-resource.min.js")
+	script(src="/javascript/angular/services/commonService.js")
+	script(src="/javascript/angular/filters/truncate.js")
+	script.
+		var exploreQuizzesApp = angular.module('exploreQuizzesApp', ['ngResource','commonService','truncateFilter']);
+		exploreQuizzesApp.controller('exploreQuizzesCtrl', ['$scope','getAllCatAndSubCat',function($scope,getAllCatAndSubCat) {
+			$scope.categoriesList = getAllCatAndSubCat.query();
+			$scope.onSearch = function() {
+				window.open("/searchQuiz?sq="+$scope.searchQuery+"&type=quiz",'_self');
+			}
+		}]);
+block content
+	ol.breadcrumb
+		li
+			a(href="/quizHome") Quizzes Home
+		li.active Explore Quizzes
+	div(ng-app="exploreQuizzesApp",ng-controller="exploreQuizzesCtrl")
+		div(style="border-radius:6px;border:2px solid #428BCA;")
+			form
+				.input-group
+					input.form-control(type="text",placeholder="Search Quizzes...",ng-model="searchQuery")
+					.input-group-btn
+						button.btn.btn-default(type="submit",ng-click="onSearch()")
+							i.glyphicon.glyphicon-search
+	
+		.row
+			div.col-sm-6.col-md-3.marginTop10(ng-repeat="category in categoriesList")
+				div.panel.panel-primary
+					div.panel-heading 
+						a(href="/searchQuiz?cc={{category.categoryCode}}",style="color:white;") 
+							b {{category.categoryName}}
+					div.panel-body
+						p(ng-repeat="subCategory in category.subCategoryList")
+							a(href="/searchQuiz?sc={{subCategory.subCategoryCode}}") {{subCategory.subCategoryName}}	
+								span.badge {{subCategory.numberOfQuizzes}}	
+	.row
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/quizHome") Quizzes Home
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/user/profile") My Profile	
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/user/createQuiz") Create Quiz
+												

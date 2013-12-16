@@ -1,0 +1,74 @@
+extends /common/layout
+block head
+	title Quiz Preview
+	script(src="/javascript/frameworks/angular/angular.min.js")
+	script(src="/javascript/frameworks/angular/angular-resource.min.js")
+	script(src="/javascript/frameworks/angular/angular-sanitize.min.js")
+	script(src="/javascript/angular/filters/commonFilters.js")
+	script.
+		var quizPreviewApp = angular.module('quizPreviewApp', ['ngResource','commonFilters']);
+		quizPreviewApp.controller('quizPreviewCtrl', ['$scope','getQuizPreview',function($scope,getQuizPreview) {
+			var quizCode = getURLParameter('qc');
+			$scope.quizObj = getQuizPreview.query({quizCode:quizCode});		
+		}]);
+		
+		quizPreviewApp.factory('getQuizPreview',['$resource', function($resource) {
+			return $resource('/getQuizPreview', {}, {
+				query : {method : 'POST'}
+			});
+		}]);
+		
+block content
+	ol.breadcrumb
+		li
+			a(href="/quizHome") Quizzes Home
+		li
+			a(href="/exploreQuizzes") Explore Quizzes
+		li.active Preview 
+	div(ng-app="quizPreviewApp",ng-controller="quizPreviewCtrl")
+		.div(ng-if="!quizObj.quizId || quizObj.quizId<=0")
+			div.alert.alert-danger.marginTop10
+				b This quiz is not valid. Quiz have been deleted by Author.
+		.jumbotron(ng-if="quizObj.quizId>0")
+			.row
+				.col-md-2 
+					img.img-rounded(ng-src="https://s3.amazonaws.com/uqi/{{quizObj.quizImg}}",height="128",width="128")
+				.col-md-10 
+					h1 {{quizObj.quizName}}
+			p {{quizObj.quizDescr}}
+			button.btn.btn-default(type="button") 
+				b Questions - {{quizObj.numberOfQuestions}} 
+			button.btn.btn-default(type="button") 
+				b Views - {{quizObj.noOfViews}} 	
+			.marginTop10
+				a.btn.btn-primary.btn-lg(href="/quiz?qc={{quizObj.quizCode}}&qn=1") Start Quiz
+
+		.div
+			ul.nav.nav-tabs
+				li.active(ng-if="quizObj.authorDetails && quizObj.authorDetails.length>5")
+					a(href='#author', data-toggle='tab') 
+						b Author
+				li(ng-if="quizObj.authorDetails && quizObj.authorDetails.length>5 && quizObj.references && quizObj.references.length>5")
+					a(href='#references', data-toggle='tab') 
+						b References
+				li.active(ng-if="(!quizObj.authorDetails || !quizObj.authorDetails.length>5) && quizObj.references && quizObj.references.length>5")
+					a(href='#references', data-toggle='tab') 
+						b Quiz References
+		.tab-content
+			#author.tab-pane.fade.in.active(ng-if="quizObj.authorDetails && quizObj.authorDetails.length>5") 
+				span.margin5(ng-bind-html="quizObj.authorDetails | unsafe") 
+			#references.tab-pane.fade(ng-if="quizObj.authorDetails && quizObj.authorDetails.length>5 && quizObj.references && quizObj.references.length>5")
+				span.margin5(ng-bind-html="quizObj.references | unsafe") 
+			#references.tab-pane.fade.in.active(ng-if="(!quizObj.authorDetails || !quizObj.authorDetails.length>5) && quizObj.references && quizObj.references.length>5")
+				span.margin5(ng-bind-html="quizObj.references | unsafe") 
+	.row
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/quizHome") Quizzes Home
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/exploreQuizzes") Explore Quizzes
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/user/createQuiz") Create Quiz	
+		.col-sm-6.col-md-2.marginTop10
+			a(href="/user/profile") My Profile					
+
+					

@@ -19,6 +19,48 @@ Quizzes.myQuizzes = function(req,res) {
 	res.render('user/quizzes/myQuizzes');	
 };
 
+Quizzes.quizPreview = function(req,res) {
+	res.render('quizzes/qpreview');	
+};
+
+Quizzes.exploreQuizzes = function(req,res) {
+	res.render('quizzes/exploreQuizzes');	
+};
+
+Quizzes.searchQuiz = function(req,res) {
+	res.render('quizzes/searchQuiz');	
+};
+
+Quizzes.quiz = function(req,res) {
+	if(req.query.qn=='finish') {
+		
+		
+		
+		res.render('quizzes/exploreQuizzes');
+	}
+	db.model("Quiz").find({ where: {quizCode: req.query.qc,isActive:true} }).success(function(dbQuizObj) {
+		if(dbQuizObj && dbQuizObj.quizId>0) {
+			if(req.query.qn=='finish') {
+				dbQuizObj.noOfViews+=1;
+				dbQuizObj.save(['noOfViews']);
+				res.render('quizzes/exploreQuizzes');
+			} else {
+				db.model("QuizQuestion").find({where:{quizId:dbQuizObj.quizId,questionNumber:req.query.qn},include:[{model: db.model("QuizQuestionOption"),as:'questionOptions'}]}).success(function(dbQuestionObj) {
+					if(dbQuestionObj && dbQuestionObj.questionId && dbQuestionObj.questionId>0) {
+						res.render('quizzes/quiz',{quizObj:dbQuizObj,questionObj:dbQuestionObj});
+					} else {
+						res.render('quizzes/exploreQuizzes');
+					}
+				});
+			}
+		} else {
+			res.render('quizzes/exploreQuizzes');
+		}
+	}).error(function(err) {
+		res.render('quizzes/exploreQuizzes');
+	});
+};
+
 Quizzes.crudQuizDetails = function(req,res) {
 	if(req.isAuthenticated()) {
 		var requestObj = req.body;
@@ -127,7 +169,11 @@ Quizzes.crudQuizDetails = function(req,res) {
 					dbQuizObj.updatedBy = req.user.loggedInUserId;
 					dbQuizObj.save(['isActive','updatedBy','isPublished']);
 					quizObj.success = "Quiz has been deleted successfully. If you want to revert back your deletion, please send email to support@smallslate.com";
-					res.send(quizObj);
+					db.model("SubCategory").find({where:{subCategoryCode:dbQuizObj.subCategoryCode,isActive: true}}).success(function(dbSubCategory) {
+						dbSubCategory.numberOfQuizzes-=1;
+						dbSubCategory.save();
+						res.send(quizObj);
+					});
 				} else {
 					quizObj.publishErrorMessage = "You do not have access to Delete this Quiz.";
 					res.send(quizObj);
@@ -225,6 +271,20 @@ Quizzes.getMyQuizzes = function(req,res) {
 			res.send(quizList);
 		}).error(function(err) {
 			console.log('getMyQuizzes'+err);
+			res.send(null);
+		});
+	} else {
+		res.send(null);
+	}
+};
+
+Quizzes.getQuizPreview = function(req,res) { 
+	var quizCode = req.body.quizCode;
+	if(quizCode && quizCode.length>=8) {
+		db.model("Quiz").find({ where: {quizCode:quizCode,isActive:true,isPublished:true} }).success(function(dbQuizObj) {
+			res.send(dbQuizObj);
+		}).error(function(err) {
+			console.log('Quizzes.getQuizPreview getQuizPreview = getQuizPreview = '+err);
 			res.send(null);
 		});
 	} else {
@@ -374,3 +434,8 @@ Quizzes.crudQuizQuestionDetails = function(req,res) {
 		res.send(null);
 	}
 };
+
+Quizzes.searchQuizQuery = function(req,res) {
+	res.render('quizzes/quizHome');	
+};
+

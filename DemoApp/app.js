@@ -72,6 +72,8 @@ app.get('/login', common.login);
 app.get('/logout', common.logout);
 app.get('/user/profile', common.profile);
 app.post('/search', common.search);
+app.get('/searchSuggestions', common.searchSuggestions);
+
 //---------------Auth-------------------------------
 app.get('/auth/google', passport.authenticate('google'));
 app.get('/auth/google/return',passport.authenticate('google', { failureRedirect: '/login' }), common.afterLogin);

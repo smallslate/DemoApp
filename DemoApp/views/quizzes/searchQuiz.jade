@@ -5,6 +5,8 @@ block head
 	script(src="/javascript/frameworks/angular/angular-resource.min.js")
 	script(src="/javascript/angular/services/commonService.js")
 	script(src="/javascript/angular/filters/truncate.js")
+	link(rel='stylesheet', href='/javascript/frameworks/typeahead/typeahead.js-bootstrap.css')
+	//script(src="/javascript/frameworks/typeahead/typeahead.min.js")
 	script.
 		var searchQuizzesApp = angular.module('searchQuizzesApp', ['ngResource','commonService','truncateFilter']);
 		searchQuizzesApp.controller('searchQuizzesCtrl', ['$scope','search',function($scope,search) {
@@ -41,7 +43,7 @@ block content
 		div(style="border-radius:6px;border:2px solid #428BCA;")
 			form
 				.input-group
-					input.form-control(type="text",placeholder="Search ...",ng-model="searchQuery")
+					input.form-control#searchQuery(type="text",placeholder="Search ...",ng-model="searchQuery")
 					.input-group-btn
 						button.btn.btn-default(type="submit",ng-click="initSearch(searchType)")
 							i.glyphicon.glyphicon-search			

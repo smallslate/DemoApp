@@ -5,13 +5,12 @@ block head
 	script(src="/javascript/frameworks/angular/angular-resource.min.js")
 	script(src="/javascript/angular/services/commonService.js")
 	script(src="/javascript/angular/filters/truncate.js")
+	link(rel='stylesheet', href='/javascript/frameworks/typeahead/typeahead.js-bootstrap.css')
+	//script(src="/javascript/frameworks/typeahead/typeahead.min.js")
 	script.
 		var exploreQuizzesApp = angular.module('exploreQuizzesApp', ['ngResource','commonService','truncateFilter']);
 		exploreQuizzesApp.controller('exploreQuizzesCtrl', ['$scope','getAllCatAndSubCat',function($scope,getAllCatAndSubCat) {
 			$scope.categoriesList = getAllCatAndSubCat.query();
-			$scope.onSearch = function() {
-				window.open("/searchQuiz?sq="+$scope.searchQuery+"&type=quiz",'_self');
-			}
 		}]);
 block content
 	ol.breadcrumb
@@ -20,11 +19,12 @@ block content
 		li.active Explore Quizzes
 	div(ng-app="exploreQuizzesApp",ng-controller="exploreQuizzesCtrl")
 		div(style="border-radius:6px;border:2px solid #428BCA;")
-			form
+			form(role="form",method="get",action="/searchQuiz")
 				.input-group
-					input.form-control(type="text",placeholder="Search Quizzes...",ng-model="searchQuery")
+					input.form-control#searchQuery(type="text",name="sq",placeholder="Search Quizzes...")
+					input(type="hidden",name="type",value="quiz")
 					.input-group-btn
-						button.btn.btn-default(type="submit",ng-click="onSearch()")
+						button.btn.btn-default(type="submit")
 							i.glyphicon.glyphicon-search
 	
 		.row

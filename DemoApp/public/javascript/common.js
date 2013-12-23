@@ -17,3 +17,17 @@ function getURLParameter(sParam)
         }
     }
 }
+
+//$( document ).ready(function() {
+//	if($('#searchQuery').val()!=undefined) {
+//		$('#searchQuery').typeahead({                                
+//			name: 'sq',                                                          
+//			remote: {
+//		        url: '/searchSuggestions',
+//		        filter: function (parsedResponse) {
+//		            return parsedResponse;
+//		        }
+//		    }    
+//		});
+//	}	
+//});

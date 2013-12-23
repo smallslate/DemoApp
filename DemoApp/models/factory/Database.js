@@ -9,7 +9,8 @@ var userModels = [{name:'User',path:'../common/User'},
                   {name:'FlashCard',path:'../cards/FlashCard'},
                   {name:'Quiz',path:'../quizzes/Quiz'},
                   {name:'QuizQuestion',path:'../quizzes/QuizQuestion'},
-                  {name:'QuizQuestionOption',path:'../quizzes/QuizQuestionOption'}
+                  {name:'QuizQuestionOption',path:'../quizzes/QuizQuestionOption'},
+                  {name:'SearchSuggestion',path:'../common/SearchSuggestion'},
                  ];
 var models = {};
 

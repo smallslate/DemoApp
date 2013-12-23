@@ -115,6 +115,20 @@ function bindSearchResultsToSubCategory(resultList,req,res) {
 	});
 };
 
+Common.searchSuggestions = function(req,res) {
+	db.model("SearchSuggestion").findAll({attributes:['suggestionTest']}).success(function(searchSuggestionsList) {
+		if(searchSuggestionsList && searchSuggestionsList.length>0) {
+			var suggestResponse = new Array();
+			for (index in searchSuggestionsList) {
+				suggestResponse.push(searchSuggestionsList[index].suggestionTest);
+			}
+			res.send(suggestResponse);
+		} else {
+			res.send(null);
+		}
+	});
+};
+
 Common.search = function(req,res) {
 	if(req.body.type && req.body.type=='quiz') {
 		if(req.body.cc && req.body.cc.length>=8) {

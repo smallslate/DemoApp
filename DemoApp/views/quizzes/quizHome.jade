@@ -1,25 +1,24 @@
 extends /common/layout
 block head
 	link(rel='stylesheet', href='/stylesheets/carousel.css')
+	//link(rel='stylesheet', href='/javascript/frameworks/typeahead/typeahead.js-bootstrap.css')
+	//script(src="/javascript/frameworks/typeahead/typeahead.min.js")
 	title Welcome - Quizzes Home
-	.carousel
-		.carousel-inner
-			.item.active
-				.container
-					.carousel-caption
-						h1 Quizzes 
-						p Find, Learn, Create, Share & Use
-						form(role="form",method="get",action="/searchQuiz")
-							.input-group
-								input.form-control#searchQuery(type="text",name="sq",placeholder="Search Quizzes...")
-								input(type="hidden",name="type",value="quiz")
-								.input-group-btn
-									button.btn.btn-default(type="submit",onclick="return validateSearch(this);")
-										i.glyphicon.glyphicon-search
+	.jumbotron(style='background-color:#606060;color:white;text-align:center;line-height:0px;')
+		.container
+			h1 Quizzes
+			h4 Find, Learn, Create and Share
+			form(role="form",method="get",action="/searchQuiz")
+				.input-group(style="display:inline,")
+					input.form-control#searchQuery(type="text",name="sq",placeholder="Search Quizzes...")
+					input(type="hidden",name="type",value="quiz")
+					.input-group-btn
+						button.btn.btn-default(type="submit")
+							i.glyphicon.glyphicon-search
 	.container.marketing
 		.row.featurette
 			.col-md-7
-				h1 Quiz features - Completely free
+				h1 Quiz features
 				hr
 				h5
 					span Access Anywhere - 
@@ -30,9 +29,6 @@ block head
 				h5
 					span Create - 
 					span.text-muted Create Single Answer, Multiple Answers, True/False type quizzes
-				h5
-					span Use - 
-					span.text-muted Integrate quizzes into your site/blog for free
 				h5
 					span Rich - 
 					span.text-muted Create questions with rich text and images 	
